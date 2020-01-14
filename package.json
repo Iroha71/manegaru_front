@@ -1,0 +1,21 @@
+{
+  "name": "comcon",
+  "version": "1.0.0",
+  "description": "ボイロたちと過ごすドタバタ日常系タスクアプリ!",
+  "author": "Iroha71",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt --port 3001",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.9.3",
+    "node-sass": "^4.13.0",
+    "nuxt": "^2.11.0",
+    "nuxt-buefy": "^0.3.20",
+    "sass-loader": "^8.0.2"
+  },
+  "devDependencies": {}
+}
