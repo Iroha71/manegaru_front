@@ -1,6 +1,10 @@
-
+require('dotenv').config()
+const { BASE_URL } = process.env
 export default {
   mode: 'spa',
+  env: {
+    BASE_URL
+  },
   /*
   ** Headers of the page
   */
@@ -29,6 +33,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~/plugins/axios.js',
+    '~/plugins/persistedstate.js'
   ],
   /*
   ** Nuxt.js dev-modules
