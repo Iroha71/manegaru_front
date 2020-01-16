@@ -1,4 +1,4 @@
-export default ({store, $axios}) => {
+export default ({store, redirect, $axios}) => {
     $axios.onRequest(config => {
         config.headers.common['access-token'] = store.getters['auth/access_token']
         config.headers.common['client'] = store.getters['auth/client']
@@ -10,17 +10,20 @@ export default ({store, $axios}) => {
     })
 
     $axios.onError(error => {
-        console.log(error)
+        store.dispatch('api/stopLoad')
         try{
-            const code = parseInt(error.respose.status)
-            $nuxt.error({
-                statusCode: code,
-                message: 'エラーが発生しました'
-            })
+            if(error.response.status == 401){
+                redirect('/login?error=401')
+            }else{
+                $nuxt.error({
+                    statusCode: error.response.status,
+                    message: 'エラーが発生しました'
+                })
+            }
         }catch(catchError){
             $nuxt.error({
                 statusCode: 500,
-                message: catchError
+                message: 'サーバでエラーが発生しました'
             })
         }
     })

@@ -28,3 +28,7 @@ export const actions = {
         }
     }
 }
+
+export const getters = {
+    isLoading: (state) => state.isLoading
+}
