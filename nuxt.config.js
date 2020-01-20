@@ -35,6 +35,7 @@ export default {
   plugins: [
     '~/plugins/axios.js',
     '~/plugins/persistedstate.js'
+    '~/plugins/vee-validate.js'
   ],
   /*
   ** Nuxt.js dev-modules
