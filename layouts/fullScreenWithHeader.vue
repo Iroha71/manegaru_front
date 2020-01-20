@@ -1,5 +1,6 @@
 <template lang="html">
     <div class="root">
+        <b-loading is-full-page :active.sync="$store.getters['api/isLoading']" />
         <b-navbar type="is-primary"></b-navbar>
         <div class="hero is-fullheight-with-navbar">
             <nuxt />

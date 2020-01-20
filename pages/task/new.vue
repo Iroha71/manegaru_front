@@ -72,10 +72,14 @@ export default {
         },
         
         arrangeDate:function(date) {
-            const year = date.getFullYear()
-            const month = date.getMonth()
-            const day = date.getDate()
-            return `${year}/${month + 1}/${day}`
+            if(date !== null) {
+                const year = date.getFullYear()
+                const month = date.getMonth()
+                const day = date.getDate()
+                return `${year}/${month + 1}/${day}`
+            } else {
+                return null
+            }
         }
     },
 }
