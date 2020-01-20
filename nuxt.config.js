@@ -34,8 +34,13 @@ export default {
   */
   plugins: [
     '~/plugins/axios.js',
-    '~/plugins/persistedstate.js'
+    '~/plugins/persistedstate.js',
+    '~/plugins/vee-validate.js'
   ],
+
+  router: {
+    middleware: 'checkAuth'
+  },
   /*
   ** Nuxt.js dev-modules
   */

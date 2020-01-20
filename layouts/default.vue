@@ -22,7 +22,18 @@
   margin: 0;
   height: calc(100vh - 3.25rem);
   section.column {
-    overflow-y: scroll;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 10px;
+      &-track { 
+        border-radius: 10px;
+        background: #fff;
+      }
+      &-thumb {
+        border-radius: 10px;
+        background: #09c9d9;
+      }
+    }
   }
 }
 </style>
