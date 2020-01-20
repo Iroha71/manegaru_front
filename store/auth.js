@@ -13,11 +13,11 @@ export const mutations = {
 }
 
 export const actions = {
-    setAuth(context, {access_token, client, uid}){
+    setAuth(context, authHeaders){
         context.commit('setAuth', {
-            access_token: access_token,
-            client: client,
-            uid: uid
+            access_token: authHeaders.access_token,
+            client: authHeaders.client,
+            uid: authHeaders.uid
         })
     },
     clearAuth(context){

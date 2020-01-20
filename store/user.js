@@ -15,6 +15,7 @@ export const mutations = {
         state.gold = user.gold
     }
 }
+
 const signInPath = 'auth/sign_in'
 
 export const actions = {
