@@ -8,7 +8,7 @@
     </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .columns {
     margin: 0;
     height: calc(100vh - 3.25rem);
