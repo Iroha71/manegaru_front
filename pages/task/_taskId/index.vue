@@ -48,8 +48,6 @@
 </template>
 
 <script>
-import Card from '~/components/Card.vue'
-import DetailTable from '~/components/DetailTable.vue'
 export default {
     async asyncData({store, route}) {
         const taskId = route.params.taskId
