@@ -22,8 +22,8 @@
 .columns {
   margin: 0;
   height: calc(100vh - 3.25rem);
+  overflow-y: auto;
   section.column {
-    overflow-y: auto;
     &::-webkit-scrollbar {
       width: 10px;
       &-track { 
