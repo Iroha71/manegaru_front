@@ -9,6 +9,11 @@ export const actions = {
         return task
     },
 
+    async update({dispatch}, {taskId, changeContent}) {
+        const task = await dispatch('api/request', {method: 'put', endpoint: `task/${taskId}`, params: changeContent}, {root: true})
+        return task
+    },
+
     async updateStatus({dispatch}, {taskId, status}) {
         const statusInfo = { status: status }
         const updatedStatus = await dispatch('api/request', {method: 'put', endpoint: `task/${taskId}/update_status`, params: statusInfo}, {root: true})

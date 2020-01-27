@@ -32,10 +32,19 @@
             <b-button type="is-success" v-if="isStatusUpdated" @click="changeStatus()">更新</b-button>
         </div>
         <div class="column content">
-            <table >
+            <table>
                 <tr class="has-background-grey-lighter">
                     <th class="has-text-centered">期限</th>
-                    <td :class="`has-background-${getStatusColor()}`">{{ task.limit_date }}</td>
+                    <td :class="`limit-date has-background-${getStatusColor()}`" @click="changeEditModeIs('limitDate')" v-if="!isEdittingDate">
+                        <b-tooltip type="is-dark" label="タップで期限日変更">
+                            {{ task.limit_date }}
+                        </b-tooltip>
+                    </td>
+                    <td v-else>
+                        <b-datepicker :minDate="form.limitDate" v-model="form.limitDate" />
+                        <b-button type="is-success" @click="saveEditedInfo('limitDate')">保存する</b-button>
+                        <b-button type="is-danger" @click="closeEditModeIs('limitDate')">×</b-button>
+                    </td>
                 </tr>
                 <tr class="has-background-grey-light">
                     <td colspan="2" class="has-text-centered">
@@ -50,9 +59,13 @@
     <hr>
     <div class="content">
         <b-tag :type="`is-${getStatusColor()}`" size="is-large">メモ</b-tag>
+        <IconButton v-if="!isEdittingMemo" type="is-primary" iconName="edit" message="メモを追加・修正する" @click="changeEditModeIs('memo')" />
+        <b-button v-else type="is-success" @click="saveEditedInfo('memo')">メモを保存する</b-button>
+        <b-button v-if="isEdittingMemo" type="is-danger" @click="closeEditModeIs('memo')">×</b-button>
         <div class="memo-area">
-            <span v-if="task.detail">{{ task.detail }}</span>
-            <span v-else>メモは書かれていません</span>
+            <span v-if="task.detail && !isEdittingMemo">{{ task.detail }}</span>
+            <span v-else-if="!isEdittingMemo">メモは書かれていません</span>
+            <Vinput v-else type="textarea" rules="max:150" :maxLength="150" label="" v-model="form.detail" />
         </div>
     </div>
 </div>
@@ -60,17 +73,29 @@
 
 <script>
 import { mapActions } from 'vuex'
+import IconButton from '@/components/parts/IconButton.vue'
+import Vinput from '@/components/parts/ValidateInput.vue'
 export default {
     async asyncData({store, route}) {
         const taskId = route.params.taskId
         const task = await store.dispatch('task/show', taskId)
         return { task: task.data }
     },
+    components: {
+        IconButton,
+        Vinput
+    },
     data() {
         return {
             statusIndex: 0,
             defautIndex: 0,
-            statuses: ['未着手', '作業中', '完了']
+            statuses: ['未着手', '作業中', '完了'],
+            isEdittingMemo: false,
+            isEdittingDate: false,
+            form: {
+                detail: '',
+                limitDate: null
+            }
         }
     },
     created() {
@@ -78,7 +103,7 @@ export default {
         this.defautIndex = this.statusIndex
     },
     methods: {
-        ...mapActions({ 'updateStatus': 'task/updateStatus' }),
+        ...mapActions({ 'updateStatus': 'task/updateStatus', 'update': 'task/update' }),
         getStatusColor:function() {
             switch(this.task.status) {
                 case this.statuses[0]:
@@ -99,6 +124,37 @@ export default {
                 this.statusIndex = this.defautIndex
             })
         },
+        changeEditModeIs(formName) {
+            if(formName === 'limitDate') {
+                this.form.limitDate = new Date()
+                this.isEdittingDate = true
+            } else if(formName === 'memo') {
+                this.form.detail = this.task.detail
+                this.isEdittingMemo = true
+            }
+        },
+        saveEditedInfo(formName) {
+            let changeContent = {}
+            if(formName === 'limitDate') {
+                this.closeEditModeIs('limitDate')
+                changeContent = { limit_date: this.arrangeDate(this.form.limitDate) }
+            } else {
+                this.closeEditModeIs('memo')
+                changeContent = { detail: this.form.detail }
+            }
+            this.update({taskId: this.task.id, changeContent: changeContent})
+            .then(task => {
+                this.task = task.data
+                console.log(task.data)
+            })
+        },
+        closeEditModeIs(formName) {
+            if(formName === 'limitDate') {
+                this.isEdittingDate = false
+            } else {
+                this.isEdittingMemo = false
+            }
+        },
         getPriorityColor:function() {
             switch(this.task.priority.like_rate) {
                 case 1:
@@ -107,6 +163,16 @@ export default {
                     return 'is-info'
                 case 3:
                     return 'is-primary'
+            }
+        },
+        arrangeDate:function(date) {
+            if(date !== null) {
+                const year = date.getFullYear()
+                const month = date.getMonth()
+                const day = date.getDate()
+                return `${year}/${month + 1}/${day}`
+            } else {
+                return null
             }
         }
     },
@@ -149,6 +215,9 @@ table {
     }
     td {
         border-radius: 10px;
+        &.limit-date {
+            cursor: pointer;
+        }
     }
 }
 .memo-area {
