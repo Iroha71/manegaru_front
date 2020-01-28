@@ -197,7 +197,7 @@ h1 {
         border-color: #ff3860;
     }
     &.info {
-        border-color: #167df0;
+        border-color: #3B63AF;
     }
     &.success {
         border-color: #23d160;

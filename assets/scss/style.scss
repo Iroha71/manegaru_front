@@ -1,3 +1,20 @@
+@import '~bulma/sass/utilities/_all';
+$primary: #1AAAD4;
+$info: #3B63AF;
+$warning: #F9D76F;
+$danger: #F15E60;
+$success: #2EA58D;
+
+$colors: (
+    "primary": ($primary, $primary-invert),
+    "info": ($info, $info-invert),
+    "warning": ($warning, $warning-invert),
+    "danger": ($danger, $warning-invert),
+    "success": ($success, $success-invert)
+);
+@import '~bulma';
+@import '~buefy/src/scss/buefy';
+
 html {
     overflow-y: hidden;
 }
