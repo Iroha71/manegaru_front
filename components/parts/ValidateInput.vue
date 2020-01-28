@@ -1,7 +1,7 @@
 <template lang="html">
 <ValidationProvider :rules="rules" v-slot="{ errors }" :name="label">
     <b-field :label="label" :type="getFieldType(errors[0])" :message="errors[0]">
-        <b-input :type="type" v-model="updateValue" />
+        <b-input :type="type" v-model="updateValue" :maxlength="maxLength" />
     </b-field>
 </ValidationProvider>
 </template>
@@ -26,6 +26,10 @@ export default {
             type: String,
             required: true
         },
+        maxLength: {
+            type: Number,
+            required: false
+        }
     },
     methods: {
         getFieldType:function(hasError){
