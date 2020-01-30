@@ -19,3 +19,8 @@ export const actions = {
         context.commit('setCurrentGirl', girl)
     }
 }
+
+export const getters = {
+    currentGirlId: (state) => state.currentGirl.id,
+    currentGirlCode: (state) => state.currentGirl.code
+}
