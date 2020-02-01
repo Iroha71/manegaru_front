@@ -5,12 +5,32 @@
     </div>
     <div class="column is-6">
       <b-carousel :interval="8000">
-        <b-carousel-item v-for="(banerInfo, i) in banerInfos" :key="i" class="has-text-centered">
-          <section :class="`hero ${banerInfo.color}`">
+        <b-carousel-item class="has-text-centered">
+          <section class="hero is-success">
             <div class="hero-body">
               <section class="content-area">
-                <p class="subtitle">{{ banerInfo.label }}</p>
-                <p class="title">{{ banerInfo.content }}</p>
+                <p class="subtitle">今日は</p>
+                <p class="title">{{ today }}</p>
+              </section>
+            </div>
+          </section>
+        </b-carousel-item>
+        <b-carousel-item class="has-text-centered">
+          <section class="hero is-danger">
+            <div class="hero-body">
+              <section class="content-area">
+                <p class="subtitle">未着手タスク</p>
+                <p class="title">{{ yetTaskNum }}</p>
+              </section>
+            </div>
+          </section>
+        </b-carousel-item>
+        <b-carousel-item class="has-text-centered">
+          <section class="hero is-warning">
+            <div class="hero-body">
+              <section class="content-area">
+                <p class="subtitle">作業中タスク</p>
+                <p class="title">{{ workingTaskNum }}</p>
               </section>
             </div>
           </section>
@@ -32,6 +52,10 @@ export default {
   components: {
     IconButton
   },
+  async asyncData({store}) {
+    const countedTasks = await store.dispatch('task/countNotFinishTasks')
+    return { yetTaskNum: countedTasks.data.yet, workingTaskNum: countedTasks.data.working }
+  },
   created() {
     const ls = JSON.parse(localStorage.getItem('comcon'))
     this.currentGirlCode = ls.girl.currentGirl.code
@@ -39,15 +63,12 @@ export default {
     const weekOfDays = ['日', '月', '火', '水', '木', '金', '土']
     const weekOfDay = weekOfDays[now.getDay()]
     const arrangedToday = `${now.getMonth() + 1}月${now.getDate()}日(${weekOfDay})`
-    this.banerInfos[0].content = arrangedToday
+    this.today = arrangedToday
   },
   data() {
     return {
-      banerInfos: [
-        { label: '今日は', content: null, color: 'is-success' },
-        { label: '未着手タスク', content: '0', color: 'is-danger' },
-        { label: '作業中タスク', content: '0', color: 'is-warning' }],
-        backgroundUrl: "/images/bg-bloom.webp"
+      backgroundUrl: '/images/bg-bloom.webp',
+      today: null
     }
   }
 }

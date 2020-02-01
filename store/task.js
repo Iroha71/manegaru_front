@@ -9,6 +9,11 @@ export const actions = {
         return task
     },
 
+    async countNotFinishTasks({dispatch}) {
+        const taskCount = await dispatch('api/request', {method: 'get', endpoint: 'task/count_not_finish_tasks', params: null}, {root: true})
+        return taskCount
+    },
+
     async update({dispatch}, {taskId, changeContent}) {
         const task = await dispatch('api/request', {method: 'put', endpoint: `task/${taskId}`, params: changeContent}, {root: true})
         return task
