@@ -3,7 +3,8 @@
     <div class="form-area column is-offset-4 is-4">
         <form class="section">
             <h1>サインイン</h1>
-            <p v-if="isAuthError" class="has-text-danger">メールアドレスまたはパスワードが間違っています</p>
+            <p v-if="isAuthError==401" class="has-text-danger">メールアドレスまたはパスワードが間違っています</p>
+            <p v-else-if="isAuthError==403" class="has-text-danger">認証情報が間違っています。再ログインしてください</p>
             <b-field label="メールアドレス">
                 <b-input v-model="email"></b-input>
             </b-field>
