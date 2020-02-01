@@ -1,18 +1,23 @@
 export default({route, redirect, store}) => {
-    try{
-        const authInfo = JSON.parse(localStorage.getItem('comcon'))
-        if(authInfo.auth.access_token){
-            store.dispatch('user/setUser', authInfo.user)
-            store.dispatch('auth/setAuth', authInfo.auth)
-        }else{
-           throw new Error('no authorized') 
-        }
-    }catch(error){
-        console.log(error)
-        if(isRequireAuthPage(route.path)){
+    if(isRequireAuthPage(route.path)) {
+        try{
+            const authInfo = JSON.parse(localStorage.getItem('comcon'))
+            if(authInfo.auth.access_token){
+                store.dispatch('user/setUser', authInfo.user)
+                store.dispatch('auth/setAuth', authInfo.auth)
+            }else{
+               throw new Error('no authorized') 
+            }
+        }catch(error){
+            console.log(error)
             redirect('/login/')
         }
+    } else {
+        if(localStorage.getItem('comcon')) {
+            localStorage.removeItem('comcon')
+        }
     }
+    
 }
 
 const isRequireAuthPage = (pagePath) => {

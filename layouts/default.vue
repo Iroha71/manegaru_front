@@ -1,7 +1,7 @@
 <template>
   <div class="root">
     <b-loading is-full-page :active.sync="$store.getters['api/isLoading']" />
-    <b-navbar type="is-primary"></b-navbar>
+    <Header />
     <div class="hero is-fullheight-with-navbar">
       <div class="columns">
         <div class="column is-2 has-background-grey-light">
@@ -17,6 +17,15 @@
     </div>
   </div>
 </template>
+
+<script>
+import Header from '@/components/Header.vue'
+export default {
+  components: {
+    Header
+  }
+}
+</script>
 
 <style lang="scss" scoped>
 .columns {
