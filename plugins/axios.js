@@ -11,10 +11,11 @@ export default ({store, redirect, $axios}) => {
 
     $axios.onError(error => {
         store.dispatch('api/stopLoad')
+        console.log(error.response)
         try{
-            if(error.response.status == 401){
-                redirect('/login?error=401')
-            }else{
+            if(error.response.status == 401 || error.response.status == 403) {
+                redirect(`/login?error=${error.response.status}`)
+            } else {
                 $nuxt.error({
                     statusCode: error.response.status,
                     message: 'エラーが発生しました'
