@@ -21,5 +21,6 @@ export const actions = {
 }
 
 export const getters = {
+    currentGirlId: (state) => state.currentGirl.id,
     currentGirlCode: (state) => state.currentGirl.code
 }

@@ -44,7 +44,7 @@ button {
         display: flex;
         align-items: center;
         img {
-            height: 1.5rem;
+            height: 2rem;
             width: auto;
         }
     }
