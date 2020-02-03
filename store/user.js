@@ -3,7 +3,7 @@ export const state = () => ({
     email: '',
     name: '',
     nickname: '',
-    personalPronoun: '',
+    personal_pronoun: '',
     gold: 0
 })
 
@@ -13,7 +13,7 @@ export const mutations = {
         state.email = user.email
         state.name = user.name
         state.nickname = user.nickname
-        state.personalPronoun = user.personal_pronoun
+        state.personal_pronoun = user.personal_pronoun
         state.gold = user.gold
     },
 
@@ -22,7 +22,7 @@ export const mutations = {
         state.email = ''
         state.name = ''
         state.nickname = ''
-        state.personalPronoun = ''
+        state.personal_pronoun = ''
         state.gold = ''
     }
 }
@@ -39,7 +39,6 @@ export const actions = {
         const userInfo = { email: email, password: password }
         const user = await dispatch('api/request', {method: 'post', endpoint: signInPath, params: userInfo}, {root: true})
         await commit('set', user.data.data)
-        console.log(user.data.data)
         const headers = { access_token: user.headers['access-token'], client: user.headers['client'], uid: user.headers['uid'] }
         await dispatch('auth/setAuth', headers, {root: true})
         await dispatch('girl/setCurrentGirl', user.data.data.girl, {root: true})
@@ -57,6 +56,6 @@ export const getters = {
     name: (state) => state.name,
     email: (state) => state.email,
     nickname: (state) => state.nickname,
-    personalPronoun: (state) => state.personalPronoun,
+    personalPronoun: (state) => state.personal_pronoun,
     gold: (state) => state.gold
 }

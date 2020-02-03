@@ -1,11 +1,12 @@
 export default({route, redirect, store}) => {
     if(isRequireAuthPage(route.path)) {
         try{
-            const authInfo = JSON.parse(localStorage.getItem('comcon'))
-            if(authInfo.auth.access_token){
-                store.dispatch('user/setUser', authInfo.user)
-                store.dispatch('auth/setAuth', authInfo.auth)
-                setCurrentGroupToStore(store)
+            const storeData = JSON.parse(localStorage.getItem('comcon'))
+            if(storeData.auth.access_token){
+                store.dispatch('user/setUser', storeData.user)
+                store.dispatch('auth/setAuth', storeData.auth)
+                setCurrentGroupToStore(store, storeData.project)
+                setCurrentGirlToStore(store, storeData.girl)
             }else{
                throw new Error('no authorized') 
             }
@@ -39,7 +40,10 @@ const arrangePagePath = (pagePath) => {
     return pagePath
 }
 
-const setCurrentGroupToStore = (store) => {
-    const groupId = JSON.parse(localStorage.getItem('comcon')).project.currentGroupId
-    store.dispatch('project/setCurrentGroupId', groupId)
+const setCurrentGroupToStore = (store, project) => {
+    store.dispatch('project/setCurrentGroupId', project.currentGroupId)
+}
+
+const setCurrentGirlToStore = (store, girl) => {
+    store.dispatch('girl/setCurrentGirl', { id: girl.currentGirl.id, code: girl.currentGirl.code })
 }
