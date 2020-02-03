@@ -1,5 +1,6 @@
 export default ({store, redirect, $axios}) => {
     $axios.onRequest(config => {
+        store.dispatch('api/startLoad')
         config.headers.common['access-token'] = store.getters['auth/access_token']
         config.headers.common['client'] = store.getters['auth/client']
         config.headers.common['uid'] = store.getters['auth/uid']

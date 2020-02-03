@@ -5,6 +5,7 @@ export default({route, redirect, store}) => {
             if(authInfo.auth.access_token){
                 store.dispatch('user/setUser', authInfo.user)
                 store.dispatch('auth/setAuth', authInfo.auth)
+                setCurrentGroupToStore(store)
             }else{
                throw new Error('no authorized') 
             }
@@ -36,4 +37,9 @@ const arrangePagePath = (pagePath) => {
         pagePath += '/'
     }
     return pagePath
+}
+
+const setCurrentGroupToStore = (store) => {
+    const groupId = JSON.parse(localStorage.getItem('comcon')).project.currentGroupId
+    store.dispatch('project/setCurrentGroupId', groupId)
 }
