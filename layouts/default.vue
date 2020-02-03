@@ -4,11 +4,8 @@
     <Header />
     <div class="hero is-fullheight-with-navbar">
       <div class="columns">
-        <div class="column is-2 has-background-grey-light">
-          <aside class="menu">
-            <p class="menu-label">メニュー</p>
-            <ul><li>リスト</li></ul>
-          </aside>
+        <div class="column is-2 has-background-grey-lighter">
+          <Sidemenu />
         </div>
         <section class="column">
           <nuxt />
@@ -20,9 +17,11 @@
 
 <script>
 import Header from '@/components/Header.vue'
+import Sidemenu from '@/components/Sidemenu.vue'
 export default {
   components: {
-    Header
+    Header,
+    Sidemenu
   }
 }
 </script>
@@ -32,7 +31,10 @@ export default {
   margin: 0;
   height: calc(100vh - 3.25rem);
   overflow-y: auto;
-  &::-webkit-scrollbar {
+  .column {
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar, .column::-webkit-scrollbar {
     width: 10px;
     &-track { 
       border-radius: 10px;
