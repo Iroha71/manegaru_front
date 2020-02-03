@@ -12,10 +12,14 @@ export const actions = {
     stopLoad(context){
         context.commit('setIsLoading', false)
     },
+
+    startLoad(context) {
+        context.commit('setIsLoading', true)
+    },
     
     request(context, {method, endpoint, params}){
         const requestUrl = process.env.BASE_URL + endpoint
-        context.commit('setIsLoading', true)
+        context.commit('setIsLoading', false)
         switch(method){
             case 'get':
                 return this.$axios.get(requestUrl, { params: params })
