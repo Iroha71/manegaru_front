@@ -37,7 +37,7 @@
         </b-carousel-item>
       </b-carousel>
       <section class="section menu-area has-text-centered">
-        <IconButton class="menu-button" type="is-primary" iconName="checkbox" message="タスク" size="is-large" />
+        <IconButton class="menu-button" type="is-primary" iconName="checkbox" message="タスク" size="is-large" @click="$router.push('/task')" />
         <IconButton class="menu-button" type="is-primary" iconName="checkbox" message="秘書" size="is-large" />
         <IconButton class="menu-button" type="is-primary" iconName="checkbox" message="箱庭" size="is-large" />
       </section>

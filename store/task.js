@@ -4,6 +4,26 @@ export const actions = {
         return task
     },
 
+    async indexAll({dispatch}) {
+        const tasks = await dispatch('api/request', {method: 'get', endpoint: 'task', params: null}, {root: true})
+        return tasks.data
+    },
+
+    async index({dispatch}, groupId) {
+        const tasks = await dispatch('api/request', {method: 'get', endpoint: 'task', params: groupId}, {root: true})
+        return tasks.data
+    },
+
+    async filteredIndex({dispatch}, filterQuery) {
+        const tasks = await dispatch('api/request', {method: 'get', endpoint: 'task/filtered_index', params: filterQuery}, {root: true})
+        return tasks.data
+    },
+
+    async orderedIndex({dispatch}, orderQuery) {
+        const tasks = await dispatch('api/request', {method: 'get', endpoint: 'task/ordered_index', params: orderQuery}, {root: true})
+        return tasks.data
+    },
+
     async show({dispatch}, taskId) {
         const task = await dispatch('api/request', {method: 'get', endpoint: `task/${taskId}`, params: null}, {root: true})
         return task

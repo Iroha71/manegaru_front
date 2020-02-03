@@ -1,6 +1,6 @@
 <template>
-  <div class="column">
-    <div class="card">
+  <div :class="`column ${size}`">
+    <div class="card" @click="executeParentEvent()">
       <header class="card-header">
         <p class="card-header-title has-text-grey">
           {{ title }}
@@ -8,17 +8,13 @@
       </header>
       <div class="card-content">
         <div class="content has-text-centered">
-          <b-icon
-            :icon="icon"
-            size="is-large"
-            type="is-primary"
-          />
+          <slot name="content" />
         </div>
       </div>
       <footer class="card-footer">
         <div class="card-footer-item">
           <span>
-            <slot />
+            <slot name="footer" />
           </span>
         </div>
       </footer>
@@ -33,10 +29,22 @@ export default {
       type: String,
       required: true
     },
-    icon: {
+    size: {
       type: String,
-      required: true
+      required: false,
+      default: ''
+    }
+  },
+  methods: {
+    executeParentEvent() {
+      this.$emit('click')
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.card {
+  cursor: pointer;
+}
+</style>
