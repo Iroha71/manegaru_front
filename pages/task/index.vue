@@ -31,7 +31,6 @@ export default {
     async asyncData({store}) {
         let tasks = null
         if(store.getters['project/currentGroupId'] === 0) {
-            console.log(store.getters['project/currentGroupId'])
             tasks = await store.dispatch('task/indexAll')
         } else {
             const paramsGroupId = { group_id: store.getters['project/currentGroupId'] }

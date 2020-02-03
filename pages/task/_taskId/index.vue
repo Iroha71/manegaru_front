@@ -145,7 +145,6 @@ export default {
             this.update({taskId: this.task.id, changeContent: changeContent})
             .then(task => {
                 this.task = task.data
-                console.log(task.data)
             })
         },
         closeEditModeIs(formName) {
