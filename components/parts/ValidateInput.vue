@@ -1,5 +1,5 @@
 <template lang="html">
-<ValidationProvider :rules="rules" v-slot="{ errors }" :name="label">
+<ValidationProvider :rules="rules" v-slot="{ errors }" :name="label" :vid="vid">
     <b-field :label="label" :type="getFieldType(errors[0])" :message="errors[0]">
         <b-input :type="type" v-model="updateValue" :maxlength="maxLength" />
     </b-field>
@@ -28,6 +28,10 @@ export default {
         },
         maxLength: {
             type: Number,
+            required: false
+        },
+        vid: {
+            type: String,
             required: false
         }
     },
