@@ -49,6 +49,12 @@ export const actions = {
         await commit('clear')
         await dispatch('auth/clearAuth', null, {root: true})
         localStorage.removeItem('comcon')
+    },
+
+    async signUp({dispatch}, {email, password, name, nickname, pronoun}) {
+        const userInfo = { email: email, password: password, name: name, nickname: nickname, personal_pronoun: pronoun }
+        const user = await dispatch('api/request', {method: 'post', endpoint: 'auth', params: userInfo}, {root: true})
+        return user.data.data.email
     }
 }
 

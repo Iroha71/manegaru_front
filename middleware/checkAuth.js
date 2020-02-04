@@ -23,7 +23,7 @@ export default({route, redirect, store}) => {
 }
 
 const isRequireAuthPage = (pagePath) => {
-    const noAuthPagePath = ['/login/']
+    const noAuthPagePath = ['/login/', '/user/new/', '/user/finished-temp-regist/']
     const currentPage = arrangePagePath(pagePath)
     if(noAuthPagePath.includes(currentPage)){
         return false

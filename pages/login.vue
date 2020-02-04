@@ -21,7 +21,7 @@
             </div>
             <div>
                 <p>未登録の場合</p>
-                <b-button type="is-success" :loading="$store.getters['api/isLoading']">新規登録</b-button>
+                <b-button type="is-success" :loading="$store.getters['api/isLoading']" @click="$router.push('/user/new')">新規登録</b-button>
             </div>
         </form>
     </div>
