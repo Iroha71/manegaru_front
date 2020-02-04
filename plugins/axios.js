@@ -1,4 +1,4 @@
-export default ({store, redirect, $axios}) => {
+export default ({store, redirect, $axios, route}) => {
     $axios.onRequest(config => {
         store.dispatch('api/startLoad')
         config.headers.common['access-token'] = store.getters['auth/access_token']
@@ -16,6 +16,9 @@ export default ({store, redirect, $axios}) => {
         try{
             if(error.response.status == 401 || error.response.status == 403) {
                 redirect(`/login?error=${error.response.status}`)
+            } else if(error.response.status == 422) {
+                redirect(`${route.path}?error=422`)
+                alert('通信に失敗しました')
             } else {
                 $nuxt.error({
                     statusCode: error.response.status,
