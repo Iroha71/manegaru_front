@@ -11,12 +11,19 @@ export const mutations = {
             state.currentGirl.id = girl.id
             state.currentGirl.code = girl.code
         }
+    },
+    clearCurrentGirl(state) {
+        state.currentGirl.id = '',
+        state.currentGirl.code = ''
     }
 }
 
 export const actions = {
     setCurrentGirl(context, girl){
         context.commit('setCurrentGirl', girl)
+    },
+    clearCurrentGirl(context) {
+        context.commit('clearCurrentGirl')
     }
 }
 

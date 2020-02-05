@@ -5,8 +5,11 @@ export default({route, redirect, store}) => {
             if(storeData.auth.access_token){
                 store.dispatch('user/setUser', storeData.user)
                 store.dispatch('auth/setAuth', storeData.auth)
-                setCurrentGroupToStore(store, storeData.project)
-                setCurrentGirlToStore(store, storeData.girl)
+                store.dispatch('project/setCurrentGroupId', storeData.project.currentGroupId)
+                store.dispatch('girl/setCurrentGirl', { id: storeData.girl.currentGirl.id, code: storeData.girl.currentGirl.code })
+                if(isEmptyCurrentGirl(storeData) && arrangePagePath(route.path) !== '/girl/select/') {
+                    redirect('/girl/select?isFirst=true')
+                }
             }else{
                throw new Error('no authorized') 
             }
@@ -40,10 +43,6 @@ const arrangePagePath = (pagePath) => {
     return pagePath
 }
 
-const setCurrentGroupToStore = (store, project) => {
-    store.dispatch('project/setCurrentGroupId', project.currentGroupId)
-}
-
-const setCurrentGirlToStore = (store, girl) => {
-    store.dispatch('girl/setCurrentGirl', { id: girl.currentGirl.id, code: girl.currentGirl.code })
+const isEmptyCurrentGirl = (store) => {
+    return store.girl.currentGirl.id === '' || store.girl.currentGirl.code === ''
 }

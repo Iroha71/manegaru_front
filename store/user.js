@@ -41,6 +41,7 @@ export const actions = {
         await commit('set', user.data.data)
         const headers = { access_token: user.headers['access-token'], client: user.headers['client'], uid: user.headers['uid'] }
         await dispatch('auth/setAuth', headers, {root: true})
+        await dispatch('girl/clearCurrentGirl', null, {root: true})
         await dispatch('girl/setCurrentGirl', user.data.data.girl, {root: true})
     },
 
