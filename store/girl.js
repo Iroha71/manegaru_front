@@ -24,6 +24,10 @@ export const actions = {
     },
     clearCurrentGirl(context) {
         context.commit('clearCurrentGirl')
+    },
+    async index({dispatch}, isFirst) {
+        const girls = await dispatch('api/request', {method: 'get', endpoint: 'girl', params: isFirst}, {root: true})
+        return girls.data
     }
 }
 

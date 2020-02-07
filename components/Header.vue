@@ -1,6 +1,6 @@
 <template lang="html">
 <div>
-    <b-navbar type="is-primary" fixed-top>
+    <b-navbar type="is-primary">
         <template slot="start" v-if="$store.getters['auth/access_token']">
             <b-navbar-dropdown label="タスク">
                 <b-navbar-item>
