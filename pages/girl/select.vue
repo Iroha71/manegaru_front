@@ -1,18 +1,29 @@
 <template>
+<div>
     <div class="section">
         <div v-for="(girl, index) in girls"
             :key="girl.id"
             :style="getPosition(index)"
-            class="column is-4">
-            <img v-if="(centeredIndex-index)<=0" :src="`/characters/${girl.code}/all.png`" />
+            class="column is-4-desktop is-4-tablet is-12-mobile">
+            <transition name="fade" mode="out-in">
+                <img v-if="(centeredIndex-index)<=0" :src="`/characters/${girl.code}/all.png`" />
+            </transition>
         </div>
+        <MessageWindow :name="selectedGirl.name" :text="selectedGirl.detail" />
+    </div>
+    <div class="controll-area column is-2 is-offset-5-desktop is-8-touch is-offset-2-touch">
         <b-button type="is-danger" @click="sendGirlPosition('prev')">前</b-button>
         <b-button type="is-primary" @click="sendGirlPosition('next')">次</b-button>
     </div>
+</div>
 </template>
 <script>
+import MessageWindow from '@/components/MessageWindow.vue'
 export default {
     layout: 'fullScreen',
+    components: {
+        MessageWindow
+    },
     async asyncData({store, route}) {
         const girls = await store.dispatch('girl/index', route.query.isFirst)
         return { girls: girls }
@@ -40,6 +51,11 @@ export default {
                 this.centeredIndex -= 1
             }
         }
+    },
+    computed: {
+        selectedGirl() {
+            return this.girls[this.centeredIndex]
+        }
     }
 }
 </script>
@@ -53,10 +69,29 @@ export default {
     .column {
         overflow: visible;
         transition: .5s;
+        padding-bottom: 0;
         img {
+            position: absolute;
+            bottom: 0;
             height: 90vh;
             max-width: initial;
+            filter: drop-shadow(5px 0 0 #000);
         }
+    }
+}
+.controll-area {
+    display: flex;
+    justify-content: space-around;
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+}
+.fade {
+    &-enter-active, &-leave-active {
+        transition: .3s;
+    }
+    &-enter, &-leave-to {
+        opacity: 0;
     }
 }
 </style>
