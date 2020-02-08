@@ -1,19 +1,26 @@
 <template>
-<div>
+<div class="root">
     <div class="section">
+        <div class="column is-2 content">
+            <p>秘書をタッチして選択してください</p>
+            <section>
+                <b-button type="is-danger" @click="sendGirlPosition('prev')">戻る</b-button>
+                <b-button type="is-primary" @click="sendGirlPosition('next')">次へ</b-button>
+            </section>
+        </div>
         <div v-for="(girl, index) in girls"
             :key="girl.id"
             :style="getPosition(index)"
             class="column is-4-desktop is-4-tablet is-12-mobile">
             <transition name="fade" mode="out-in">
-                <img v-if="(centeredIndex-index)<=0" :src="`/characters/${girl.code}/all.png`" />
+                <img v-if="(centeredIndex-index)<=0 && index<=visibleLastIndex"
+                    :src="`/characters/${girl.code}/all.png`"
+                    :style="getImageEffect(index)" />
             </transition>
         </div>
         <MessageWindow :name="selectedGirl.name" :text="selectedGirl.detail" />
     </div>
     <div class="controll-area column is-2 is-offset-5-desktop is-8-touch is-offset-2-touch">
-        <b-button type="is-danger" @click="sendGirlPosition('prev')">前</b-button>
-        <b-button type="is-primary" @click="sendGirlPosition('next')">次</b-button>
     </div>
 </div>
 </template>
@@ -32,7 +39,8 @@ export default {
         return {
             moveDistance: 100,
             currentDistance: 100,
-            centeredIndex: 0
+            centeredIndex: 0,
+            visibleLastIndex: 2
         }
     },
     methods: {
@@ -46,11 +54,23 @@ export default {
             if(sendType === 'next' && this.centeredIndex < this.girls.length -1) {
                 this.currentDistance -= this.moveDistance
                 this.centeredIndex += 1
+                this.visibleLastIndex += 1
             } else if(sendType === 'prev' && this.centeredIndex > 0) {
                 this.currentDistance += this.moveDistance
                 this.centeredIndex -= 1
+                this.visibleLastIndex -= 1
             }
+        },
+        getImageEffect(index) {
+            let attachEffect = ''
+            if(this.girls[index].is_lock) {
+                attachEffect = 'filter: brightness(0.1);'
+            } else if(this.centeredIndex < index) {
+                attachEffect = 'filter: blur(5px);'
+            }
+            return attachEffect
         }
+        
     },
     computed: {
         selectedGirl() {
@@ -61,11 +81,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.root {
+    background-image: url('/images/bg-ichimatsu.jpg');
+}
 .section {
     height: 100vh;
     padding-bottom: 0;
     display: flex;
     perspective: 150px;
+    .content {
+        background: #fff;
+        border-radius: 15px 200px 15px 185px / 240px 15px 100px 15px;
+        position: absolute;
+        z-index: 10;
+        top: 40%;
+        left: 10%;
+        section {
+            display: flex;
+            justify-content: space-around;
+        }
+    }
     .column {
         overflow: visible;
         transition: .5s;
@@ -78,13 +113,6 @@ export default {
             filter: drop-shadow(5px 0 0 #000);
         }
     }
-}
-.controll-area {
-    display: flex;
-    justify-content: space-around;
-    position: absolute;
-    z-index: 1;
-    bottom: 0;
 }
 .fade {
     &-enter-active, &-leave-active {
