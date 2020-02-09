@@ -26,7 +26,19 @@ export const actions = {
         context.commit('clearCurrentGirl')
     },
     async index({dispatch}, isFirst) {
-        const girls = await dispatch('api/request', {method: 'get', endpoint: 'girl', params: isFirst}, {root: true})
+        const param = { is_first: isFirst }
+        const girls = await dispatch('api/request', {method: 'get', endpoint: 'girl', params: param}, {root: true})
+        return girls.data
+    },
+    async updateCurrentGirl({dispatch, commit}, girlId) {
+        const param = { girl_id: girlId }
+        const user = await dispatch('api/request', {method: 'put', endpoint: `user/1`, params: param}, {root: true})
+        await dispatch('user/setUser', user.data, {root: true})
+        await commit('setCurrentGirl', user.data.girl)
+    },
+    async unlock({dispatch}, girlId) {
+        const param = { girl_id: girlId }
+        const girls = await dispatch('api/request', {method: 'post', endpoint: `user_girl`, params: param}, {root: true})
         return girls.data
     }
 }

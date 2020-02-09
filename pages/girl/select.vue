@@ -15,17 +15,17 @@
             <transition name="fade" mode="out-in">
                 <img v-if="(centeredIndex-index)<=0 && index<=visibleLastIndex"
                     :src="`/characters/${girl.code}/all.png`"
-                    :style="getImageEffect(index)" />
+                    :style="getImageEffect(index)"
+                    @click="choiceGirl(girl.id)" />
             </transition>
         </div>
         <MessageWindow :name="selectedGirl.name" :text="selectedGirl.detail" />
-    </div>
-    <div class="controll-area column is-2 is-offset-5-desktop is-8-touch is-offset-2-touch">
     </div>
 </div>
 </template>
 <script>
 import MessageWindow from '@/components/MessageWindow.vue'
+import { mapActions, mapGetters } from 'vuex'
 export default {
     layout: 'fullScreen',
     components: {
@@ -44,6 +44,7 @@ export default {
         }
     },
     methods: {
+        ...mapActions({ 'updateGirl': 'girl/updateCurrentGirl', 'unlockGirl': 'girl/unlock' }),
         getPosition(index) {
             const layer = this.centeredIndex - index
             const zIndex = `z-index: ${layer};`
@@ -63,16 +64,47 @@ export default {
         },
         getImageEffect(index) {
             let attachEffect = ''
-            if(this.girls[index].is_lock) {
+            if(this.girls[index].is_lock && this.$route.query.isFirst !== 'true') {
                 attachEffect = 'filter: brightness(0.1);'
             } else if(this.centeredIndex < index) {
                 attachEffect = 'filter: blur(5px);'
             }
             return attachEffect
+        },
+        choiceGirl(girlId) {
+            if(girlId === this.selectedGirl.id) {
+                let dialogMessage = this.selectedGirl.name + ' を秘書にしますか?'
+                let confirmMessage = '秘書にする'
+                if(this.selectedGirl.is_lock) {
+                    dialogMessage = this.selectedGirl.name + ` を解放しますか?<br>【資金】${this.hasGold} >> ${this.hasGold - 100}`
+                    confirmMessage = '解放する'
+                }
+                this.$buefy.dialog.confirm({
+                    message: dialogMessage,
+                    confirmText: confirmMessage,
+                    cancelText: 'やめる',
+                    onConfirm: () => this.requestSelectedGirl()
+                })
+            }
+        },
+        async requestSelectedGirl() {
+            if(this.selectedGirl.is_lock){
+                try {
+                    this.girls = await this.unlockGirl(this.selectedGirl.id)        
+                    if(this.$route.query.isFirst === 'true') {
+                        this.choiceGirl(this.selectedGirl.id)
+                    }
+                }catch(error) {
+                    this.$buefy.dialog.alert('資金が足りません')
+                }
+            } else {
+                await this.updateGirl(this.selectedGirl.id)
+                await this.$router.push('/')
+            }
         }
-        
     },
     computed: {
+        ...mapGetters({ 'hasGold': 'user/gold' }),
         selectedGirl() {
             return this.girls[this.centeredIndex]
         }
@@ -111,6 +143,7 @@ export default {
             height: 90vh;
             max-width: initial;
             filter: drop-shadow(5px 0 0 #000);
+            cursor: pointer;
         }
     }
 }
