@@ -39,12 +39,11 @@ export default {
 <style lang="scss" scoped>
 button {
     align-items: center;
-    padding: 5px;
     div {
         display: flex;
         align-items: center;
         img {
-            height: 2rem;
+            height: 1.2rem;
             width: auto;
         }
     }

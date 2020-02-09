@@ -100,8 +100,8 @@ export default {
     margin-right: 1.5rem;
     cursor: pointer;
     img {
-        height: 2rem;
-        width: 2rem;
+        max-height: 2rem;
+        max-width: 2rem;
         margin-right: 0.75rem;
     }
     span {
