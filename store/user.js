@@ -41,6 +41,7 @@ export const actions = {
         await commit('set', user.data.data)
         const headers = { access_token: user.headers['access-token'], client: user.headers['client'], uid: user.headers['uid'] }
         await dispatch('auth/setAuth', headers, {root: true})
+        await dispatch('girl/clearCurrentGirl', null, {root: true})
         await dispatch('girl/setCurrentGirl', user.data.data.girl, {root: true})
     },
 
@@ -49,6 +50,12 @@ export const actions = {
         await commit('clear')
         await dispatch('auth/clearAuth', null, {root: true})
         localStorage.removeItem('comcon')
+    },
+
+    async signUp({dispatch}, {email, password, name, nickname, pronoun}) {
+        const userInfo = { email: email, password: password, name: name, nickname: nickname, personal_pronoun: pronoun }
+        const user = await dispatch('api/request', {method: 'post', endpoint: 'auth', params: userInfo}, {root: true})
+        return user.data.data.email
     }
 }
 

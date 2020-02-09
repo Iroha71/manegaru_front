@@ -18,3 +18,12 @@ $colors: (
 html {
     overflow-y: hidden;
 }
+
+.page {
+    &-enter-active, &-leave-active {
+        transition: .5s;
+    }
+    &-enter, &-leave-to {
+        opacity: 0;
+    }
+}
