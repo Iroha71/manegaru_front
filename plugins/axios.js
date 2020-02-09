@@ -18,7 +18,6 @@ export default ({store, redirect, $axios, route}) => {
                 redirect(`/login?error=${error.response.status}`)
             } else if(error.response.status == 422) {
                 redirect(`${route.path}?error=422`)
-                alert('通信に失敗しました')
             } else {
                 $nuxt.error({
                     statusCode: error.response.status,
