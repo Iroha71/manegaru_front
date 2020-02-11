@@ -155,7 +155,7 @@ export default {
             }
         },
         getPriorityColor:function() {
-            switch(this.task.priority.like_rate) {
+            switch(this.task.priority.level) {
                 case 1:
                     return 'is-success'
                 case 2:
