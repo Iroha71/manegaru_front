@@ -19,7 +19,10 @@
                     @click="choiceGirl(girl.id)" />
             </transition>
         </div>
-        <MessageWindow :name="selectedGirl.name" :text="selectedGirl.detail" />
+        <MessageWindow :name="selectedGirl.name"
+            :text="selectedGirl.detail"
+            :borderColor="selectedGirl.color"
+            :backColor="selectedGirl.color2" />
     </div>
 </div>
 </template>
