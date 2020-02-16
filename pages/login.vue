@@ -2,9 +2,11 @@
 <div class="columns">
     <div class="form-area column is-offset-4 is-4">
         <form class="section">
-            <h1>サインイン</h1>
+            <h1 v-if="lineId">「こんこん」とLINEを連携します</h1>
+            <h1 v-else>サインイン</h1>
             <p v-if="isAuthError==401" class="has-text-danger">メールアドレスまたはパスワードが間違っています</p>
             <p v-else-if="isAuthError==403" class="has-text-danger">認証情報が間違っています。再ログインしてください</p>
+            <p v-else-if="isAuthError==405" class="has-text-danger">LINE登録はLINEアプリ内で行ってください</p>
             <b-field label="メールアドレス">
                 <b-input v-model="email"></b-input>
             </b-field>
@@ -12,7 +14,8 @@
                 <b-input type="password" v-model="password" password-reveal></b-input>
             </b-field>
             <b-field class="has-text-centered">
-               <b-button type="is-info" size="is-medium" @click="signInUser()" :loading="$store.getters['api/isLoading']">サインイン</b-button> 
+                <b-button v-if="!lineId" type="is-info" size="is-medium" @click="signInUser()" :loading="$store.getters['api/isLoading']">サインイン</b-button>
+                <b-button v-else type="is-success" size="is-medium" :isloading="$store.getters['api/isLoading']" @click="signInUser()">LINEを登録する</b-button>
             </b-field>
             <hr>
             <div class="password-reset-area">
@@ -35,15 +38,37 @@ export default {
     data() {
         return{
             email: '',
-            password: ''
+            password: '',
+            lineId: ''
         }
     },
-    methods: {
-        ...mapActions({ 'signIn': 'user/signIn' }),
-        signInUser:function(){
-            this.signIn({email: this.email, password: this.password}).then(res => {
-                this.$router.push('/')
+    mounted() {
+        liff.init({ liffId: process.env.LIFF_ID })
+            .then(() => {
+                if(liff.isInClient()) {
+                    this.lineId = liff.getContext().userId
+                }
             })
+    },
+    methods: {
+        ...mapActions({ 'signIn': 'user/signIn', 'registLineId': 'user/registLineId' }),
+        signInUser() {
+            this.signIn({email: this.email, password: this.password})
+                .then(res => {
+                    if(this.lineId === '') {
+                        this.$router.push('/')
+                    } else {
+                        this.updateLineId()
+                        this.$router.push('/line-registed/')
+                    }
+                })
+        },
+        updateLineId() {
+            if(this.lineId !== null) {
+                const lineId = this.registLineId(this.lineId)
+            } else {
+                this.$route.query.error = 405
+            }
         }
     },
     computed: {

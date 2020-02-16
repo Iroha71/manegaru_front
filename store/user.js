@@ -56,6 +56,12 @@ export const actions = {
         const userInfo = { email: email, password: password, name: name, nickname: nickname, personal_pronoun: pronoun }
         const user = await dispatch('api/request', {method: 'post', endpoint: 'auth', params: userInfo}, {root: true})
         return user.data.data.email
+    },
+
+    async registLineId({dispatch}, lineId) {
+        const lineParam = { line_id: lineId }
+        const lineInfo = await dispatch('api/request', {method: 'put', endpoint: 'user/1', params: lineParam}, {root: true})
+        return lineInfo.data
     }
 }
 
