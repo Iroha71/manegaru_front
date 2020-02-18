@@ -59,7 +59,7 @@ export default {
                         this.$router.push('/')
                     } else {
                         this.updateLineId()
-                        this.$router.push('/line-registed/')
+                        this.$router.push('/user/cooped-line/')
                     }
                 })
         },
