@@ -56,7 +56,8 @@ export default {
             this.signIn({email: this.email, password: this.password})
                 .then(res => {
                     if(this.lineId === '') {
-                        this.$router.push('/')
+                        let destination = this.$route.query.opened === 'line' ? '/task' : '/'
+                        this.$router.push(destination)
                     } else {
                         this.updateLineId()
                         this.$router.push('/user/cooped-line/')

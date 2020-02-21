@@ -15,7 +15,8 @@ export default({route, redirect, store}) => {
             }
         }catch(error){
             console.log(error)
-            redirect('/login/')
+            let openedLINEParam = route.query.openExternalBrowser === '1' ? '?opened=line' : ''
+            redirect('/login/' + openedLINEParam)
         }
     } else {
         if(localStorage.getItem('comcon')) {
