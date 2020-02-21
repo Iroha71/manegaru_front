@@ -21,13 +21,13 @@ export default ({store, redirect, $axios, route}) => {
             } else {
                 $nuxt.error({
                     statusCode: error.response.status,
-                    message: 'エラーが発生しました'
+                    message: 'サーバでエラーが発生しました'
                 })
             }
         }catch(catchError){
             $nuxt.error({
                 statusCode: 500,
-                message: 'サーバでエラーが発生しました'
+                message: 'ネットワークエラーが発生しました' + error
             })
         }
     })

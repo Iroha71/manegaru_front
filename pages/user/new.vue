@@ -58,7 +58,7 @@ export default {
                 nickname: this.nickname,
                 personal_pronoun: this.pronoun
             }
-            this.signUp({email: this.email, password: this.password, name: this.name, nickname: this.nickname, personal_pronoun: this.pronoun})
+            this.signUp({email: this.email, password: this.password, name: this.name, nickname: this.nickname, pronoun: this.pronoun})
             .then(confirmingEmail => {
                 this.$router.push(`/user/finished-temp-regist?confirmingEmail=${confirmingEmail}`)
             })

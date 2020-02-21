@@ -17,6 +17,7 @@ export const actions = {
     async getAll({commit, dispatch}) {
         const project = await dispatch('api/request', {method: 'get', endpoint: getAllPath, params: null}, {root: true})
         commit('setGroups', project.data)
+        return project.data
     },
 
     setCurrentGroupId(context, groupId) {

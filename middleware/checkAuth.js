@@ -7,7 +7,7 @@ export default({route, redirect, store}) => {
                 store.dispatch('auth/setAuth', storeData.auth)
                 store.dispatch('project/setCurrentGroupId', storeData.project.currentGroupId)
                 store.dispatch('girl/setCurrentGirl', { id: storeData.girl.currentGirl.id, code: storeData.girl.currentGirl.code })
-                if(isEmptyCurrentGirl(storeData) && arrangePagePath(route.path) !== '/girl/select/') {
+                if(isEmptyCurrentGirl(storeData) && arrangePagePath(route.path) !== '/girl/select/' && arrangePagePath(route.path) !== '/user/cooped-line/') {
                     redirect('/girl/select?isFirst=true')
                 }
             }else{
@@ -15,7 +15,8 @@ export default({route, redirect, store}) => {
             }
         }catch(error){
             console.log(error)
-            redirect('/login/')
+            let openedLINEParam = route.query.openExternalBrowser === '1' ? '?opened=line' : ''
+            redirect('/login/' + openedLINEParam)
         }
     } else {
         if(localStorage.getItem('comcon')) {
@@ -26,7 +27,7 @@ export default({route, redirect, store}) => {
 }
 
 const isRequireAuthPage = (pagePath) => {
-    const noAuthPagePath = ['/login/', '/user/new/', '/user/finished-temp-regist/', '/user/confirmed/']
+    const noAuthPagePath = ['/login/', '/user/new/', '/user/finished-temp-regist/', '/user/confirmed/', '/cooped-line/']
     const currentPage = arrangePagePath(pagePath)
     if(noAuthPagePath.includes(currentPage)){
         return false
