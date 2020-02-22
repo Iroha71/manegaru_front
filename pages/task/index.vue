@@ -40,16 +40,14 @@ export default {
     },
     mounted() {
         this.$nuxt.$on('changeTask', this.changeTask)
-        this.$nuxt.$on('filterTask', this.filterTask)
-        this.$nuxt.$on('orderTask', this.orderTask)
+        this.$nuxt.$on('customTask', this.customTask)
     },
     beforeDestroy() {
         this.$nuxt.$off('changeTask')
-        this.$nuxt.$off('filterTask')
-        this.$nuxt.$off('orderTask')
+        this.$nuxt.$off('customTask')
     },
     methods: {
-         ...mapActions({ 'index': 'task/index', 'filteredIndex': 'task/filteredIndex', 'orderedIndex': 'task/orderedIndex' }),
+         ...mapActions({ 'index': 'task/index', 'custom': 'task/custom' }),
         getStatusColor(statusName) {
             switch(statusName) {
                 case '未着手':
@@ -66,26 +64,8 @@ export default {
                 this.tasks = tasks
             })
         },
-        filterTask(query) {
-            const filterQuery = {
-                group_id: query.groupId,
-                filter_column: query.columnName,
-                filter_sign: query.sign,
-                filter_value: query.value
-            }
-            this.filteredIndex(filterQuery).then(tasks => {
-                this.tasks = tasks
-            })
-        },
-        orderTask(query) {
-            const orderQuery = {
-                group_id: query.groupId,
-                order_column: query.column,
-                order_sign: query.sign
-            }
-            this.orderedIndex(orderQuery).then(tasks => {
-                this.tasks = tasks
-            })
+        async customTask({type, groupId, columnName, sign, value}) {
+            this.tasks = await this.custom({type: type, groupId: groupId, column: columnName, sign: sign, value: value})
         }
     },
     computed: {

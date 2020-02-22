@@ -14,13 +14,9 @@ export const actions = {
         return tasks.data
     },
 
-    async filteredIndex({dispatch}, filterQuery) {
-        const tasks = await dispatch('api/request', {method: 'get', endpoint: 'task/filtered_index', params: filterQuery}, {root: true})
-        return tasks.data
-    },
-
-    async orderedIndex({dispatch}, orderQuery) {
-        const tasks = await dispatch('api/request', {method: 'get', endpoint: 'task/ordered_index', params: orderQuery}, {root: true})
+    async custom({dispatch}, {type, groupId, column, sign, value}) {
+        const params = { type: type, group_id: groupId, column: column, sign: sign, value: value }
+        const tasks = await dispatch('api/request', {method: 'get', endpoint: 'task/custom', params: params}, {root: true})
         return tasks.data
     },
 

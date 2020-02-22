@@ -71,22 +71,15 @@ export default {
         },
         filterTasks() {
             const groupId = this.currentGroupId > 0 ? this.currentGroupId : null
-            const filterQuery = {
-                groupId: groupId,
-                columnName: this.applingFilter.column,
-                sign: this.applingFilter.sign,
-                value: this.applingFilter.value
-            }
-            this.$nuxt.$emit('filterTask', filterQuery)
+            this.$nuxt.$emit('customTask',
+                { type: 'filter', groupId: groupId, columnName: this.applingFilter.column, sign: this.applingFilter.sign, value: this.applingFilter.value }
+            )
         },
         orderTasks() {
             const groupId = this.currentGroupId > 0 ? this.currentGroupId : null
-            const orderQuery = {
-                groupId: groupId,
-                column: this.applingSort.column,
-                sign: this.applingSort.sign
-            }
-            this.$nuxt.$emit('orderTask', orderQuery)
+            this.$nuxt.$emit('customTask',
+                { type: 'order', groupId: groupId, columnName: this.applingSort.column, sign: this.applingSort.sign, value: null }
+            )
         },
         clearFilterAndSort() {
             this.applingFilter = {
