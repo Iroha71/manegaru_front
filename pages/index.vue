@@ -52,9 +52,12 @@ export default {
   components: {
     IconButton
   },
-  async asyncData({store}) {
-    const countedTasks = await store.dispatch('task/countNotFinishTasks')
-    return { yetTaskNum: countedTasks.data.yet, workingTaskNum: countedTasks.data.working }
+  mounted() {
+    this.$store.dispatch('task/countNotFinishTasks')
+      .then(taskCount => {
+        this.yetTaskNum = taskCount.yet
+        this.workingTaskNum = taskCount.working
+      })
   },
   created() {
     const ls = JSON.parse(localStorage.getItem('comcon'))
@@ -67,6 +70,8 @@ export default {
   },
   data() {
     return {
+      yetTaskNum: 0,
+      workingTaskNum: 0,
       backgroundUrl: '/images/bg-bloom.webp',
       today: null
     }
