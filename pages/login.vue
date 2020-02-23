@@ -1,6 +1,6 @@
 <template lang="html">
-<div class="columns">
-    <div class="form-area column is-offset-4 is-4">
+<div class="columns" :style="{ backgroundImage: `url(${'/images/bg-title.jpg'})` }">
+    <div class="form-area column is-3">
         <form class="section">
             <h1 v-if="lineId">「こんこん」とLINEを連携します</h1>
             <h1 v-else>サインイン</h1>
@@ -19,8 +19,7 @@
             </b-field>
             <hr>
             <div class="password-reset-area">
-                <p>パスワードを忘れた</p>
-                <b-button type="is-danger" :loading="$store.getters['api/isLoading']">パスワードリセットメール送信</b-button>
+                <b-button type="is-text" class="has-text-info" :loading="$store.getters['api/isLoading']">パスワードをリセット</b-button>
             </div>
             <div>
                 <p>未登録の場合</p>
@@ -82,8 +81,10 @@ export default {
 
 <style lang="scss" scoped>
 .form-area {
+    margin: auto;
     display: flex;
     align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
     form {
         h1 {
             font-size: 1.5rem;
@@ -93,7 +94,9 @@ export default {
             padding: 1.5rem;
         }
         .password-reset-area {
-            margin-bottom: 0.75rem;
+            button {
+                padding-left: 0;
+            }
         }
     }
 }
