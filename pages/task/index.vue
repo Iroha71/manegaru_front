@@ -1,23 +1,29 @@
 <template lang="html">
 <div class="container">
-    <div class="columns is-multiline">
-        <Card v-for="task in tasks" :key="task.id" :title="task.title" size="is-4" @click="$router.push(`/task/${task.id}`)">
+    <transition-group name="list" tag="div" class="columns is-multiline">
+        
+        <Card key="create-task" title="タスクを作成" size="is-3" @click="$router.push('/task/new/')">
             <template v-slot:content>
-                <table class="table">
-                    <tr>
-                        <th>期限</th>
-                        <td>{{ task.limit_date }}</td>
-                    </tr>
-                    <tr v-if="currentGroupId==0">
-                        <th></th>
-                    </tr>
-                </table>
+                <b-button type="is-primary" class="create-button">＋</b-button>
             </template>
             <template v-slot:footer>
-                <b-tag size="is-medium" :type="getStatusColor(task.status)">{{ task.status }}</b-tag>
+                <b-tag size="is-medium" type="is-primary">現在： {{ tasks.length }}タスク</b-tag>
             </template>
         </Card>
-    </div>
+            <Card v-for="task in tasks" :key="task.id" :title="task.title" size="is-3" @click="$router.push(`/task/${task.id}`)">
+                <template lang="html" v-slot:content>
+                    <table class="table">
+                        <tr>
+                            <th>期限</th>
+                            <td>{{ task.limit_date }}</td>
+                        </tr>
+                    </table>
+                </template>
+                <template lang="html" v-slot:footer>
+                    <b-tag size="is-medium" :type="getStatusColor(task.status)">{{ task.status }}</b-tag>
+                </template>
+            </Card>
+    </transition-group>
 </div>
 </template>
 
@@ -46,6 +52,15 @@ export default {
         this.$nuxt.$off('changeTask')
         this.$nuxt.$off('customTask')
     },
+    data() {
+        return {
+            filterColumn: '',
+            filterSign: '',
+            filterValue: '',
+            orderColumn: 'updated_at',
+            orderSign: 'DESC'
+        }
+    },
     methods: {
          ...mapActions({ 'index': 'task/index', 'custom': 'task/custom' }),
         getStatusColor(statusName) {
@@ -65,7 +80,23 @@ export default {
             })
         },
         async customTask({type, groupId, columnName, sign, value}) {
-            this.tasks = await this.custom({type: type, groupId: groupId, column: columnName, sign: sign, value: value})
+            if(type === 'filter') {
+                this.filterColumn = columnName
+                this.filterSign = sign
+                this.filterValue = value
+            } else if(type === 'order') {
+                this.orderColumn = columnName
+                this.orderSign = sign
+            }
+            const customParam = {
+                groupId: groupId,
+                column: this.filterColumn,
+                sign: this.filterSign,
+                value: this.filterValue,
+                orderColumn: this.orderColumn,
+                orderSign: this.orderSign
+            }
+            this.tasks = await this.custom(customParam)
         }
     },
     computed: {
@@ -73,3 +104,31 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.create-button {
+    height: 4rem;
+    width: 4rem;
+    font-size: 2rem;
+    padding: 0;
+    border-radius: 50%;
+}
+.list {
+    &-enter-active, &-leave-active, &-move {
+        transition: 500ms cubic-bezier(0.59, 0.12, 0.34, 0.95);
+        transition-property: opacity, transform;
+    }
+    &-enter {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    &-enter-to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    &-leave-to {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+}
+</style>

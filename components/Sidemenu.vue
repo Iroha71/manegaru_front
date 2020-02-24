@@ -7,8 +7,8 @@
         <ul>
             <li>
                 <select v-model="applingSort" @change="orderTasks()">
-                    <option :value="{ column: 'updated_at', sign: 'DESC' }">新着順</option>
-                    <option :value="{ column: 'updated_at', sign: 'ASC' }">作成順</option>
+                    <option :value="{ column: 'created_at', sign: 'DESC' }">新着順</option>
+                    <option :value="{ column: 'created_at', sign: 'ASC' }">作成順</option>
                 </select>
             </li>
         </ul>
@@ -20,6 +20,7 @@
                 <select v-model="applingFilter" @change="filterTasks()">
                     <option :value="{ column: 'user_id', sign: 'IS NOT', value: 'NULL' }">すべて</option>
                     <option :value="{ column: 'status', sign: '<>', value: '\'完了\'' }">完了以外</option>
+                    <option :value="{ column: 'limit_date', sign: 'IS NOT', value: 'NULL' }">期限日あり</option>
                 </select>
             </li>
         </ul>
@@ -57,7 +58,7 @@ export default {
                 value: 'NULL'
             },
             applingSort: {
-                column: 'updated_at',
+                column: 'created_at',
                 sign: 'DESC'
             }
         }
