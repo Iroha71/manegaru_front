@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="columns" :style="{ backgroundImage: `url(${backgroundUrl})` }">
     <div class="column is-6 chara-area">
-      <img :src="`/characters/${currentGirlCode}/all.png`" />
+      <Character :code="currentGirlCode" :emote="girlCurrentEmote" @click="changeEmote()" />
     </div>
     <div class="column is-6">
       <b-carousel :interval="8000">
@@ -47,10 +47,12 @@
 
 <script>
 import IconButton from '@/components/parts/IconButton.vue'
+import Character from '@/components/Character.vue'
 export default {
   layout: 'fullScreenWithHeader',
   components: {
-    IconButton
+    IconButton,
+    Character
   },
   mounted() {
     this.$store.dispatch('task/countNotFinishTasks')
@@ -73,7 +75,13 @@ export default {
       yetTaskNum: 0,
       workingTaskNum: 0,
       backgroundUrl: '/images/bg-bloom.webp',
-      today: null
+      today: null,
+      girlCurrentEmote: 'normal'
+    }
+  },
+  methods: {
+    changeEmote() {
+      this.girlCurrentEmote = this.girlCurrentEmote === 'normal' ? 'tere' : 'normal'
     }
   }
 }
@@ -90,10 +98,6 @@ export default {
     height: 100%;
     overflow-x: hidden;
     overflow-y: hidden;
-    img {
-      max-width: none;
-      max-height: 100%;
-    }
   }
   .content-area {
     margin: auto;

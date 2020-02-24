@@ -44,7 +44,7 @@ export default {
     mounted() {
         const today = new Date()
         this.minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-        this.projectId = this.projects[0].id
+        this.projectId = this.$store.getters['project/currentGroupId'] === 0 ? this.projects[0].id : this.$store.getters['project/currentGroupId']
     },
     data() {
         return {
