@@ -62,6 +62,12 @@ export const actions = {
         const lineParam = { line_id: lineId }
         const lineInfo = await dispatch('api/request', {method: 'put', endpoint: 'user/1', params: lineParam}, {root: true})
         return lineInfo.data
+    },
+
+    async fetchGold({commit, dispatch}) {
+        const gold = await dispatch('api/request', {method: 'get', endpoint: 'user/get_gold', params: null}, {root: true})
+        commit('set', {gold: gold.data})
+        return gold.data
     }
 }
 
