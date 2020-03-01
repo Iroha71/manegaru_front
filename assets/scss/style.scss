@@ -27,3 +27,26 @@ html {
         opacity: 0;
     }
 }
+
+.button {
+    border-bottom: solid 4px;
+    &:active {
+        transform: translateY(4px);
+        border-bottom: none;
+    }
+    &.is-primary {
+        border-bottom-color: #11647e !important;
+    }
+    &.is-info {
+        border-bottom-color: #254072 !important;
+    }
+    &.is-warning {
+        border-bottom-color: #b6983e !important;
+    }
+    &.is-danger {
+        border-bottom-color: #943a3c !important;
+    }
+    &.is-success {
+        border-bottom-color: #1f7261 !important;
+    }
+}
