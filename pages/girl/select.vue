@@ -47,7 +47,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions({ 'updateGirl': 'girl/updateCurrentGirl', 'unlockGirl': 'girl/unlock' }),
+        ...mapActions({ 'updateGirl': 'girl/updateCurrentGirl', 'unlockGirl': 'girl/unlock', 'fetchGold': 'user/fetchGold' }),
         getPosition(index) {
             const layer = this.centeredIndex - index
             const zIndex = `z-index: ${layer};`
@@ -74,13 +74,14 @@ export default {
             }
             return attachEffect
         },
-        choiceGirl(girlId) {
+        async choiceGirl(girlId) {
             if(girlId === this.selectedGirl.id) {
                 let dialogMessage = this.selectedGirl.name + ' を秘書にしますか?'
                 let confirmMessage = '秘書にする'
                 if(this.selectedGirl.is_lock) {
-                    dialogMessage = this.selectedGirl.name + ` を解放しますか?<br>【資金】${this.hasGold} >> ${this.hasGold - 100}`
-                    confirmMessage = '解放する'
+                    await this.fetchGold()
+                    dialogMessage = this.selectedGirl.name + ` に来てもらいますか?<br>【資金】${this.hasGold} >> ${this.hasGold - 100}`
+                    confirmMessage = '迎える'
                 }
                 this.$buefy.dialog.confirm({
                     message: dialogMessage,
@@ -92,17 +93,16 @@ export default {
         },
         async requestSelectedGirl() {
             if(this.selectedGirl.is_lock){
-                try {
-                    this.girls = await this.unlockGirl(this.selectedGirl.id)        
-                    if(this.$route.query.isFirst === 'true') {
+                this.unlockGirl(this.selectedGirl.id)
+                    .then(girls => {
+                        this.girls = girls
                         this.choiceGirl(this.selectedGirl.id)
-                    }
-                }catch(error) {
-                    this.$buefy.dialog.alert('資金が足りません')
-                }
+                    }).catch(error => {
+                        this.$buefy.dialog.alert('資金が足りません')
+                    })
             } else {
                 await this.updateGirl(this.selectedGirl.id)
-                await this.$router.push('/')
+                this.$router.push('/')
             }
         }
     },

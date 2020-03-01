@@ -1,7 +1,6 @@
 <template lang="html">
 <div class="container">
     <transition-group name="list" tag="div" class="columns is-multiline">
-        
         <Card key="create-task" title="タスクを作成" size="is-3" @click="$router.push('/task/new/')">
             <template v-slot:content>
                 <b-button type="is-primary" class="create-button">＋</b-button>
@@ -10,19 +9,19 @@
                 <b-tag size="is-medium" type="is-primary">現在： {{ tasks.length }}タスク</b-tag>
             </template>
         </Card>
-            <Card v-for="task in tasks" :key="task.id" :title="task.title" size="is-3" @click="$router.push(`/task/${task.id}`)">
-                <template lang="html" v-slot:content>
-                    <table class="table">
-                        <tr>
-                            <th>期限</th>
-                            <td>{{ task.limit_date }}</td>
-                        </tr>
-                    </table>
-                </template>
-                <template lang="html" v-slot:footer>
-                    <b-tag size="is-medium" :type="getStatusColor(task.status)">{{ task.status }}</b-tag>
-                </template>
-            </Card>
+        <Card v-for="task in tasks" :key="task.id" :title="task.title" size="is-3" @click="$router.push(`/task/${task.id}`)">
+            <template lang="html" v-slot:content>
+                <table class="table">
+                    <tr>
+                        <th>期限</th>
+                        <td>{{ task.limit_date }}</td>
+                    </tr>
+                </table>
+            </template>
+            <template lang="html" v-slot:footer>
+                <b-tag size="is-medium" :type="getStatusColor(task.status)">{{ task.status }}</b-tag>
+            </template>
+        </Card>
     </transition-group>
 </div>
 </template>
