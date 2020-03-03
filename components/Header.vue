@@ -22,21 +22,18 @@
                 オプション
             </b-navbar-item>
         </template>
-        <template slot="end" v-if="$store.getters['auth/access_token']">
-            <b-navbar-item tag="div">
-                <div class="user-info-area">
-                    <img class="user-icon" :src="`/characters/${$store.getters['girl/currentGirlCode']}/icon.png`" />
-                    <span @click="showUserModal=true">{{ $store.getters['user/name'] }}</span>
-                </div>
-                <div class="user-info-area">
-                    <img class="is-hidden-touch" src="/icons/coin.png" />
-                    <img class="is-hidden-desktop" src="/icons/coin_dark.png" />
-                    <span>{{ $store.getters['user/gold'] }}</span>
-                </div>
-                <div class="user-info-area">
-                    <img class="is-hidden-touch" src="/icons/setting.png" />
-                    <img class="is-hidden-desktop" src="/icons/setting_dark.png" />
-                </div>
+        <template lang="html" slot="end" v-if="$store.getters['auth/access_token']">
+            <b-navbar-item>
+                <img class="user-icon" :src="`/characters/${$store.getters['girl/currentGirlCode']}/icon.png`" />
+                <span @click="showUserModal=true" class="user-name">{{ $store.getters['user/name'] }}</span>
+            </b-navbar-item>
+            <b-navbar-item>
+                <img class="is-hidden-touch" src="/icons/coin.png" />
+                <img class="is-hidden-desktop" src="/icons/coin_dark.png" />
+                <span>{{ $store.getters['user/gold'] }}</span>
+            </b-navbar-item>
+            <b-navbar-item>
+                <IconButton type="is-danger" @click="signOutUser()" iconName="sign_out" />
             </b-navbar-item>
         </template>
     </b-navbar>
@@ -49,21 +46,19 @@
                     <tr>
                         <th>メールアドレス</th>
                         <td>{{ $store.getters['user/email'] }}</td>
-                        <td><IconButton type="is-primary" iconName="edit" /></td>
                     </tr>
                     <tr>
                         <th>一人称</th>
                         <td>{{ $store.getters['user/personalPronoun'] }}</td>
-                        <td><IconButton type="is-primary" iconName="edit" /></td>
                     </tr>
                     <tr>
-                        <th>秘書</th>
-                        <td colspan="2">{{ $store.getters['girl/currentGirlCode'] }}</td>
+                        <th>呼び名</th>
+                        <td>{{ $store.getters['user/nickname'] }}</td>
                     </tr>
                 </table>
             </section>
             <footer class="modal-card-foot has-text-centered">
-                <b-button type="is-danger" @click="signOutUser()">サインアウト</b-button>
+                <IconButton type="is-info" iconName="setting" />
             </footer>
         </div>
     </b-modal>
@@ -94,18 +89,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.user-info-area {
-    display: flex;
-    align-items: center;
-    margin-right: 1.5rem;
-    cursor: pointer;
-    img {
-        max-height: 2rem;
-        max-width: 2rem;
-        margin-right: 0.75rem;
-    }
-    span {
-        font-weight: bold;
-    }
+.user-name {
+    font-weight: bold;
 }
 </style>
