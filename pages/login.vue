@@ -19,7 +19,10 @@
             </b-field>
             <hr>
             <div class="password-reset-area">
-                <b-button type="is-text" class="has-text-info" :loading="$store.getters['api/isLoading']">パスワードをリセット</b-button>
+                <b-button type="is-text"
+                    class="has-text-info"
+                    :loading="$store.getters['api/isLoading']"
+                    @click="applyInputEmailDialog()">パスワードをリセット</b-button>
             </div>
             <div>
                 <p>未登録の場合</p>
@@ -50,7 +53,7 @@ export default {
             })
     },
     methods: {
-        ...mapActions({ 'signIn': 'user/signIn', 'registLineId': 'user/registLineId' }),
+        ...mapActions({ 'signIn': 'user/signIn', 'registLineId': 'user/registLineId', 'resetPassword': 'user/resetPassword' }),
         signInUser() {
             this.signIn({email: this.email, password: this.password})
                 .then(res => {
@@ -69,6 +72,20 @@ export default {
             } else {
                 this.$route.query.error = 405
             }
+        },
+        applyInputEmailDialog() {
+            this.$buefy.dialog.prompt({
+                message: 'アカウントのメールアドレスを入力してください',
+                trapFocus: true,
+                confirmText: 'パスワードリセット',
+                cancelText: 'やめる',
+                onConfirm: (value) => {
+                    this.resetPassword(value)
+                        .then(() => {
+                            this.$buefy.dialog.alert(value + 'へパスワードリセット用のメールを送信しました')
+                        })
+                }
+            })
         }
     },
     computed: {

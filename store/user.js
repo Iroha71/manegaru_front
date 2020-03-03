@@ -38,11 +38,25 @@ export const actions = {
     async signIn({commit, dispatch}, {email, password}){
         const userInfo = { email: email, password: password }
         const user = await dispatch('api/request', {method: 'post', endpoint: signInPath, params: userInfo}, {root: true})
-        await commit('set', user.data.data)
+        commit('set', user.data.data)
         const headers = { access_token: user.headers['access-token'], client: user.headers['client'], uid: user.headers['uid'] }
-        await dispatch('auth/setAuth', headers, {root: true})
-        await dispatch('girl/clearCurrentGirl', null, {root: true})
-        await dispatch('girl/setCurrentGirl', user.data.data.girl, {root: true})
+        dispatch('auth/setAuth', headers, {root: true})
+        dispatch('girl/clearCurrentGirl', null, {root: true})
+        dispatch('girl/setCurrentGirl', user.data.data.girl, {root: true})
+    },
+
+    async resetPassword({dispatch}, email) {
+        const param = { email: email }
+        await dispatch('api/request', {method: 'post', endpoint: 'auth/password', params: param}, {root: true})
+    },
+
+    async updatePassword({dispatch, commit}, {query, newPassword, confirmPassword}) {
+        const password = { password: newPassword, password_confirmation: confirmPassword }
+        query.access_token = query['access-token']
+        dispatch('auth/setAuth', query, {root: true})
+        const user = await dispatch('api/request', {method: 'put', endpoint: 'auth/password', params: password}, {root: true})
+        await dispatch('user/signIn', {email: user.data.data.email, password: newPassword}, {root: true})
+        return user.data
     },
 
     async signOut({commit, dispatch}) {
