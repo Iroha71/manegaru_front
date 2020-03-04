@@ -1,7 +1,8 @@
 export const state = () => ({
     currentGirl: {
         id: '',
-        code: ''
+        code: '',
+        name: ''
     }
 })
 
@@ -10,11 +11,13 @@ export const mutations = {
         if(girl){
             state.currentGirl.id = girl.id
             state.currentGirl.code = girl.code
+            state.currentGirl.name = girl.name
         }
     },
     clearCurrentGirl(state) {
         state.currentGirl.id = '',
-        state.currentGirl.code = ''
+        state.currentGirl.code = '',
+        state.currentGirl.name = ''
     }
 }
 
@@ -45,5 +48,6 @@ export const actions = {
 
 export const getters = {
     currentGirlId: (state) => state.currentGirl.id,
-    currentGirlCode: (state) => state.currentGirl.code
+    currentGirlCode: (state) => state.currentGirl.code,
+    currentGirlName: (state) => state.currentGirl.name
 }

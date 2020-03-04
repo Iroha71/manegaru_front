@@ -44,8 +44,8 @@
             <section class="modal-card-body">
                 <table class="table">
                     <tr>
-                        <th>メールアドレス</th>
-                        <td>{{ $store.getters['user/email'] }}</td>
+                        <th>秘書</th>
+                        <td>{{ $store.getters['girl/currentGirlName'] }}</td>
                     </tr>
                     <tr>
                         <th>一人称</th>

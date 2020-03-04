@@ -6,8 +6,8 @@ export default({route, redirect, store}) => {
                 store.dispatch('user/setUser', storeData.user)
                 store.dispatch('auth/setAuth', storeData.auth)
                 store.dispatch('project/setCurrentGroupId', storeData.project.currentGroupId)
-                store.dispatch('girl/setCurrentGirl', { id: storeData.girl.currentGirl.id, code: storeData.girl.currentGirl.code })
-                if(isEmptyCurrentGirl(storeData) && arrangePagePath(route.path) !== '/girl/select/' && arrangePagePath(route.path) !== '/user/cooped-line/') {
+                store.dispatch('girl/setCurrentGirl', storeData.girl.currentGirl)
+                if(isEmptyCurrentGirl(storeData) && !isMatchPath(route.path, '/girl/select/') && !isMatchPath(route.path, '/user/cooped-line/')) {
                     redirect('/girl/select?isFirst=true')
                 }
             }else{
@@ -29,11 +29,11 @@ export default({route, redirect, store}) => {
 const isRequireAuthPage = (pagePath) => {
     const noAuthPagePath = ['/login/', '/user/new/', '/user/finished-temp-regist/', '/user/confirmed/', '/cooped-line/', '/user/reset-password/']
     const currentPage = arrangePagePath(pagePath)
-    if(noAuthPagePath.includes(currentPage)){
-        return false
-    }else{
-        return true
-    }
+    return !noAuthPagePath.includes(currentPage)
+}
+
+const isMatchPath = (currentPath, targetPath) => {
+    return arrangePagePath(currentPath) === targetPath
 }
 
 const arrangePagePath = (pagePath) => {
