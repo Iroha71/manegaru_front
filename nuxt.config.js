@@ -1,6 +1,11 @@
-
+require('dotenv').config()
+const { BASE_URL, LIFF_ID } = process.env
 export default {
   mode: 'spa',
+  env: {
+    BASE_URL,
+    LIFF_ID
+  },
   /*
   ** Headers of the page
   */
@@ -13,7 +18,8 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    ],
+    script: [{ src: 'https://static.line-scdn.net/liff/edge/2.1/sdk.js' }]
   },
   /*
   ** Customize the progress-bar color
@@ -29,7 +35,14 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~/plugins/axios.js',
+    '~/plugins/persistedstate.js',
+    '~/plugins/vee-validate.js'
   ],
+
+  router: {
+    middleware: 'checkAuth'
+  },
   /*
   ** Nuxt.js dev-modules
   */

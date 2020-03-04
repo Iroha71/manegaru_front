@@ -1,0 +1,52 @@
+@import '~bulma/sass/utilities/_all';
+$primary: #1AAAD4;
+$info: #3B63AF;
+$warning: #F9D76F;
+$danger: #F15E60;
+$success: #2EA58D;
+
+$colors: (
+    "primary": ($primary, $primary-invert),
+    "info": ($info, $info-invert),
+    "warning": ($warning, $warning-invert),
+    "danger": ($danger, $warning-invert),
+    "success": ($success, $success-invert)
+);
+@import '~bulma';
+@import '~buefy/src/scss/buefy';
+
+html {
+    overflow-y: hidden;
+}
+
+.page {
+    &-enter-active, &-leave-active {
+        transition: .5s;
+    }
+    &-enter, &-leave-to {
+        opacity: 0;
+    }
+}
+
+.button {
+    border-bottom: solid 4px;
+    &:active {
+        transform: translateY(4px);
+        border-bottom: none;
+    }
+    &.is-primary {
+        border-bottom-color: #11647e !important;
+    }
+    &.is-info {
+        border-bottom-color: #254072 !important;
+    }
+    &.is-warning {
+        border-bottom-color: #b6983e !important;
+    }
+    &.is-danger {
+        border-bottom-color: #943a3c !important;
+    }
+    &.is-success {
+        border-bottom-color: #1f7261 !important;
+    }
+}
