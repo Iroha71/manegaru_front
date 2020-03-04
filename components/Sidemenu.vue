@@ -1,48 +1,51 @@
 <template lang="html">
-<aside class="menu">
-    <div v-if="$route.path=='/task' || $route.path=='/task/'">
-        <p class="menu-label">
+<aside class="menu" v-if="$route.path=='/task'||$route.path=='/task/'">
+    <MenuList label="ソートと絞り込み">
+        <li>
             ソート
-        </p>
-        <ul>
-            <li>
-                <select v-model="applingSort" @change="orderTasks()">
-                    <option :value="{ column: 'created_at', sign: 'DESC' }">新着順</option>
-                    <option :value="{ column: 'created_at', sign: 'ASC' }">作成順</option>
-                </select>
-            </li>
-        </ul>
-        <p class="menu-label">
+        </li>
+        <li>
+            <b-select v-model="applingSort" @change.native="orderTasks()">
+                <option :value="{ column: 'created_at', sign: 'DESC' }">新着順</option>
+                <option :value="{ column: 'created_at', sign: 'ASC' }">作成順</option>
+            </b-select>
+        </li>
+        <li>
             絞り込み
-        </p>
-        <ul>
-            <li>
-                <select v-model="applingFilter" @change="filterTasks()">
-                    <option :value="{ column: 'user_id', sign: 'IS NOT', value: 'NULL' }">すべて</option>
-                    <option :value="{ column: 'status', sign: '<>', value: '\'完了\'' }">完了以外</option>
-                    <option :value="{ column: 'limit_date', sign: 'IS NOT', value: 'NULL' }">期限日あり</option>
-                </select>
-            </li>
-        </ul>
-    </div>
-    <p class="menu-label">
-        <span v-if="$route.path=='/task'|| $route.path=='/task/'">グループ</span>
-        <span v-else>メニュー</span>
-    </p>
-    <ul v-if="$route.path=='/task' || $route.path=='/task/'" class="group-list">
+        </li>
+        <li>
+            <b-select v-model="applingFilter" @change.native="filterTasks()">
+                <option :value="{ column: 'user_id', sign: 'IS NOT', value: 'NULL' }">すべて</option>
+                <option :value="{ column: 'status', sign: '<>', value: '\'完了\'' }">完了以外</option>
+                <option :value="{ column: 'limit_date', sign: 'IS NOT', value: 'NULL' }">期限日あり</option>
+            </b-select>
+        </li>
+    </MenuList>
+    <hr>
+    <MenuList label="グループ" :activable="true">
         <li v-for="group in groups"
             :key="group.id"
             @click="changeGroup(group.id)"
             :class="{ 'selected': group.id==currentGroupId }">
             {{ group.name }}
         </li>
-    </ul>
+    </MenuList>
+</aside>
+<aside class="menu" v-else-if="$route.path=='/option/'">
+    <MenuList label="オプション" :activable="true">
+        <li v-model="optionTab" :class="{ 'selected': optionTab=='userInfo' }">ユーザ情報</li>
+        <li v-model="optionTab" value="appSetting">アプリ設定</li>
+    </MenuList>
 </aside>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import MenuList from '@/components/parts/SideMenuList.vue'
 export default {
+    components: {
+        MenuList
+    },
     async created() {
         if(this.$route.path === "/task" || this.$route.path === '/task/') {
             if(Object.keys(this.groups).length === 0) {
@@ -95,23 +98,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({ 'groups': 'project/groups', 'currentGroupId': 'project/currentGroupId' })
+        ...mapGetters({ 'groups': 'project/groups', 'currentGroupId': 'project/currentGroupId', 'optionTab': 'option/currentTab' })
     }
 }
 </script>
-
-<style lang="scss" scoped>
-.group-list {
-    font-size: 1.25rem;
-    li {
-        &.selected {
-            background: #1AAAD4;
-        }
-        &:hover {
-            cursor: pointer;
-            transition: .3s;
-            background: #1AAAD4;
-        }
-    }
-}
-</style>
