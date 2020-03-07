@@ -43,12 +43,11 @@ export default {
         }
     },
     methods: {
-        ...mapActions({ 'updatePassword': 'user/updatePassword' }),
+        ...mapActions({ 'updatePassword': 'user/updatePassword', 'setAuth': 'auth/setAuth' }),
         async changePassword() {
-            const result = await this.updatePassword({query: this.$route.query, newPassword: this.password, confirmPassword: this.confirmPassword})
-            if(result.success){
-                this.$router.push('/')
-            }
+            this.setAuth(this.$route.query)
+            const result = await this.updatePassword({newPassword: this.password, confirmPassword: this.confirmPassword})
+            this.$router.push('/')
         }
     }
 }

@@ -46,20 +46,6 @@ export const actions = {
         dispatch('girl/setCurrentGirl', user.data.data.girl, {root: true})
     },
 
-    async resetPassword({dispatch}, email) {
-        const param = { email: email }
-        await dispatch('api/request', {method: 'post', endpoint: 'auth/password', params: param}, {root: true})
-    },
-
-    async updatePassword({dispatch, commit}, {query, newPassword, confirmPassword}) {
-        const password = { password: newPassword, password_confirmation: confirmPassword }
-        query.access_token = query['access-token']
-        dispatch('auth/setAuth', query, {root: true})
-        const user = await dispatch('api/request', {method: 'put', endpoint: 'auth/password', params: password}, {root: true})
-        await dispatch('user/signIn', {email: user.data.data.email, password: newPassword}, {root: true})
-        return user.data
-    },
-
     async signOut({commit, dispatch}) {
         await dispatch('api/request', {method: 'delete', endpoint: signOutPath, params: null}, {root: true})
         await commit('clear')
@@ -77,6 +63,23 @@ export const actions = {
         const lineParam = { line_id: lineId }
         const lineInfo = await dispatch('api/request', {method: 'put', endpoint: 'user/1', params: lineParam}, {root: true})
         return lineInfo.data
+    },
+
+    async updateUser({dispatch, commit}, user) {
+        const userInfo = { email: user.email, name: user.name, nickname: user.nickname, personal_pronoun: user.personalPronoun }
+        const result = await dispatch('api/request', {method: 'put', endpoint: 'auth', params: userInfo}, {root: true})
+        dispatch('auth/setAuth', result.headers, {root: true})
+        commit('set', result.data.data)
+    },
+
+    async resetPassword({dispatch}, email) {
+        const param = { email: email }
+        await dispatch('api/request', {method: 'post', endpoint: 'auth/password', params: param}, {root: true})
+    },
+
+    async updatePassword({dispatch}, {newPassword, confirmPassword}) {
+        const passwordInfo = { password: newPassword, password_confirmation: confirmPassword }
+        await dispatch('api/request', {method: 'put', endpoint: 'auth/password', params: passwordInfo}, {root: true})
     },
 
     async fetchGold({commit, dispatch}) {
