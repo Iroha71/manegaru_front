@@ -33,8 +33,8 @@
 </aside>
 <aside class="menu" v-else-if="$route.path=='/option/'">
     <MenuList label="オプション" :activable="true">
-        <li v-model="optionTab" :class="{ 'selected': optionTab=='userInfo' }">ユーザ情報</li>
-        <li v-model="optionTab" value="appSetting">アプリ設定</li>
+        <li :class="{ 'selected': optionTab=='userInfo' }" @click="setOptionTab('userInfo')">ユーザ情報</li>
+        <li :class="{ 'selected': optionTab=='appSetting' }" @click="setOptionTab('appSetting')">アプリ設定</li>
     </MenuList>
 </aside>
 </template>
@@ -67,7 +67,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions({ 'getGroups': 'project/getAll', 'setCurrentGroupId': 'project/setCurrentGroupId' }),
+        ...mapActions({ 'getGroups': 'project/getAll', 'setCurrentGroupId': 'project/setCurrentGroupId', 'setOptionTab': 'option/setOptionTab' }),
         changeGroup(groupId) {
             this.$nuxt.$emit('changeTask', groupId)
             this.setCurrentGroupId(groupId)

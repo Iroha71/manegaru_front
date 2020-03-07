@@ -58,7 +58,7 @@
                 </table>
             </section>
             <footer class="modal-card-foot has-text-centered">
-                <IconButton type="is-info" iconName="setting" @click="$router.push('/option')" />
+                <IconButton type="is-info" iconName="setting" @click="$router.push('/option/')" />
             </footer>
         </div>
     </b-modal>

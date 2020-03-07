@@ -4,7 +4,8 @@ export const state = () => ({
     name: '',
     nickname: '',
     personal_pronoun: '',
-    gold: 0
+    gold: 0,
+    personal_pronouns: [ {name: '私', value: '私'}, {name: '俺', value: '俺'}, {name: '僕', value: '僕'} ]
 })
 
 export const mutations = {
@@ -90,5 +91,6 @@ export const getters = {
     email: (state) => state.email,
     nickname: (state) => state.nickname,
     personalPronoun: (state) => state.personal_pronoun,
-    gold: (state) => state.gold
+    gold: (state) => state.gold,
+    personalPronouns: (state) => state.personal_pronouns
 }

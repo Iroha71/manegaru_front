@@ -11,7 +11,7 @@
                 <Vinput label="パスワード(確認)" type="password" rules="" v-model="confirmPassword" vid="confirmPassword" />
                 <Vinput label="ユーザ名" type="text" rules="required|max:20" v-model="name" />
                 <Vinput label="ニックネーム(秘書たちからの呼ばれ方)" type="text" rules="required|max:10" v-model="nickname" />
-                <RequireSelect label="一人称" :options="pronouns" v-model="pronoun" />
+                <RequireSelect label="一人称" :options="personalPronouns" v-model="pronoun" />
                 <b-field class="has-text-centered">
                     <b-button type="is-success" :disabled="invalid" size="is-medium" @click="registUser()">登録</b-button>
                 </b-field>
@@ -24,7 +24,7 @@
 import Vinput from '@/components/parts/ValidateInput.vue'
 import RequireSelect from '@/components/parts/RequireSelect.vue'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
     layout: 'fullScreenWithHeader',
     components: {
@@ -40,12 +40,7 @@ export default {
             confirmPassword: '',
             name: '',
             nickname: '',
-            pronoun: '',
-            pronouns: [
-                { name: '私', value: '私' },
-                { name: '俺', value: '俺' },
-                { name: '僕', value: '僕' }
-            ]
+            pronoun: ''
         }
     },
     methods: {
@@ -68,6 +63,7 @@ export default {
         }
     },
     computed: {
+        ...mapGetters('user', ['personalPronouns']),
         hasEmailError() {
             if(this.$route.query.error == '422')
                 return 'このメールアドレスは既に登録されています'
