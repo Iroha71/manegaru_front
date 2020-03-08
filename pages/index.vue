@@ -35,6 +35,16 @@
             </div>
           </section>
         </b-carousel-item>
+        <b-carousel-item v-if="!isCoopedLine" class="has-text-centered">
+          <section class="hero is-success">
+            <div class="hero-body">
+              <section class="content-area">
+                LINE BOTでタスクをお知らせできます！
+                <b-button type="is-info" @click="$router.push('/option/?currentTab=lineCoop')">オプション画面で設定</b-button>
+              </section>
+            </div>
+          </section>
+        </b-carousel-item>
       </b-carousel>
       <section class="section menu-area has-text-centered">
         <IconButton class="menu-button" type="is-primary" iconName="checkbox" message="タスク" size="is-large" @click="$router.push('/task')" />
@@ -48,6 +58,7 @@
 <script>
 import IconButton from '@/components/parts/IconButton.vue'
 import Character from '@/components/Character.vue'
+import { mapGetters } from 'vuex'
 export default {
   layout: 'fullScreenWithHeader',
   components: {
@@ -83,6 +94,9 @@ export default {
     changeEmote() {
       this.girlCurrentEmote = this.girlCurrentEmote === 'normal' ? 'tere' : 'normal'
     }
+  },
+  computed: {
+    ...mapGetters('user', ['isCoopedLine'])
   }
 }
 </script>

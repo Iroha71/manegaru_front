@@ -14,6 +14,7 @@ export const mutations = {
 
 export const actions = {
     setAuth(context, authHeaders){
+        authHeaders.access_token = authHeaders['access-token'] ? authHeaders['access-token'] : authHeaders.access_token
         context.commit('setAuth', {
             access_token: authHeaders.access_token,
             client: authHeaders.client,
