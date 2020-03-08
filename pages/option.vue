@@ -8,6 +8,16 @@
                 message="編集しなおす"
                 @click="isEditting=true" />
         </h2>
+        <span v-else>
+            <h2>
+                「こんこん」専用LINEアカウントと連携する
+                <b-tag v-if="isCoopedLine" type="is-info">連携済み</b-tag>
+                <b-tag v-else type="is-danger">未連携</b-tag>
+            </h2>
+            <p>アカウントを連携することで、タスクの期限が近づくとLINEを通じて秘書から連絡してくれます</p>
+            <p>QRコードを読み取るか<span class="has-text-success">「友だち追加」</span>ボタンをクリックしてLINEアカウントを追加してください</p>
+            <p class="has-text-danger">※LINEの友達追加は必ずスマホから行ってください※</p>
+        </span>
         <ValidationObserver tag="div" v-if="currentTab=='userInfo'" class="column is-4" v-slot="{ invalid }">
             <div v-for="(user, key) in userForm" :key="`user${key}`" class="form-area">
                 <RequireSelect v-if="key=='personalPronoun'" label="一人称" :options="personalPronouns" v-model="user.value" />
@@ -48,6 +58,19 @@
             </b-field>
             <b-button type="is-success" :disabled="invalid" @click="saveAppSetting()">変更を反映する</b-button>
         </ValidationObserver>
+        <div v-if="currentTab=='lineCoop'"  class="columns">
+            <div class="column is-3 line-desc-area">
+                <img src="/images/LINE_profile.png">
+                <p>アカウント名: <span class="has-text-weight-bold">秘書</span></p>
+            </div>
+            <div class="column is-6 has-text-centered">
+                
+                <div class="line-image-area">
+                    <img src="/images/line_bot_qr.png">
+                    <a href="https://line.me/R/ti/p/%40315yrnul"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="友だち追加" height="36" border="0"></a>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -65,6 +88,11 @@ export default {
         ValidationObserver,
         EditableText,
         RequireSelect
+    },
+    created() {
+        if(this.$route.query.currentTab) {
+            this.$store.dispatch('option/setOptionTab', this.$route.query.currentTab)
+        }
     },
     data() {
         return {
@@ -88,7 +116,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions('user', ['updateUser', 'updatePassword']),
+        ...mapActions('user', ['updateUser', 'updatePassword', 'getToastInfo']),
         ...mapActions('option', ['setAppSetting']),
         async changeUserInfo() {
             if(this.password !== '') {
@@ -118,10 +146,14 @@ export default {
         isSwitchableField(key) {
             const noSwichableKey = ['toastWay', 'topApplySeason']
             return !noSwichableKey.includes(key)
+        },
+        async getCoopedLineInfo() {
+            const isCoopedLine = await this.getToastInfo()
+            console.log(isCoopedLine)
         }
     },
     computed: {
-        ...mapGetters('user', ['email', 'name', 'nickname', 'personalPronouns']),
+        ...mapGetters('user', ['email', 'name', 'nickname', 'personalPronouns', 'isCoopedLine']),
         ...mapGetters('option', ['currentTab', 'currentTabName', 'choisableSeasons'])
     }
 }
@@ -134,6 +166,15 @@ export default {
         margin-bottom: 1rem;
         .has-text-weight-bold {
             margin-bottom: 0.5rem;
+        }
+    }
+    .line-desc-area {
+        margin-top: 1rem;
+    }
+    .line-image-area {
+        text-align: center;
+        img {
+            max-width: 80%;
         }
     }
 }

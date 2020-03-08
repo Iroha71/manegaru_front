@@ -5,6 +5,7 @@ export const state = () => ({
     nickname: '',
     personal_pronoun: '',
     gold: 0,
+    is_cooped_line: false,
     personal_pronouns: [ {name: '私', value: '私'}, {name: '俺', value: '俺'}, {name: '僕', value: '僕'} ]
 })
 
@@ -15,7 +16,8 @@ export const mutations = {
         state.name = user.name
         state.nickname = user.nickname
         state.personal_pronoun = user.personal_pronoun
-        state.gold = user.gold
+        state.gold = user.gold,
+        state.is_cooped_line = user.is_cooped_line
     },
 
     clear(state) {
@@ -95,5 +97,6 @@ export const getters = {
     nickname: (state) => state.nickname,
     personalPronoun: (state) => state.personal_pronoun,
     gold: (state) => state.gold,
+    isCoopedLine: (state) => state.is_cooped_line,
     personalPronouns: (state) => state.personal_pronouns
 }

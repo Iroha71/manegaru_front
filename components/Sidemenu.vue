@@ -35,6 +35,7 @@
     <MenuList label="オプション" :activable="true">
         <li :class="{ 'selected': optionTab=='userInfo' }" @click="setOptionTab('userInfo')">ユーザ情報</li>
         <li :class="{ 'selected': optionTab=='appSetting' }" @click="setOptionTab('appSetting')">アプリ設定</li>
+        <li :class="{ 'selected': optionTab=='lineCoop' }" @click="setOptionTab('lineCoop')">LINEと連携</li>
     </MenuList>
 </aside>
 </template>
