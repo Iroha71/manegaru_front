@@ -35,6 +35,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '@nuxtjs/pwa',
     '~/plugins/axios.js',
     '~/plugins/persistedstate.js',
     '~/plugins/vee-validate.js'
