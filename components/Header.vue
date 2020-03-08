@@ -11,7 +11,7 @@
                 </b-navbar-item>
             </b-navbar-dropdown>
             <b-navbar-dropdown label="秘書">
-                <b-navbar-item>
+                <b-navbar-item tag="router-link" to="/girl/select/">
                     交代
                 </b-navbar-item>
                 <b-navbar-item>
