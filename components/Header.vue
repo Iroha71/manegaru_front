@@ -2,6 +2,7 @@
 <div>
     <b-navbar type="is-primary">
         <template slot="start" v-if="$store.getters['auth/access_token']">
+            <b-navbar-item tag="router-link" to="/">トップ</b-navbar-item>
             <b-navbar-dropdown label="タスク">
                 <b-navbar-item tag="router-link" to="/task/">
                     一覧
@@ -11,7 +12,7 @@
                 </b-navbar-item>
             </b-navbar-dropdown>
             <b-navbar-dropdown label="秘書">
-                <b-navbar-item>
+                <b-navbar-item tag="router-link" to="/girl/select/">
                     交代
                 </b-navbar-item>
                 <b-navbar-item>
@@ -58,7 +59,7 @@
                 </table>
             </section>
             <footer class="modal-card-foot has-text-centered">
-                <IconButton type="is-info" iconName="setting" />
+                <IconButton type="is-info" iconName="setting" @click="$router.push('/option/')" />
             </footer>
         </div>
     </b-modal>

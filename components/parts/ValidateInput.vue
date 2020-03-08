@@ -1,7 +1,10 @@
 <template lang="html">
 <ValidationProvider :rules="rules" v-slot="{ errors }" :name="label" :vid="vid">
     <b-field :label="label" :type="getFieldType(errors[0])" :message="errors[0]">
-        <b-input :type="type" v-model="updateValue" :maxlength="maxLength" />
+        <b-input :type="type"
+            v-model="updateValue"
+            :maxlength="maxLength"
+            :value="value" />
     </b-field>
 </ValidationProvider>
 </template>
@@ -12,7 +15,8 @@ export default {
     props: {
         label: {
             type: String,
-            required: true
+            required: false,
+            default: ''
         },
         type: {
             type: String,
@@ -24,7 +28,7 @@ export default {
         },
         value: {
             type: String,
-            required: true
+            required: false
         },
         maxLength: {
             type: Number,
