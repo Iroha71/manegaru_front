@@ -97,7 +97,6 @@ export default {
     data() {
         return {
             isEdittingPassword: false,
-            password: '',
             userForm: {
                 email: { label: 'メールアドレス', value: this.$store.getters['user/email'], type: 'text', rules: "required" },
                 name: { label: '名前', value: this.$store.getters['user/name'], type: "text", rules: "required|max:20" },
@@ -119,7 +118,7 @@ export default {
         ...mapActions('user', ['updateUser', 'updatePassword', 'getToastInfo']),
         ...mapActions('option', ['setAppSetting']),
         async changeUserInfo() {
-            if(this.password !== '') {
+            if(this.userForm.password.value !== '') {
                 await Promise.all([
                     this.updateUser({email: this.userForm.email.value, name: this.userForm.name.value, nickname: this.userForm.nickname.value, personalPronoun: this.userForm.personalPronoun.value}),
                     this.updatePassword({newPassword: this.userForm.password.value, confirmPassword: this.userForm.password.value})
