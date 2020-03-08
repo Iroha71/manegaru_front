@@ -2,6 +2,7 @@
 <div>
     <b-navbar type="is-primary">
         <template slot="start" v-if="$store.getters['auth/access_token']">
+            <b-navbar-item tag="router-link" to="/">トップ</b-navbar-item>
             <b-navbar-dropdown label="タスク">
                 <b-navbar-item tag="router-link" to="/task/">
                     一覧
