@@ -35,7 +35,6 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@nuxtjs/pwa',
     '~/plugins/axios.js',
     '~/plugins/persistedstate.js',
     '~/plugins/vee-validate.js'
@@ -57,6 +56,7 @@ export default {
     'nuxt-buefy',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/pwa'
   ],
   /*
   ** Axios module configuration
