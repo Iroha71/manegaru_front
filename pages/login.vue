@@ -26,7 +26,7 @@
             </div>
             <div>
                 <p>未登録の場合</p>
-                <b-button type="is-success" :loading="$store.getters['api/isLoading']" @click="$router.push('/user/new')">新規登録</b-button>
+                <b-button type="is-success" :loading="$store.getters['api/isLoading']" @click="$router.push('/user/new/')">新規登録</b-button>
             </div>
         </form>
     </div>
@@ -58,7 +58,7 @@ export default {
             this.signIn({email: this.email, password: this.password})
                 .then(res => {
                     if(this.lineId === '') {
-                        let destination = this.$route.query.opened === 'line' ? '/task' : '/'
+                        let destination = this.$route.query.opened === 'line' ? '/task/' : '/'
                         this.$router.push(destination)
                     } else {
                         this.updateLineId()

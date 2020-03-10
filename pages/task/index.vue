@@ -9,7 +9,7 @@
                 <b-tag size="is-medium" type="is-primary">現在： {{ tasks.length }}タスク</b-tag>
             </template>
         </Card>
-        <Card v-for="task in tasks" :key="task.id" :title="task.title" size="is-3" @click="$router.push(`/task/${task.id}`)">
+        <Card v-for="task in tasks" :key="task.id" :title="task.title" size="is-3" @click="$router.push(`/task/${task.id}/`)">
             <template lang="html" v-slot:content>
                 <table class="table">
                     <tr>

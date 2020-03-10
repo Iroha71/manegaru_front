@@ -15,9 +15,9 @@ export default ({store, redirect, $axios, route}) => {
         console.log(error.response)
         try{
             if(error.response.status == 401 || error.response.status == 403) {
-                redirect(`/login?error=${error.response.status}`)
+                redirect(`/login/?error=${error.response.status}`)
             } else if(error.response.status == 422) {
-                redirect(`${route.path}?error=422`)
+                redirect(`${route.path}/?error=422`)
             } else {
                 $nuxt.error({
                     statusCode: error.response.status,

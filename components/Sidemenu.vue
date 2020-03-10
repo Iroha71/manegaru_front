@@ -1,5 +1,5 @@
 <template lang="html">
-<aside class="menu" v-if="$route.path=='/task'||$route.path=='/task/'">
+<aside class="menu" v-if="$route.path=='/task/'">
     <MenuList label="ソートと絞り込み">
         <li>
             ソート
@@ -48,7 +48,7 @@ export default {
         MenuList
     },
     async created() {
-        if(this.$route.path === "/task" || this.$route.path === '/task/') {
+        if(this.$route.path === "/task/") {
             if(Object.keys(this.groups).length === 0) {
                 this.getGroups()   
             }
