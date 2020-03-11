@@ -11,7 +11,7 @@
     </div>
     <div class="section content has-text-centered" v-else>
         <h3>このメールアドレスは既に認証されています</h3>
-        <b-button type="is-success" size="is-large" @click="$router.push('/login')">サインインする</b-button>
+        <b-button type="is-success" size="is-large" @click="$router.push('/login/')">サインインする</b-button>
     </div>
 </template>
 
@@ -37,7 +37,7 @@ export default {
             const sendEmail = this.inputedEmail === '' ? this.email : this.inputedEmail
             this.signIn({ email: sendEmail, password: this.password })
             .then(res => {
-                this.$router.push('/girl/select?isFirst=true')
+                this.$router.push('/girl/select/?isFirst=true')
             })
         }
     },

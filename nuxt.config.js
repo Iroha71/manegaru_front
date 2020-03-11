@@ -41,6 +41,7 @@ export default {
   ],
 
   router: {
+    trailingSlash: true,
     middleware: 'checkAuth'
   },
   /*
@@ -56,7 +57,8 @@ export default {
     'nuxt-buefy',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '@nuxtjs/device'
   ],
   manifest: {
     "name":				"こんこん♪",
