@@ -4,7 +4,7 @@
     <Header />
     <div class="hero is-fullheight-with-navbar">
       <div class="columns">
-        <div class="column is-2 has-background-grey-lighter">
+        <div class="column is-2 has-background-grey-dark has-text-white">
           <Sidemenu />
         </div>
         <section class="column">
