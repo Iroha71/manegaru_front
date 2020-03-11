@@ -1,7 +1,8 @@
 <template lang="html">
 <div class="container">
+    <b-button v-if="$device.isMobile" type="is-primary" class="create-button mobile"  @click="$router.push('/task/new/')">＋</b-button>
     <transition-group name="list" tag="div" class="columns is-multiline">
-        <Card key="create-task" title="タスクを作成" size="is-3" @click="$router.push('/task/new/')">
+        <Card v-if="!$device.isMobile" key="create-task" title="タスクを作成" size="is-3" @click="$router.push('/task/new/')">
             <template v-slot:content>
                 <b-button type="is-primary" class="create-button">＋</b-button>
             </template>
@@ -111,6 +112,14 @@ export default {
     font-size: 2rem;
     padding: 0;
     border-radius: 50%;
+    &.mobile {
+        position: fixed;
+        z-index: 2;
+        bottom: 0;
+        right: 0;
+        margin-right: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
 }
 .list {
     &-enter-active, &-leave-active, &-move {

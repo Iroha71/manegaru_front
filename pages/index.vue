@@ -3,7 +3,7 @@
     <div class="column is-6 chara-area">
       <Character :code="currentGirlCode" :emote="girlCurrentEmote" @click="changeEmote()" />
     </div>
-    <div class="column is-6">
+    <div v-if="!$device.isMobile" class="column is-6">
       <b-carousel :interval="8000">
         <b-carousel-item class="has-text-centered">
           <section class="hero is-success">
