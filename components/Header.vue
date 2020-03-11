@@ -19,9 +19,6 @@
                     部屋
                 </b-navbar-item>
             </b-navbar-dropdown>
-            <b-navbar-item>
-                オプション
-            </b-navbar-item>
         </template>
         <template lang="html" slot="end" v-if="$store.getters['auth/access_token']">
             <b-navbar-item>
@@ -59,7 +56,7 @@
                 </table>
             </section>
             <footer class="modal-card-foot has-text-centered">
-                <IconButton type="is-info" iconName="setting" @click="$router.push('/option/')" />
+                <IconButton type="is-info" iconName="setting" @click="goOption()" />
             </footer>
         </div>
     </b-modal>
@@ -82,8 +79,13 @@ export default {
         ...mapActions({ 'signOut': 'user/signOut' }),
         signOutUser() {
             this.signOut().then(res => {
+                this.showUserModal = false
                 this.$router.push('/login/')
             })
+        },
+        goOption() {
+            this.showUserModal = false
+            this.$router.push('/option/')
         }
     }
 }
