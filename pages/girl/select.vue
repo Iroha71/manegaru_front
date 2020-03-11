@@ -1,19 +1,20 @@
 <template>
 <div class="root">
     <div class="section">
-        <div class="column is-2 content">
+        <div class="column is-2-desktop-only content" :class="{ 'controller-top': $device.isMobile }">
             <p>秘書をタッチして選択してください</p>
             <section>
                 <b-button type="is-danger" @click="sendGirlPosition('prev')">戻る</b-button>
                 <b-button type="is-primary" @click="sendGirlPosition('next')">次へ</b-button>
             </section>
         </div>
-        <div v-for="(girl, index) in girls"
-            :key="girl.id"
+        <div v-for="(girl, index) in girls" :key="index"
             :style="getPosition(index)"
-            class="column is-4-desktop is-4-tablet is-12-mobile">
+            class="column is-4 is-12-mobile"
+            :class="{ 'is-hidden': isHidden(index).layer }">
             <transition name="fade" mode="out-in">
-                <img v-if="(centeredIndex-index)<=0 && index<=visibleLastIndex"
+                <img v-if="!isHidden(index).image"
+                    :class="{ 'mobile': $device.isMobile }"
                     :src="`/characters/${girl.code}/all.png`"
                     :style="getImageEffect(index)"
                     @click="choiceGirl(girl.id)" />
@@ -46,11 +47,23 @@ export default {
             visibleLastIndex: 2
         }
     },
+    mounted() {
+        this.currentDistance = this.$device.isMobile ? 0 : 100
+    },
     methods: {
         ...mapActions({ 'updateGirl': 'girl/updateCurrentGirl', 'unlockGirl': 'girl/unlock', 'fetchGold': 'user/fetchGold' }),
+        getLayer(index) {
+            return this.centeredIndex - index
+        },
+        isHidden(index) {
+            const visibleLayer = this.$device.isMobile ? 0 : -2
+            const layer = this.getLayer(index)
+            return { layer: layer < visibleLayer, image: layer > 0 }
+        },
         getPosition(index) {
-            const layer = this.centeredIndex - index
+            const layer = this.getLayer(index)
             const zIndex = `z-index: ${layer};`
+            
             const position = `transform: translate3d(${this.currentDistance}%, 0, ${layer * 50}px);`
             return zIndex + position
         },
@@ -131,6 +144,9 @@ export default {
         z-index: 10;
         top: 40%;
         left: 10%;
+        &.controller-top {
+            top: 10%;
+        }
         section {
             display: flex;
             justify-content: space-around;
@@ -147,6 +163,10 @@ export default {
             max-width: initial;
             filter: drop-shadow(5px 0 0 #000);
             cursor: pointer;
+            &.mobile {
+                height: auto;
+                max-width: 100%;
+            }
         }
     }
 }

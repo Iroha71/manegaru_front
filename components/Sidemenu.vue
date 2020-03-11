@@ -1,6 +1,16 @@
 <template lang="html">
 <aside class="menu" v-if="$route.path=='/task/'">
-    <MenuList label="ソートと絞り込み">
+    <a v-if="$device.isMobile" 
+        role="button" 
+        aria-label="menu" 
+        class="navbar-burger burger has-text-white-bis"
+        :class="{ 'is-active': isOpenedMenu }"
+        @click="isOpenedMenu=!isOpenedMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+    </a>
+    <MenuList v-if="!$device.isMobile || isOpenedMenu">
         <li>
             ソート
         </li>
@@ -21,8 +31,8 @@
             </b-select>
         </li>
     </MenuList>
-    <hr>
-    <MenuList label="グループ" :activable="true">
+    <hr v-if="!$device.isMobile || isOpenedMenu">
+    <MenuList v-if="!$device.isMobile || isOpenedMenu" label="グループ" :activable="true">
         <li v-for="group in groups"
             :key="group.id"
             @click="changeGroup(group.id)"
@@ -64,7 +74,8 @@ export default {
             applingSort: {
                 column: 'created_at',
                 sign: 'DESC'
-            }
+            },
+            isOpenedMenu: false
         }
     },
     methods: {
@@ -96,6 +107,9 @@ export default {
                 column: 'updated_at',
                 sign: 'DESC'
             }
+        },
+        toggleMenu() {
+            
         }
     },
     computed: {
@@ -103,3 +117,10 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.navbar-burger {
+    height: 2rem;
+    width: 2rem;
+}
+</style>
