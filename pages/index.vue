@@ -73,6 +73,7 @@ export default {
       })
   },
   created() {
+    this.$store.dispatch('api/startLoad')
     const ls = JSON.parse(localStorage.getItem('comcon'))
     this.currentGirlCode = ls.girl.currentGirl.code
     const now = new Date()

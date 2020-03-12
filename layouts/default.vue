@@ -1,6 +1,11 @@
 <template>
   <div class="root">
-    <b-loading is-full-page :active.sync="$store.getters['api/isLoading']" />
+    <b-loading is-full-page :active.sync="$store.getters['api/isLoading']">
+      <flower-spinner
+        :animation-duration="1500"
+        :size="70"
+        color="#FED983" />
+    </b-loading>
     <Header />
     <div class="hero is-fullheight-with-navbar">
       <div class="columns">
@@ -18,10 +23,12 @@
 <script>
 import Header from '@/components/Header.vue'
 import Sidemenu from '@/components/Sidemenu.vue'
+import { FlowerSpinner } from 'epic-spinners'
 export default {
   components: {
     Header,
-    Sidemenu
+    Sidemenu,
+    FlowerSpinner
   }
 }
 </script>
