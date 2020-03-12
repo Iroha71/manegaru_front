@@ -21,9 +21,9 @@
             </b-navbar-dropdown>
         </template>
         <template lang="html" slot="end" v-if="$store.getters['auth/access_token']">
-            <b-navbar-item>
+            <b-navbar-item @click="showUserModal=true" >
                 <img class="user-icon" :src="`/characters/${$store.getters['girl/currentGirlCode']}/icon.png`" />
-                <span @click="showUserModal=true" class="user-name">{{ $store.getters['user/name'] }}</span>
+                <span class="user-name">{{ $store.getters['user/name'] }}</span>
             </b-navbar-item>
             <b-navbar-item>
                 <img class="is-hidden-touch" src="/icons/coin.png" />
@@ -56,7 +56,7 @@
                 </table>
             </section>
             <footer class="modal-card-foot has-text-centered">
-                <IconButton type="is-info" iconName="setting" @click="goOption()" />
+                <IconButton type="is-info" iconName="setting" message="ユーザ情報編集" @click="goOption()" />
             </footer>
         </div>
     </b-modal>
