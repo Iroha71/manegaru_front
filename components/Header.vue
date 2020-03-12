@@ -92,7 +92,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.user-name {
-    font-weight: bold;
+div {
+    font-family: 'LightNovel';
+    .user-name {
+        font-family: 'Gulim';
+        font-weight: bold;
+    }
 }
 </style>

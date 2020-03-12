@@ -15,6 +15,11 @@ $colors: (
 @import '~bulma';
 @import '~buefy/src/scss/buefy';
 
+@font-face {
+    font-family: 'LightNovel';
+    src: url('../font/LightNovelPop.otf') format("openType");
+}
+
 html {
     overflow-y: hidden;
 }
@@ -28,7 +33,12 @@ html {
     }
 }
 
+.title-text {
+    font-family: 'LightNovel';
+}
+
 .button {
+    font-family: 'LightNovel';
     border-bottom: solid 4px;
     &:active {
         transform: translateY(4px);
