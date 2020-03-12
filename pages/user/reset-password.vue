@@ -33,7 +33,7 @@ export default {
     },
     created() {
         if(!this.$route.query['access-token']) {
-            this.$router.redirect('/login/')
+            this.$router.replace('/login/')
         }
     },
     data() {

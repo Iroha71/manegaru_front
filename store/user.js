@@ -81,7 +81,10 @@ export const actions = {
 
     async updatePassword({dispatch}, {newPassword, confirmPassword}) {
         const passwordInfo = { password: newPassword, password_confirmation: confirmPassword }
-        await dispatch('api/request', {method: 'put', endpoint: 'auth/password', params: passwordInfo}, {root: true})
+        const result = await dispatch('api/request', {method: 'put', endpoint: 'auth/password', params: passwordInfo}, {root: true})
+        if(result.data.success) {
+            await dispatch('user/signIn', {email: result.data.data.email, password: newPassword}, {root: true})
+        }
     },
 
     async fetchGold({commit, dispatch}) {
