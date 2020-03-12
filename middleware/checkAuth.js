@@ -1,5 +1,5 @@
 export default({route, redirect, store}) => {
-    redirectAccurateRoute(route.path, redirect)
+    redirectAccurateRoute(route, redirect)
     if(isRequireAuthPage(route.path)) {
         try{
             const storeData = JSON.parse(localStorage.getItem('comcon'))
@@ -23,10 +23,10 @@ export default({route, redirect, store}) => {
     }
 }
 
-const redirectAccurateRoute = (pagePath, redirect) => {
-    const lastPathStr = pagePath.slice(-1)
+const redirectAccurateRoute = (route, redirect) => {
+    const lastPathStr = route.path.slice(-1)
     if(lastPathStr !== '/') {
-        redirect(301, pagePath + '/')
+        redirect(301, route.path + '/', route.query)
     }
 }
 
