@@ -26,11 +26,11 @@ export const mutations = {
         state.topApplySeason = setting.topApplySeason.value
     },
     setAppSettingFromStore(state, setting) {
-        state.isPlayBgm = setting.isPlayBgm
-        state.isPlayVoice = setting.isPlayVoice
-        state.isToastTask = setting.isToastTask
+        state.isPlayBgm = setting.isPlayBgm ? setting.isPlayBgm : false
+        state.isPlayVoice = setting.isPlayVoice ? setting.isPlayVoice : false
+        state.isToastTask = setting.toastWay !== 'nothing' 
         state.toastWay = setting.toastWay
-        state.topApplySeason = setting.topApplySeason
+        state.topApplySeason = setting.topApplySeason ? setting.topApplySeason : 'match'
     }
 }
 

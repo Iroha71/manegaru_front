@@ -51,6 +51,7 @@ export const actions = {
         dispatch('auth/setAuth', headers, {root: true})
         dispatch('girl/clearCurrentGirl', null, {root: true})
         dispatch('girl/setCurrentGirl', user.data.data.girl, {root: true})
+        dispatch('option/setAppSettingFromStore', {toastWay: user.data.data.notify_method}, {root: true})
     },
 
     async signOut({commit, dispatch}) {
