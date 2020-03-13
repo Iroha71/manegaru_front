@@ -10,6 +10,7 @@ export default({route, redirect, store}) => {
             store.dispatch('auth/setAuth', storeData.auth)
             store.dispatch('project/setCurrentGroupId', storeData.project.currentGroupId)
             store.dispatch('girl/setCurrentGirl', storeData.girl.currentGirl)
+            store.dispatch('option/setAppSettingFromStore', storeData.option)
             if(isEmptyCurrentGirl(storeData) && !isMatchPath(route.path, '/girl/select/') && !isMatchPath(route.path, '/user/cooped-line/')) {
                 redirect('/girl/select?isFirst=true')
             }
@@ -19,7 +20,8 @@ export default({route, redirect, store}) => {
             redirect('/login/?error=401' + openedLINEParam)
         }
     } else {
-        localStorage.removeItem('comcon')
+        store.dispatch('auth/clearAuth')
+        store.dispatch('user/clearUser')
     }
 }
 
