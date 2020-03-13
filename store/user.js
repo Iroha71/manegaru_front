@@ -27,6 +27,7 @@ export const mutations = {
         state.nickname = ''
         state.personal_pronoun = ''
         state.gold = ''
+        state.is_cooped_line = false
     }
 }
 
@@ -36,6 +37,10 @@ const signOutPath = 'auth/sign_out'
 export const actions = {
     setUser(context, user){
         context.commit('set', user)
+    },
+
+    clearUser(context) {
+        context.commit('clear')
     },
 
     async signIn({commit, dispatch}, {email, password}){
@@ -68,7 +73,7 @@ export const actions = {
     },
 
     async updateUser({dispatch, commit}, user) {
-        const userInfo = { email: user.email, name: user.name, nickname: user.nickname, personal_pronoun: user.personalPronoun }
+        const userInfo = { email: user.email, name: user.name, nickname: user.nickname, personal_pronoun: user.personalPronoun, notify_method: user.notify_method }
         const result = await dispatch('api/request', {method: 'put', endpoint: 'auth', params: userInfo}, {root: true})
         dispatch('auth/setAuth', result.headers, {root: true})
         commit('set', result.data.data)

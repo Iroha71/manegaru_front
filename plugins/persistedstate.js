@@ -6,7 +6,7 @@ export default({store}) => {
             paths: [
                 'auth',
                 'girl',
-                'option.isPlayBgm', 'option.isPlayVoice', 'option.isToastTask', 'option.toastWay', 'topApplySeason',
+                'option',
                 'project',
                 'user'
             ]
