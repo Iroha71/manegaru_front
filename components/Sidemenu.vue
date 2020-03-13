@@ -11,7 +11,7 @@
         <span aria-hidden="true"></span>
     </a>
     <MenuList v-if="!$device.isMobile || isOpenedMenu">
-        <li>
+        <li class="title-text">
             ソート
         </li>
         <li>
@@ -20,7 +20,7 @@
                 <option :value="{ column: 'created_at', sign: 'ASC' }">作成順</option>
             </b-select>
         </li>
-        <li>
+        <li class="title-text">
             絞り込み
         </li>
         <li>

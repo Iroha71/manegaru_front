@@ -7,7 +7,9 @@ export default ({store, redirect, $axios, route}) => {
     })
 
     $axios.onResponse(response => {
-        store.dispatch('api/stopLoad')
+        setTimeout(() => {
+            store.dispatch('api/stopLoad')
+        }, 800)
     })
 
     $axios.onError(error => {

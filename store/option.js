@@ -24,6 +24,13 @@ export const mutations = {
         state.isToastTask = setting.isToastTask.value
         state.toastWay = setting.toastWay.value
         state.topApplySeason = setting.topApplySeason.value
+    },
+    setAppSettingFromStore(state, setting) {
+        state.isPlayBgm = setting.isPlayBgm
+        state.isPlayVoice = setting.isPlayVoice
+        state.isToastTask = setting.isToastTask
+        state.toastWay = setting.toastWay
+        state.topApplySeason = setting.topApplySeason
     }
 }
 
@@ -33,6 +40,9 @@ export const actions = {
     },
     setAppSetting(context, setting) {
         context.commit('setAppSetting', setting)
+    },
+    setAppSettingFromStore(context, setting) {
+        context.commit('setAppSettingFromStore', setting)
     }
 }
 
