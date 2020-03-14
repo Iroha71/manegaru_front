@@ -39,7 +39,7 @@
           <section class="hero is-success">
             <div class="hero-body">
               <section class="content-area">
-                LINE BOTでタスクをお知らせできます！
+                <p>LINE BOTでタスクをお知らせできます！</p>
                 <b-button type="is-info" @click="$router.push('/option/?currentTab=lineCoop')">オプション画面で設定</b-button>
               </section>
             </div>
@@ -73,6 +73,7 @@ export default {
       })
   },
   created() {
+    this.$store.dispatch('api/startLoad')
     const ls = JSON.parse(localStorage.getItem('comcon'))
     this.currentGirlCode = ls.girl.currentGirl.code
     const now = new Date()

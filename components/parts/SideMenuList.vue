@@ -1,6 +1,6 @@
 <template lang="html">
     <div>
-        <p class="menu-label has-text-white">{{ label }}</p>
+        <p class="menu-label has-text-white title-text">{{ label }}</p>
         <ul :class="{ 'decoration-list': activable }">
             <slot />
         </ul>

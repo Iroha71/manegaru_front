@@ -1,9 +1,10 @@
 @import '~bulma/sass/utilities/_all';
 $primary: #1AAAD4;
-$info: #4778d3;
+$info: #366BCE;
 $warning: #F9D76F;
 $danger: #F15E60;
 $success: #2EA58D;
+$loading-background: #005885;
 
 $colors: (
     "primary": ($primary, $primary-invert),
@@ -14,6 +15,11 @@ $colors: (
 );
 @import '~bulma';
 @import '~buefy/src/scss/buefy';
+
+@font-face {
+    font-family: 'LightNovel';
+    src: url('../font/LightNovelPop.otf') format("openType");
+}
 
 html {
     overflow-y: hidden;
@@ -28,7 +34,12 @@ html {
     }
 }
 
+.title-text {
+    font-family: 'LightNovel';
+}
+
 .button {
+    font-family: 'LightNovel';
     border-bottom: solid 4px;
     &:active {
         transform: translateY(4px);

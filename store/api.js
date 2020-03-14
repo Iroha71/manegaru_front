@@ -19,7 +19,6 @@ export const actions = {
     
     request(context, {method, endpoint, params}){
         const requestUrl = process.env.BASE_URL + endpoint
-        context.commit('setIsLoading', false)
         switch(method){
             case 'get':
                 return this.$axios.get(requestUrl, { params: params })

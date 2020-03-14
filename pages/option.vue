@@ -46,6 +46,7 @@
                 </b-switch>
                 <b-field v-if="key=='toastWay' && settingForm.isToastTask.value" label="通知方法">
                     <b-select v-model="setting.value">
+                        <option value="nothing">通知しない</option>
                         <option value="mail">メールで通知</option>
                         <option value="line">LINEで通知</option>
                     </b-select>
@@ -134,9 +135,13 @@ export default {
             })
         },
         saveAppSetting() {
+            if(this.settingForm.isToastTask.value == false) {
+                this.settingForm.toastWay.value = 'nothing'
+            }
+            if(this.toastWay !== this.settingForm.toastWay.value) {
+                this.updateUser({notify_method: this.settingForm.toastWay.value})
+            }
             this.setAppSetting(this.settingForm)
-            //railsに通知方法（meil or line or nothing)を送信
-
             this.$buefy.toast.open({
                 type: 'is-success',
                 message: 'アプリの設定を更新しました'
@@ -148,12 +153,11 @@ export default {
         },
         async getCoopedLineInfo() {
             const isCoopedLine = await this.getToastInfo()
-            console.log(isCoopedLine)
         }
     },
     computed: {
         ...mapGetters('user', ['email', 'name', 'nickname', 'personalPronouns', 'isCoopedLine']),
-        ...mapGetters('option', ['currentTab', 'currentTabName', 'choisableSeasons'])
+        ...mapGetters('option', ['currentTab', 'currentTabName', 'choisableSeasons', 'toastWay'])
     }
 }
 </script>

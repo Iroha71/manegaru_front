@@ -1,5 +1,5 @@
 export default({route, redirect, store}) => {
-    redirectAccurateRoute(route.path, redirect)
+    redirectAccurateRoute(route, redirect)
     if(isRequireAuthPage(route.path)) {
         try{
             const storeData = JSON.parse(localStorage.getItem('comcon'))
@@ -10,6 +10,7 @@ export default({route, redirect, store}) => {
             store.dispatch('auth/setAuth', storeData.auth)
             store.dispatch('project/setCurrentGroupId', storeData.project.currentGroupId)
             store.dispatch('girl/setCurrentGirl', storeData.girl.currentGirl)
+            store.dispatch('option/setAppSettingFromStore', storeData.option)
             if(isEmptyCurrentGirl(storeData) && !isMatchPath(route.path, '/girl/select/') && !isMatchPath(route.path, '/user/cooped-line/')) {
                 redirect('/girl/select?isFirst=true')
             }
@@ -19,14 +20,15 @@ export default({route, redirect, store}) => {
             redirect('/login/?error=401' + openedLINEParam)
         }
     } else {
-        localStorage.removeItem('comcon')
+        store.dispatch('auth/clearAuth')
+        store.dispatch('user/clearUser')
     }
 }
 
-const redirectAccurateRoute = (pagePath, redirect) => {
-    const lastPathStr = pagePath.slice(-1)
+const redirectAccurateRoute = (route, redirect) => {
+    const lastPathStr = route.path.slice(-1)
     if(lastPathStr !== '/') {
-        redirect(301, pagePath + '/')
+        redirect(301, route.path + '/', route.query)
     }
 }
 
