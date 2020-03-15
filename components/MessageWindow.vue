@@ -1,8 +1,8 @@
 <template>
-    <div :class="`message-window column ${width} side-center `">
+    <div :class="setWindowStyle()">
         <div class="name-area" v-if="name"><span :style="{ border: `solid 0.25rem ${borderColor}` }">{{ name }}</span></div>
         <article class="text-area-back" :style="{ background: backColor }"></article>
-        <article class="text-area side-center" :style="{ border: `solid 0.25rem ${borderColor}` }">{{ text }}</article>
+        <article class="text-area side-center has-text-left" :style="{ border: `solid 0.25rem ${borderColor}` }">{{ text }}</article>
     </div>
 </template>
 
@@ -32,7 +32,18 @@ export default {
             type: String,
             required: false,
             default: '#fff'
+        },
+        isCenter: {
+            type: Boolean,
+            required: false,
+            default: true
         }
+    },
+    methods: {
+        setWindowStyle() {
+            const position = this.isCenter || this.$device.isMobile ? 'side-center' : ''
+            return `message-window column ${this.width} ${position}`
+        },
     }
 }
 </script>
@@ -48,6 +59,7 @@ export default {
         position: absolute;
         z-index: 2;
         span {
+            font-family: 'LightNovel';
             height: 2rem;
             padding: 0.5rem;
             background: #fff;
