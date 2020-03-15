@@ -14,6 +14,9 @@ export default({route, redirect, store}) => {
             if(isEmptyCurrentGirl(storeData) && !isMatchPath(route.path, '/girl/select/') && !isMatchPath(route.path, '/user/cooped-line/')) {
                 redirect('/girl/select?isFirst=true')
             }
+            if(route.path === '/') {
+                store.dispatch('application/incrementGreetingCount')
+            }
         }catch(error){
             console.log(error)
             let openedLINEParam = route.query.openExternalBrowser === '1' ? '&opened=line' : ''

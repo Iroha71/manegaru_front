@@ -11,5 +11,10 @@ export default({store}) => {
                 'user'
             ]
         })(store)
+        createPersistedState({
+            key: 'comcon',
+            paths: [ 'application' ],
+            storage: window.sessionStorage
+        })(store)
     })
 }

@@ -2,6 +2,7 @@
   <div class="columns" :style="{ backgroundImage: `url(${backgroundUrl})` }">
     <div class="column is-6 chara-area">
       <Character :code="currentGirlCode" :emote="girlCurrentEmote" @click="changeEmote()" />
+      <MessageWindow :name="$store.getters['girl/currentGirlCode']" :text="serifu" width="is-6" :isCenter="false" />
     </div>
     <div v-if="!$device.isMobile" class="column is-6">
       <b-carousel :interval="8000">
@@ -58,19 +59,25 @@
 <script>
 import IconButton from '@/components/parts/IconButton.vue'
 import Character from '@/components/Character.vue'
+import MessageWindow from '@/components/MessageWindow.vue'
 import { mapGetters } from 'vuex'
 export default {
   layout: 'fullScreenWithHeader',
   components: {
     IconButton,
-    Character
+    Character,
+    MessageWindow
   },
-  mounted() {
-    this.$store.dispatch('task/countNotFinishTasks')
-      .then(taskCount => {
-        this.yetTaskNum = taskCount.yet
-        this.workingTaskNum = taskCount.working
-      })
+  async mounted() {
+    if(this.$store.getters['application/greetingCount'] <= 1) {
+      this.serifu = await this.$store.dispatch('girl/getSerifu', { girlId: this.$store.getters['girl/currentGirlId'], situation: 'greeting' })
+    } else {
+      this.$store.dispatch('task/countNotFinishTasks')
+        .then(taskCount => {
+          this.yetTaskNum = taskCount.yet
+          this.workingTaskNum = taskCount.working
+        })
+    }
   },
   created() {
     this.$store.dispatch('api/startLoad')
@@ -88,7 +95,8 @@ export default {
       workingTaskNum: 0,
       backgroundUrl: '/images/bg-bloom.webp',
       today: null,
-      girlCurrentEmote: 'normal'
+      girlCurrentEmote: 'normal',
+      serifu: ''
     }
   },
   methods: {

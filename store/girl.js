@@ -43,6 +43,11 @@ export const actions = {
         const param = { girl_id: girlId }
         const girls = await dispatch('api/request', {method: 'post', endpoint: `user_girl`, params: param}, {root: true})
         return girls.data
+    },
+
+    async getSerifu({dispatch}, { girlId, situation }) {
+        const serifu = await dispatch('api/request', {method: 'get', endpoint: `serifu/${girlId}`, params: {situation: situation}}, {root: true})
+        return serifu.data
     }
 }
 
