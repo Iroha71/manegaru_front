@@ -11,17 +11,17 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.9.3",
+    "@nuxtjs/axios": "^5.9.5",
     "@nuxtjs/device": "^1.2.7",
     "@nuxtjs/pwa": "^3.0.0-beta.20",
     "dotenv": "^8.2.0",
     "epic-spinners": "^1.1.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "nuxt": "^2.11.0",
-    "nuxt-buefy": "^0.3.20",
+    "nuxt-buefy": "^0.3.24",
     "sass-loader": "^8.0.2",
-    "vee-validate": "^3.2.1",
-    "vuex-persistedstate": "^2.7.0"
+    "vee-validate": "^3.2.5",
+    "vuex-persistedstate": "^2.7.1"
   },
   "devDependencies": {}
 }
