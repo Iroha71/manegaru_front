@@ -2,11 +2,14 @@
     <div :class="setWindowStyle()">
         <div class="name-area" v-if="name"><span :style="{ border: `solid 0.25rem ${borderColor}` }">{{ name }}</span></div>
         <article class="text-area-back" :style="{ background: backColor }"></article>
-        <article class="text-area side-center has-text-left" :style="{ border: `solid 0.25rem ${borderColor}` }">{{ text }}</article>
+        <article class="text-area side-center has-text-left" :style="{ border: `solid 0.25rem ${borderColor}` }">
+            <Atext :message="text" />
+        </article>
     </div>
 </template>
 
 <script>
+import Atext from '@/components/parts/AnimeText.vue'
 export default {
     props: {
         width: {
@@ -38,6 +41,9 @@ export default {
             required: false,
             default: true
         }
+    },
+    components: {
+        Atext
     },
     methods: {
         setWindowStyle() {
