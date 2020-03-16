@@ -16,26 +16,6 @@
             </div>
           </section>
         </b-carousel-item>
-        <b-carousel-item class="has-text-centered">
-          <section class="hero is-danger">
-            <div class="hero-body">
-              <section class="content-area">
-                <p class="subtitle">未着手タスク</p>
-                <p class="title">{{ yetTaskNum }}</p>
-              </section>
-            </div>
-          </section>
-        </b-carousel-item>
-        <b-carousel-item class="has-text-centered">
-          <section class="hero is-warning">
-            <div class="hero-body">
-              <section class="content-area">
-                <p class="subtitle">作業中タスク</p>
-                <p class="title">{{ workingTaskNum }}</p>
-              </section>
-            </div>
-          </section>
-        </b-carousel-item>
         <b-carousel-item v-if="!isCoopedLine" class="has-text-centered">
           <section class="hero is-success">
             <div class="hero-body">
@@ -70,13 +50,11 @@ export default {
   },
   async mounted() {
     if(this.$store.getters['application/greetingCount'] <= 1) {
-      this.serifu = await this.$store.dispatch('girl/getSerifu', { girlId: this.$store.getters['girl/currentGirlId'], situation: 'greeting' })
+      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: this.$store.getters['girl/currentGirlId'], situations: 'greeting,touch' })
+      this.girlCurrentEmote = this.serifus.greeting.emotion
+      this.serifu = this.serifus.greeting.text
     } else {
-      this.$store.dispatch('task/countNotFinishTasks')
-        .then(taskCount => {
-          this.yetTaskNum = taskCount.yet
-          this.workingTaskNum = taskCount.working
-        })
+      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: this.$store.getters['girl/currentGirlId'], situations: 'touch'})
     }
   },
   created() {
@@ -96,12 +74,14 @@ export default {
       backgroundUrl: '/images/bg-bloom.webp',
       today: null,
       girlCurrentEmote: 'normal',
+      serifus: [],
       serifu: ''
     }
   },
   methods: {
     changeEmote() {
-      this.girlCurrentEmote = this.girlCurrentEmote === 'normal' ? 'tere' : 'normal'
+        this.serifu = this.serifus.touch.text
+        this.girlCurrentEmote = this.serifus.touch.emotion
     }
   },
   computed: {
