@@ -49,7 +49,6 @@ export const actions = {
         commit('set', user.data.data)
         const headers = { access_token: user.headers['access-token'], client: user.headers['client'], uid: user.headers['uid'] }
         dispatch('auth/setAuth', headers, {root: true})
-        dispatch('girl/clearCurrentGirl', null, {root: true})
         dispatch('girl/setCurrentGirl', user.data.data.girl, {root: true})
         dispatch('option/setAppSettingFromStore', {toastWay: user.data.data.notify_method}, {root: true})
     },

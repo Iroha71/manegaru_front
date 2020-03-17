@@ -2,7 +2,10 @@
   <div class="columns" :style="{ backgroundImage: `url(${backgroundUrl})` }">
     <div class="column is-6 chara-area">
       <Character :code="currentGirlCode" :emote="girlCurrentEmote" @click="changeEmote()" />
-      <MessageWindow :name="$store.getters['girl/currentGirlCode']" :text="serifu" width="is-6" :isCenter="false" />
+      <MessageWindow :name="$store.getters['girl/currentGirlName']"
+        :text="serifu" width="is-6"
+        :isCenter="false"
+        :borderColor="currentGirlColor1"/>
     </div>
     <div v-if="!$device.isMobile" class="column is-6">
       <b-carousel :interval="8000">
@@ -54,7 +57,7 @@ export default {
       this.girlCurrentEmote = this.serifus.greeting.emotion
       this.serifu = this.serifus.greeting.text
     } else {
-      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: this.$store.getters['girl/currentGirlId'], situations: 'touch'})
+      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: this.$store.getters['girl/currentGirlId'], situations: 'greeting,touch'})
     }
   },
   created() {
@@ -82,10 +85,15 @@ export default {
     changeEmote() {
         this.serifu = this.serifus.touch.text
         this.girlCurrentEmote = this.serifus.touch.emotion
+        setTimeout(() => {
+          this.serifu = ''
+          this.girlCurrentEmote = this.serifus.greeting.emotion
+        }, 5000)
     }
   },
   computed: {
-    ...mapGetters('user', ['isCoopedLine'])
+    ...mapGetters('user', ['isCoopedLine']),
+    ...mapGetters('girl', ['currentGirlColor1'])
   }
 }
 </script>

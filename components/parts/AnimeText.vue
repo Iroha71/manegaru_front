@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span v-for="(text, index) in message"
+        <span v-for="(text, index) in animatedText"
             class="item"
             :key="index"
             :style="{animationDelay: index * 70 + 'ms'}"
@@ -17,8 +17,19 @@ export default {
             required: true
         }
     },
+    data() {
+        return { animatedText: this.message }
+    },
     computed: {
         ...mapGetters('user', ['nickname'])
+    },
+    watch: {
+        message() {
+            this.animatedText = ''
+            setTimeout(() => {
+                this.animatedText = this.message
+            }, 1)
+        }
     }
 }
 </script>
@@ -29,6 +40,6 @@ export default {
 }
 .item {
     display: inline-block;
-    animation: text-in .2s backwards;
+    animation: text-in backwards;
 }
 </style>
