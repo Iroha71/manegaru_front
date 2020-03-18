@@ -26,11 +26,14 @@ export const mutations = {
         state.topApplySeason = setting.topApplySeason.value
     },
     setAppSettingFromStore(state, setting) {
-        state.isPlayBgm = setting.isPlayBgm ? setting.isPlayBgm : false
-        state.isPlayVoice = setting.isPlayVoice ? setting.isPlayVoice : false
-        state.isToastTask = setting.toastWay !== 'nothing' 
-        state.toastWay = setting.toastWay
-        state.topApplySeason = setting.topApplySeason ? setting.topApplySeason : 'match'
+        // state.isPlayBgm = setting.isPlayBgm ? setting.isPlayBgm : false
+        // state.isPlayVoice = setting.isPlayVoice ? setting.isPlayVoice : false
+        // state.isToastTask = setting.toastWay !== 'nothing' 
+        // state.toastWay = setting.toastWay
+        // state.topApplySeason = setting.topApplySeason ? setting.topApplySeason : 'match'
+        Object.keys(setting).forEach((key) => {
+            state[key] = setting[key]
+        })
     }
 }
 
@@ -43,7 +46,7 @@ export const actions = {
     },
     setAppSettingFromStore(context, setting) {
         context.commit('setAppSettingFromStore', setting)
-    }
+    },
 }
 
 export const getters = {

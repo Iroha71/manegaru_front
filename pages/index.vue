@@ -1,11 +1,11 @@
 <template lang="html">
   <div class="columns" :style="{ backgroundImage: `url(${backgroundUrl})` }">
     <div class="column is-6 chara-area">
-      <Character :code="currentGirlCode" :emote="girlCurrentEmote" @click="changeEmote()" />
-      <MessageWindow :name="$store.getters['girl/currentGirlName']"
+      <Character :code="currentGirl.code" :emote="girlCurrentEmote" @click="changeEmote()" />
+      <MessageWindow :name="currentGirl.name"
         :text="serifu" width="is-6"
         :isCenter="false"
-        :borderColor="currentGirlColor1"/>
+        :borderColor="currentGirl.color"/>
     </div>
     <div v-if="!$device.isMobile" class="column is-6">
       <b-carousel :interval="8000">
@@ -44,6 +44,7 @@ import IconButton from '@/components/parts/IconButton.vue'
 import Character from '@/components/Character.vue'
 import MessageWindow from '@/components/MessageWindow.vue'
 import { mapGetters } from 'vuex'
+import { Howl } from 'howler'
 export default {
   layout: 'fullScreenWithHeader',
   components: {
@@ -52,12 +53,17 @@ export default {
     MessageWindow
   },
   async mounted() {
+    const girlId = this.$store.getters['girl/currentGirl'].id
     if(this.$store.getters['application/greetingCount'] <= 1) {
-      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: this.$store.getters['girl/currentGirlId'], situations: 'greeting,touch' })
+      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: girlId, situations: 'greeting,touch' })
       this.girlCurrentEmote = this.serifus.greeting.emotion
       this.serifu = this.serifus.greeting.text
+      const a = new AudioContext()
+      if(this.$store.getters['option/isPlayVoice']) {
+        const audio = new Howl({ src: '/voices/akane/akane_greeting.wav', autoplay: true })
+      }
     } else {
-      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: this.$store.getters['girl/currentGirlId'], situations: 'greeting,touch'})
+      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: girlId, situations: 'greeting,touch'})
     }
   },
   created() {
@@ -93,7 +99,7 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['isCoopedLine']),
-    ...mapGetters('girl', ['currentGirlColor1'])
+    ...mapGetters('girl', ['currentGirl'])
   }
 }
 </script>

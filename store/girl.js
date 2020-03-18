@@ -10,13 +10,7 @@ export const state = () => ({
 
 export const mutations = {
     setCurrentGirl(state, girl){
-        if(girl){
-            state.currentGirl.id = girl.id
-            state.currentGirl.code = girl.code
-            state.currentGirl.name = girl.name
-            state.currentGirl.color = girl.color
-            state.currentGirl.color2 = girl.color2
-        }
+        state.currentGirl = girl
     }
 }
 
@@ -58,8 +52,9 @@ export const actions = {
 }
 
 export const getters = {
-    currentGirlId: (state) => state.currentGirl.id,
-    currentGirlCode: (state) => state.currentGirl.code,
-    currentGirlName: (state) => state.currentGirl.name,
-    currentGirlColor1: (state) => state.currentGirl.color
+    currentGirl: (state) => state.currentGirl
+    // currentGirlId: (state) => state.currentGirl.id,
+    // currentGirlCode: (state) => state.currentGirl.code,
+    // currentGirlName: (state) => state.currentGirl.name,
+    // currentGirlColor1: (state) => state.currentGirl.color
 }

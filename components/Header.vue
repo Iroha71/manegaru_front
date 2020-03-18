@@ -22,7 +22,7 @@
         </template>
         <template lang="html" slot="end" v-if="$store.getters['auth/access_token']">
             <b-navbar-item @click="showUserModal=true" >
-                <img class="user-icon" :src="`/characters/${$store.getters['girl/currentGirlCode']}/icon.png`" />
+                <img class="user-icon" :src="`/characters/${currentGirl.code}/icon.png`" />
                 <span class="user-name">{{ $store.getters['user/name'] }}</span>
             </b-navbar-item>
             <b-navbar-item>
@@ -43,7 +43,7 @@
                 <table class="table">
                     <tr>
                         <th>秘書</th>
-                        <td>{{ $store.getters['girl/currentGirlName'] }}</td>
+                        <td>{{ currentGirl.name }}</td>
                     </tr>
                     <tr>
                         <th>一人称</th>
@@ -60,12 +60,13 @@
             </footer>
         </div>
     </b-modal>
+    <audio></audio>
 </div>
 </template>
 
 <script>
 import IconButton from './parts/IconButton.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
     components: {
         IconButton
@@ -87,6 +88,9 @@ export default {
             this.showUserModal = false
             this.$router.push('/option/')
         }
+    },
+    computed: {
+        ...mapGetters('girl', ['currentGirl'])
     }
 }
 </script>
