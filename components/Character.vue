@@ -1,8 +1,8 @@
 <template>
     <span>
         <img :style="{ backgroundImage: `url(/characters/${code}/body.png)` }" 
-            :src="`/characters/${code}/${emote}.png`"
-            @click="touchEvent">
+            :src="`/characters/${code}/${currentEmote}.png`"
+            @click="touchEvent()" />
     </span>
 </template>
 
@@ -16,11 +16,36 @@ export default {
         emote: {
             type: String,
             required: true
+        },
+        isOverVoice: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    },
+    data() {
+        return {
+            currentEmote: this.emote,
+            isLipOpen: false,
+            lipSyncManager: {}
         }
     },
     methods: {
         touchEvent() {
             this.$emit('click')
+        },
+        syncLip() {
+            this.currentEmote = this.emote + '_open'
+        }
+    },
+    watch: {
+        isOverVoice() {
+            if(this.isOverVoice) {
+                this.syncLip()
+            } else {
+                clearInterval(this.lipSyncManager)
+                this.currentEmote = this.emote
+            }
         }
     }
 }

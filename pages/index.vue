@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="columns" :style="{ backgroundImage: `url(${backgroundUrl})` }">
     <div class="column is-6 chara-area">
-      <Character :code="currentGirl.code" :emote="girlCurrentEmote" @click="changeEmote()" />
+      <Character :code="currentGirl.code" :emote="girlCurrentEmote" @click="changeEmote()" :isOverVoice="isOverVoice" />
       <MessageWindow :name="currentGirl.name"
         :text="serifu" width="is-6"
         :isCenter="false"
@@ -45,6 +45,7 @@ import Character from '@/components/Character.vue'
 import MessageWindow from '@/components/MessageWindow.vue'
 import { mapGetters } from 'vuex'
 import { Howl } from 'howler'
+let src = null
 export default {
   layout: 'fullScreenWithHeader',
   components: {
@@ -58,9 +59,8 @@ export default {
       this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: girlId, situations: 'greeting,touch' })
       this.girlCurrentEmote = this.serifus.greeting.emotion
       this.serifu = this.serifus.greeting.text
-      const a = new AudioContext()
       if(this.$store.getters['option/isPlayVoice']) {
-        const audio = new Howl({ src: '/voices/akane/akane_greeting.wav', autoplay: true })
+        this.confirmOverVoice()
       }
     } else {
       this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: girlId, situations: 'greeting,touch'})
@@ -84,17 +84,69 @@ export default {
       today: null,
       girlCurrentEmote: 'normal',
       serifus: [],
-      serifu: ''
+      serifu: '',
+      isOverVoice: false,
+      interval: {}
     }
   },
   methods: {
     changeEmote() {
+        this.resetVoiceStatus()
         this.serifu = this.serifus.touch.text
         this.girlCurrentEmote = this.serifus.touch.emotion
+        if(this.$store.getters['option/isPlayVoice']) {
+          const lipMoveBorder = 2000
+          this.playVoice('/voices/akane/akane_greeting.wav', lipMoveBorder)
+        }
         setTimeout(() => {
           this.serifu = ''
           this.girlCurrentEmote = this.serifus.greeting.emotion
         }, 5000)
+    },
+    confirmOverVoice() {
+      this.$buefy.dialog.confirm({
+        message: '音声が出ます',
+        onConfirm: () => {
+          this.playVoice("/voices/akane/akane_greeting.wav", 2000)
+        }
+      })
+    },
+    async playVoice(voicePath, lipMoveBorder) {
+        if(src != null) {
+          src.stop()
+        }
+        const audioContext = new AudioContext()
+        const soundBuffer = await this.loadVoice(audioContext, voicePath)
+        const analyser = new AnalyserNode(audioContext)
+        analyser.fftSize = 32
+        const spectrums = new Uint8Array(analyser.frequencyBinCount)
+        src = new AudioBufferSourceNode(audioContext, {buffer: soundBuffer})
+        src.connect(analyser).connect(audioContext.destination)
+        src.start()
+        this.interval = setInterval((event) => {
+            analyser.getByteFrequencyData(spectrums)
+            this.isOverVoice = this.isLetOpenLip(spectrums, lipMoveBorder)
+        }, 0.25)
+    },
+    resetVoiceStatus() {
+      clearInterval(this.interval)
+      this.isOverVoice = false
+    },
+    isLetOpenLip(spectrums, lipMoveBorder) {
+      const openJudgeLine = lipMoveBorder
+      const totalSpectrum = spectrums.reduce(function(a, x) { return a + x })
+      return totalSpectrum >= openJudgeLine
+    },
+    loadVoice(context, url) {
+      return new Promise((resolv) => {
+        fetch(url).then((response) => {
+          return response.arrayBuffer()
+        }).then((arrayBuf) => {
+          return context.decodeAudioData(arrayBuf)
+        }).then((buf) => {
+          resolv(buf)
+        })
+      })
     }
   },
   computed: {
