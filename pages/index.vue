@@ -1,7 +1,11 @@
 <template lang="html">
   <div class="columns" :style="{ backgroundImage: `url(${backgroundUrl})` }">
     <div class="column is-6 chara-area">
-      <Character :code="currentGirl.code" :emote="girlCurrentEmote" @click="changeEmote()" />
+      <Character :code="currentGirl.code"
+        :emote="girlCurrentEmote"
+        :voice="voiceType"
+        @click="changeEmote()"
+        @voiceEnded="voiceType=''" />
       <MessageWindow :name="currentGirl.name"
         :text="serifu" width="is-6"
         :isCenter="false"
@@ -44,7 +48,7 @@ import IconButton from '@/components/parts/IconButton.vue'
 import Character from '@/components/Character.vue'
 import MessageWindow from '@/components/MessageWindow.vue'
 import { mapGetters } from 'vuex'
-import { Howl } from 'howler'
+
 export default {
   layout: 'fullScreenWithHeader',
   components: {
@@ -52,45 +56,48 @@ export default {
     Character,
     MessageWindow
   },
-  async mounted() {
-    const girlId = this.$store.getters['girl/currentGirl'].id
-    if(this.$store.getters['application/greetingCount'] <= 1) {
-      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: girlId, situations: 'greeting,touch' })
-      this.girlCurrentEmote = this.serifus.greeting.emotion
-      this.serifu = this.serifus.greeting.text
-      const a = new AudioContext()
-      if(this.$store.getters['option/isPlayVoice']) {
-        const audio = new Howl({ src: '/voices/akane/akane_greeting.wav', autoplay: true })
-      }
-    } else {
-      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: girlId, situations: 'greeting,touch'})
-    }
-  },
   created() {
     this.$store.dispatch('api/startLoad')
-    const ls = JSON.parse(localStorage.getItem('comcon'))
-    this.currentGirlCode = ls.girl.currentGirl.code
+    this.currentGirlCode = this.$store.getters['girl/currentGirl'].code
     const now = new Date()
     const weekOfDays = ['日', '月', '火', '水', '木', '金', '土']
     const weekOfDay = weekOfDays[now.getDay()]
     const arrangedToday = `${now.getMonth() + 1}月${now.getDate()}日(${weekOfDay})`
     this.today = arrangedToday
   },
+  async mounted() {
+    const girlId = this.$store.getters['girl/currentGirl'].id
+    if(this.$store.getters['application/greetingCount'] <= 1) {
+      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: girlId, situations: 'greeting,touch' })
+      this.girlCurrentEmote = this.serifus.greeting.emotion
+      this.serifu = this.serifus.greeting.text
+      if(this.$store.getters['option/isPlayVoice']) {
+        this.$buefy.dialog.confirm({
+          message: '音声が出ます',
+          onConfirm: () => { this.voiceType = 'greeting' }
+        })
+      }
+    } else {
+      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: girlId, situations: 'greeting,touch'})
+    }
+  },
   data() {
     return {
-      yetTaskNum: 0,
-      workingTaskNum: 0,
       backgroundUrl: '/images/bg-bloom.webp',
       today: null,
       girlCurrentEmote: 'normal',
       serifus: [],
-      serifu: ''
+      serifu: '',
+      voiceType: ''
     }
   },
   methods: {
     changeEmote() {
         this.serifu = this.serifus.touch.text
         this.girlCurrentEmote = this.serifus.touch.emotion
+        if(this.$store.getters['option/isPlayVoice']) {
+          this.voiceType = 'touch'
+        }
         setTimeout(() => {
           this.serifu = ''
           this.girlCurrentEmote = this.serifus.greeting.emotion
