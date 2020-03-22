@@ -1,33 +1,14 @@
 export const state = () => ({
-    id: '',
-    email: '',
-    name: '',
-    nickname: '',
-    personal_pronoun: '',
-    gold: 0,
-    is_cooped_line: false,
-    personal_pronouns: [ {name: '私', value: '私'}, {name: '俺', value: '俺'}, {name: '僕', value: '僕'} ]
+    currentUser: ''
 })
 
 export const mutations = {
     set(state, user){
-        state.id = user.id
-        state.email = user.email
-        state.name = user.name
-        state.nickname = user.nickname
-        state.personal_pronoun = user.personal_pronoun
-        state.gold = user.gold,
-        state.is_cooped_line = user.is_cooped_line
+        state.currentUser = user
     },
 
     clear(state) {
-        state.id = ''
-        state.email = ''
-        state.name = ''
-        state.nickname = ''
-        state.personal_pronoun = ''
-        state.gold = ''
-        state.is_cooped_line = false
+        state.currentUser = ''
     }
 }
 
@@ -100,11 +81,5 @@ export const actions = {
 }
 
 export const getters = {
-    name: (state) => state.name,
-    email: (state) => state.email,
-    nickname: (state) => state.nickname,
-    personalPronoun: (state) => state.personal_pronoun,
-    gold: (state) => state.gold,
-    isCoopedLine: (state) => state.is_cooped_line,
-    personalPronouns: (state) => state.personal_pronouns
+    currentUser: (state) => state.currentUser
 }

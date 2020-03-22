@@ -11,7 +11,7 @@
         <span v-else>
             <h2>
                 「こんこん」専用LINEアカウントと連携する
-                <b-tag v-if="isCoopedLine" type="is-info">連携済み</b-tag>
+                <b-tag v-if="currentUser.is_cooped_line" type="is-info">連携済み</b-tag>
                 <b-tag v-else type="is-danger">未連携</b-tag>
             </h2>
             <p>アカウントを連携することで、タスクの期限が近づくとLINEを通じて秘書から連絡してくれます</p>
@@ -99,11 +99,11 @@ export default {
         return {
             isEdittingPassword: false,
             userForm: {
-                email: { label: 'メールアドレス', value: this.$store.getters['user/email'], type: 'text', rules: "required" },
-                name: { label: '名前', value: this.$store.getters['user/name'], type: "text", rules: "required|max:20" },
-                nickname: { label: 'ニックネーム', value: this.$store.getters['user/nickname'], type: "text", rules: "required|max:10" },
+                email: { label: 'メールアドレス', value: this.$store.getters['user/currentUser'].email, type: 'text', rules: "required" },
+                name: { label: '名前', value: this.$store.getters['user/currentUser'].name, type: "text", rules: "required|max:20" },
+                nickname: { label: 'ニックネーム', value: this.$store.getters['user/currentUser'].nickname, type: "text", rules: "required|max:10" },
                 password: { value: '' },
-                personalPronoun: { value: this.$store.getters['user/personalPronoun'] }
+                personalPronoun: { value: this.$store.getters['user/currentUser'].personal_pronoun }
             },
             settingForm: {
                 isPlayBgm: { label: 'BGM', value: this.$store.getters['option/isPlayBgm'], trueMessage: 'BGMを再生中', falseMessage: 'BGMを停止中' },
@@ -156,8 +156,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('user', ['email', 'name', 'nickname', 'personalPronouns', 'isCoopedLine']),
-        ...mapGetters('option', ['currentTab', 'currentTabName', 'choisableSeasons', 'toastWay'])
+        ...mapGetters('user', ['currentUser']),
+        ...mapGetters('option', ['currentTab', 'currentTabName', 'toastWay']),
+        ...mapGetters('master', ['choisableSeasons', 'personalPronouns'])
     }
 }
 </script>

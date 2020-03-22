@@ -23,7 +23,7 @@
             </div>
           </section>
         </b-carousel-item>
-        <b-carousel-item v-if="!isCoopedLine" class="has-text-centered">
+        <b-carousel-item v-if="!currentUser.is_cooped_line" class="has-text-centered">
           <section class="hero is-success">
             <div class="hero-body">
               <section class="content-area">
@@ -105,7 +105,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['isCoopedLine']),
+    ...mapGetters('user', ['currentUser']),
     ...mapGetters('girl', ['currentGirl'])
   }
 }

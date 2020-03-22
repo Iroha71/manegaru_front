@@ -1,16 +1,13 @@
 export const state = () => ({
-    currentGirl: {
-        id: '',
-        code: '',
-        name: '',
-        color: '',
-        color2: ''
-    }
+    currentGirl: ''
 })
 
 export const mutations = {
     setCurrentGirl(state, girl){
         state.currentGirl = girl
+    },
+    clearCurrentGirl(state) {
+        state.currentGirl = ''
     }
 }
 
@@ -30,7 +27,6 @@ export const actions = {
         const param = { girl_id: girlId }
         const user = await dispatch('api/request', {method: 'put', endpoint: `user/1`, params: param}, {root: true})
         await dispatch('user/setUser', user.data, {root: true})
-        console.log(user)
         await commit('setCurrentGirl', user.data.girl)
     },
     async unlock({dispatch}, girlId) {
@@ -53,8 +49,4 @@ export const actions = {
 
 export const getters = {
     currentGirl: (state) => state.currentGirl
-    // currentGirlId: (state) => state.currentGirl.id,
-    // currentGirlCode: (state) => state.currentGirl.code,
-    // currentGirlName: (state) => state.currentGirl.name,
-    // currentGirlColor1: (state) => state.currentGirl.color
 }

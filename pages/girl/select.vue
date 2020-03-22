@@ -93,7 +93,7 @@ export default {
                 let confirmMessage = '秘書にする'
                 if(this.selectedGirl.is_lock) {
                     await this.fetchGold()
-                    dialogMessage = this.selectedGirl.name + ` に来てもらいますか?<br>【資金】${this.hasGold} >> ${this.hasGold - 100}`
+                    dialogMessage = this.selectedGirl.name + ` に来てもらいますか?<br>【資金】${this.currentUser.gold} >> ${this.currentUser.gold - 100}`
                     confirmMessage = '迎える'
                 }
                 this.$buefy.dialog.confirm({
@@ -120,7 +120,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({ 'hasGold': 'user/gold' }),
+        ...mapGetters('user', ['currentUser']),
         selectedGirl() {
             return this.girls[this.centeredIndex]
         }

@@ -20,9 +20,6 @@ export default {
     data() {
         return { animatedText: this.message }
     },
-    computed: {
-        ...mapGetters('user', ['nickname'])
-    },
     watch: {
         message() {
             this.animatedText = ''

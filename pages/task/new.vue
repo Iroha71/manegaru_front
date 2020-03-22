@@ -61,7 +61,7 @@ export default {
         registTask:function() {
             const taskInfo = {
                 title: this.title,
-                limit_date: this.arrangeDate(this.limitDate),
+                toast_at: this.arrangeDate(this.limitDate),
                 priority_id: this.level,
                 detail: this.detail,
                 project_id: this.projectId

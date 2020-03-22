@@ -1,7 +1,7 @@
 <template lang="html">
 <div>
     <b-navbar type="is-primary">
-        <template slot="start" v-if="$store.getters['auth/access_token']">
+        <template slot="start" v-if="access_token">
             <b-navbar-item tag="router-link" to="/">トップ</b-navbar-item>
             <b-navbar-dropdown label="タスク">
                 <b-navbar-item tag="router-link" to="/task/">
@@ -20,15 +20,15 @@
                 </b-navbar-item>
             </b-navbar-dropdown>
         </template>
-        <template lang="html" slot="end" v-if="$store.getters['auth/access_token']">
+        <template lang="html" slot="end" v-if="access_token">
             <b-navbar-item @click="showUserModal=true" >
                 <img class="user-icon" :src="`/characters/${currentGirl.code}/icon.png`" />
-                <span class="user-name">{{ $store.getters['user/name'] }}</span>
+                <span class="user-name">{{ currentUser.name }}</span>
             </b-navbar-item>
             <b-navbar-item>
                 <img class="is-hidden-touch" src="/icons/coin.png" />
                 <img class="is-hidden-desktop" src="/icons/coin_dark.png" />
-                <span>{{ $store.getters['user/gold'] }}</span>
+                <span>{{ currentUser.gold }}</span>
             </b-navbar-item>
             <b-navbar-item>
                 <IconButton type="is-danger" @click="signOutUser()" iconName="sign_out" />
@@ -36,9 +36,9 @@
         </template>
     </b-navbar>
 
-    <b-modal :active.sync="showUserModal" has-modal-card>
+    <b-modal v-if="access_token&&currentGirl.id" :active.sync="showUserModal" has-modal-card>
         <div class="modal-card" style="width: auto;">
-            <header class="modal-card-head">{{ $store.getters['user/name'] }}</header>
+            <header class="modal-card-head">{{ currentUser.name }}</header>
             <section class="modal-card-body">
                 <table class="table">
                     <tr>
@@ -47,11 +47,11 @@
                     </tr>
                     <tr>
                         <th>一人称</th>
-                        <td>{{ $store.getters['user/personalPronoun'] }}</td>
+                        <td>{{ currentUser.personal_pronoun }}</td>
                     </tr>
                     <tr>
                         <th>呼び名</th>
-                        <td>{{ $store.getters['user/nickname'] }}</td>
+                        <td>{{ currentUser.nickname }}</td>
                     </tr>
                 </table>
             </section>
@@ -90,7 +90,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('girl', ['currentGirl'])
+        ...mapGetters('girl', ['currentGirl']),
+        ...mapGetters('user', ['currentUser']),
+        ...mapGetters('auth', ['access_token'])
     }
 }
 </script>
