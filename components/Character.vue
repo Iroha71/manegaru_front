@@ -65,7 +65,10 @@ export default {
             this.currentEmote = isOpen ? this.emote + '_open' : this.emote
         },
         isOverSyncBorder(spectrums) {
-            const openJudgeLine = 2000
+            let openJudgeLine = 2000
+            if(this.code === 'itako') {
+                openJudgeLine = 1500
+            }
             const totalSpectrum = spectrums.reduce(function(a, x) { return a + x })
             return totalSpectrum >= openJudgeLine
         },

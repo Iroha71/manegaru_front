@@ -25,7 +25,6 @@ export default({route, redirect, store}) => {
     } else {
         store.dispatch('auth/clearAuth')
         store.dispatch('user/clearUser')
-        store.dispatch('girl/clearCurrentGirl')
     }
 }
 

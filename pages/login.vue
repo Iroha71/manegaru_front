@@ -45,12 +45,14 @@ export default {
         }
     },
     mounted() {
-        liff.init({ liffId: process.env.LIFF_ID })
+        try {
+            liff.init({ liffId: process.env.LIFF_ID })
             .then(() => {
                 if(liff.isInClient()) {
                     this.lineId = liff.getContext().userId
                 }
             })
+        } catch(error) { }
     },
     methods: {
         ...mapActions({ 'signIn': 'user/signIn', 'registLineId': 'user/registLineId', 'resetPassword': 'user/resetPassword' }),
