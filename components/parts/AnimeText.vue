@@ -3,8 +3,10 @@
         <span v-for="(text, index) in animatedText"
             class="item"
             :key="index"
-            :style="{animationDelay: index * 70 + 'ms'}"
-            v-text="text" />
+            :style="{animationDelay: index * 70 + 'ms'}">
+            <span v-if="text==' '">&nbsp;</span>
+            <span v-else>{{ text }}</span>
+        </span>
     </div>
 </template>
 
