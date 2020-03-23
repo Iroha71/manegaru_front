@@ -63,7 +63,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('user', ['personalPronouns']),
+        ...mapGetters('master', ['personalPronouns']),
         hasEmailError() {
             if(this.$route.query.error == '422')
                 return 'このメールアドレスは既に登録されています'

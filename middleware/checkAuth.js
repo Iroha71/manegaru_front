@@ -6,7 +6,7 @@ export default({route, redirect, store}) => {
             if(!storeData.auth.access_token) {
                 throw new Error('no authorized')
             }
-            store.dispatch('user/setUser', storeData.user)
+            store.dispatch('user/setUser', storeData.user.currentUser)
             store.dispatch('auth/setAuth', storeData.auth)
             store.dispatch('project/setCurrentGroupId', storeData.project.currentGroupId)
             store.dispatch('girl/setCurrentGirl', storeData.girl.currentGirl)
@@ -45,5 +45,5 @@ const isMatchPath = (pagePath, targetPath) => {
 }
 
 const isEmptyCurrentGirl = (store) => {
-    return store.girl.currentGirl.id === '' || store.girl.currentGirl.code === ''
+    return store.girl.currentGirl == null || store.girl.currentGirl == ''
 }

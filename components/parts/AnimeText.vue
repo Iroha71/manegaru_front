@@ -1,10 +1,12 @@
 <template>
     <div>
-        <span v-for="(text, index) in message"
+        <span v-for="(text, index) in animatedText"
             class="item"
             :key="index"
-            :style="{animationDelay: index * 70 + 'ms'}"
-            v-text="text" />
+            :style="{animationDelay: index * 70 + 'ms'}">
+            <span v-if="text==' '">&nbsp;</span>
+            <span v-else>{{ text }}</span>
+        </span>
     </div>
 </template>
 
@@ -17,8 +19,16 @@ export default {
             required: true
         }
     },
-    computed: {
-        ...mapGetters('user', ['nickname'])
+    data() {
+        return { animatedText: this.message }
+    },
+    watch: {
+        message() {
+            this.animatedText = ''
+            setTimeout(() => {
+                this.animatedText = this.message
+            }, 1)
+        }
     }
 }
 </script>
@@ -29,6 +39,6 @@ export default {
 }
 .item {
     display: inline-block;
-    animation: text-in .2s backwards;
+    animation: text-in backwards;
 }
 </style>
