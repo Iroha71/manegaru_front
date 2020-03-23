@@ -15,8 +15,16 @@
                 <b-radio-button type="is-success" v-model="level" native-value="2">Lv.2</b-radio-button>
                 <b-radio-button type="is-info" v-model="level" native-value="1">Lv.1</b-radio-button>
             </b-field>
-            <b-field label="期限">
+            <b-field label="通知日">
                 <b-datepicker :minDate="minDate" v-model="limitDate" />
+            </b-field>
+            <b-field v-if="limitDate">
+                <b-checkbox v-model="notifyTiming" native-value="morning" type="is-warning" size="is-medium">
+                    <img src="/icons/morning.png">朝
+                </b-checkbox>
+                <b-checkbox v-model="notifyTiming" native-value="night" type="is-info" size="is-medium">
+                    <img src="/icons/night.png">夜
+                </b-checkbox>
             </b-field>
             <Vinput label="詳細" type="textarea" rules="max:150" v-model="detail" />
             <b-field class="has-text-centered">
@@ -53,18 +61,26 @@ export default {
             limitDate: null,
             level: "2",
             detail: '',
-            projectId: 0
+            projectId: 0,
+            notifyTiming: []
         }
     },
     methods: {
         ...mapActions({ 'insertTask': 'task/insertTask' }),
         registTask:function() {
+            let timing = null
+            if(this.notifyTiming.length >= 2) {
+                timing = 'both'
+            } else if(this.notifyTiming.length > 0) {
+                timing = this.notifyTiming[0]
+            }
             const taskInfo = {
                 title: this.title,
-                limit_date: this.arrangeDate(this.limitDate),
+                toast_at: this.arrangeDate(this.limitDate),
                 priority_id: this.level,
                 detail: this.detail,
-                project_id: this.projectId
+                project_id: this.projectId,
+                toast_timing: timing
             }
             this.insertTask(taskInfo).then(registedTask => {
                 this.$router.push(`/task/${registedTask.data.id}/`)
@@ -88,5 +104,15 @@ export default {
 <style lang="scss" scoped>
 .column {
     height: 100%;
+    .b-checkbox {
+        /deep/ .control-label {
+            display: flex;
+            align-items: center;
+            img {
+                height: 1.2rem;
+                margin-right: 0.25rem;
+            }
+        }
+    }
 }
 </style>

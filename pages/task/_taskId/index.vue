@@ -37,7 +37,7 @@
                     <th class="has-text-centered">期限</th>
                     <td :class="`limit-date has-background-${getStatusColor()}`" @click="changeEditModeIs('limitDate')" v-if="!isEdittingDate">
                         <b-tooltip type="is-dark" label="タップで期限日変更">
-                            {{ task.limit_date }}
+                            {{ task.toast_at }}
                         </b-tooltip>
                     </td>
                     <td v-else>
@@ -137,7 +137,7 @@ export default {
             let changeContent = {}
             if(formName === 'limitDate') {
                 this.closeEditModeIs('limitDate')
-                changeContent = { limit_date: this.arrangeDate(this.form.limitDate) }
+                changeContent = { toast_at: this.arrangeDate(this.form.limitDate) }
             } else {
                 this.closeEditModeIs('memo')
                 changeContent = { detail: this.form.detail }

@@ -1,23 +1,13 @@
 export const state = () => ({
-    currentGirl: {
-        id: '',
-        code: '',
-        name: ''
-    }
+    currentGirl: ''
 })
 
 export const mutations = {
     setCurrentGirl(state, girl){
-        if(girl){
-            state.currentGirl.id = girl.id
-            state.currentGirl.code = girl.code
-            state.currentGirl.name = girl.name
-        }
+        state.currentGirl = girl
     },
     clearCurrentGirl(state) {
-        state.currentGirl.id = '',
-        state.currentGirl.code = '',
-        state.currentGirl.name = ''
+        state.currentGirl = ''
     }
 }
 
@@ -43,11 +33,20 @@ export const actions = {
         const param = { girl_id: girlId }
         const girls = await dispatch('api/request', {method: 'post', endpoint: `user_girl`, params: param}, {root: true})
         return girls.data
+    },
+
+    async getSerifu({dispatch}, { girlId, situation }) {
+        const serifu = await dispatch('api/request', {method: 'get', endpoint: `serifu/${girlId}`, params: {situation: situation}}, {root: true})
+        return serifu.data
+    },
+
+    async getSerifuSet({dispatch}, { girlId, situations }) {
+        const params = { girl_id: girlId, situation: situations }
+        const serifuSet = await dispatch('api/request', {method: 'get', endpoint: 'serifu', params: params}, {root: true})
+        return serifuSet.data
     }
 }
 
 export const getters = {
-    currentGirlId: (state) => state.currentGirl.id,
-    currentGirlCode: (state) => state.currentGirl.code,
-    currentGirlName: (state) => state.currentGirl.name
+    currentGirl: (state) => state.currentGirl
 }

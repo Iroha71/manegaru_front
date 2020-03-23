@@ -6,13 +6,16 @@ export default({route, redirect, store}) => {
             if(!storeData.auth.access_token) {
                 throw new Error('no authorized')
             }
-            store.dispatch('user/setUser', storeData.user)
+            store.dispatch('user/setUser', storeData.user.currentUser)
             store.dispatch('auth/setAuth', storeData.auth)
             store.dispatch('project/setCurrentGroupId', storeData.project.currentGroupId)
             store.dispatch('girl/setCurrentGirl', storeData.girl.currentGirl)
             store.dispatch('option/setAppSettingFromStore', storeData.option)
             if(isEmptyCurrentGirl(storeData) && !isMatchPath(route.path, '/girl/select/') && !isMatchPath(route.path, '/user/cooped-line/')) {
                 redirect('/girl/select?isFirst=true')
+            }
+            if(route.path === '/') {
+                store.dispatch('application/incrementGreetingCount')
             }
         }catch(error){
             console.log(error)
@@ -42,5 +45,5 @@ const isMatchPath = (pagePath, targetPath) => {
 }
 
 const isEmptyCurrentGirl = (store) => {
-    return store.girl.currentGirl.id === '' || store.girl.currentGirl.code === ''
+    return store.girl.currentGirl == null || store.girl.currentGirl == ''
 }
