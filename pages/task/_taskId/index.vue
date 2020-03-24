@@ -2,8 +2,8 @@
 <div class="section column is-12-tablet">
     <div class="content">
         <h1 :class="getStatusColor()">{{ task.title }}</h1>
-        <b-tag size="is-medium" :type="getPriorityColor()">Lv.{{ task.priority.like_rate }}</b-tag>
-        <b-tag size="is-medium">{{ task.status }}</b-tag>
+        <b-tag size="is-medium" :type="getPriorityColor()">Lv.{{ task.priority.level }}</b-tag>
+        <b-tag size="is-medium" :type="'is-'+getStatusColor()">{{ task.status }}</b-tag>
     </div>
     <div class="columns">
         <div class="column is-4 has-text-centered">
@@ -33,24 +33,34 @@
         </div>
         <div class="column content">
             <table>
-                <tr class="has-background-grey-lighter">
-                    <th class="has-text-centered">期限</th>
-                    <td :class="`limit-date has-background-${getStatusColor()}`" @click="changeEditModeIs('limitDate')" v-if="!isEdittingDate">
-                        <b-tooltip type="is-dark" label="タップで期限日変更">
-                            {{ task.toast_at }}
+                <tr>
+                    <td class="has-background-light has-text-centered">通知日</td>
+                </tr>
+                <tr>
+                    <td class="limit-date has-text-centered" v-if="!isEdittingDate" @click="changeEditModeIs('limitDate')">
+                        <b-tooltip always position="is-left"　type="is-dark" label="タップして通知日変更">
+                            <span :class="{ 'disabled-line': task.is_notified }">{{ task.toast_at }}</span>
+                            <img v-if="task.toast_at!='なし'" :src="`/icons/${task.toast_timing}.png`" class="embedded-image">
                         </b-tooltip>
                     </td>
                     <td v-else>
                         <b-datepicker :minDate="form.limitDate" v-model="form.limitDate" />
+                        <b-field>
+                                <b-checkbox v-model="form.notifyTiming" native-value="morning" type="is-warning">
+                                <img src="/icons/morning.png" class="embedded-image">朝
+                            </b-checkbox>
+                            <b-checkbox v-model="form.notifyTiming" native-value="night" type="is-info">
+                                <img src="/icons/night.png" class="embedded-image">夜
+                            </b-checkbox>
+                        </b-field>
                         <b-button type="is-success" @click="saveEditedInfo('limitDate')">保存する</b-button>
                         <b-button type="is-danger" @click="closeEditModeIs('limitDate')">×</b-button>
                     </td>
                 </tr>
-                <tr class="has-background-grey-light">
-                    <td colspan="2" class="has-text-centered">
-                        {{ task.updated_at }}
-                        <b-tag type="is-info" size="is-medium" v-if="task.is_updated">更新</b-tag>
-                        <b-tag type="is-light" size="is-medium" v-else>作成</b-tag>
+                <tr>
+                    <td class="has-text-centered">
+                        <b-tag type="is-link" v-if="!task.is_notified">通知予定</b-tag>
+                        <b-tag type="is-danger" v-else>通知済み</b-tag>
                     </td>
                 </tr>
             </table>
@@ -94,7 +104,8 @@ export default {
             isEdittingDate: false,
             form: {
                 detail: '',
-                limitDate: null
+                limitDate: null,
+                notifyTiming: []
             }
         }
     },
@@ -137,7 +148,7 @@ export default {
             let changeContent = {}
             if(formName === 'limitDate') {
                 this.closeEditModeIs('limitDate')
-                changeContent = { toast_at: this.arrangeDate(this.form.limitDate) }
+                changeContent = { toast_at: this.arrangeDate(this.form.limitDate), toast_timing: this.form.notifyTiming }
             } else {
                 this.closeEditModeIs('memo')
                 changeContent = { detail: this.form.detail }
@@ -207,15 +218,14 @@ table {
     margin-left: auto;
     margin-right: auto;
     border-collapse: separate;
-    border-spacing: 0.75rem;
     th {
         text-align: center;
-        border-radius: 10px;
     }
     td {
-        border-radius: 10px;
         &.limit-date {
             cursor: pointer;
+            display: flex;
+            align-content: center;
         }
     }
 }
