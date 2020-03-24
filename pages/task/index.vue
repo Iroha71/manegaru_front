@@ -14,8 +14,14 @@
             <template lang="html" v-slot:content>
                 <table class="table">
                     <tr>
-                        <th>期限</th>
-                        <td>{{ task.limit_date }}</td>
+                        <td>
+                            <b-tag v-if="!task.is_notified" type="is-link">通知日</b-tag>
+                            <b-tag v-else type="is-danger">通知済み</b-tag>
+                        </td>
+                        <th :class="{ 'disabled-line': task.is_notified }">
+                            {{ task.toast_at_short }}
+                            <img v-if="task.toast_at!='なし'" class="embedded-image" :class="{'disabled-image': task.is_notified}" :src="`/icons/${task.toast_timing}.png`">
+                        </th>
                     </tr>
                 </table>
             </template>
@@ -97,7 +103,7 @@ export default {
                 orderSign: this.orderSign
             }
             this.tasks = await this.custom(customParam)
-        }
+        },
     },
     computed: {
         ...mapGetters({ 'currentGroupId': 'project/currentGroupId' })
@@ -119,6 +125,12 @@ export default {
         right: 0;
         margin-right: 0.75rem;
         margin-bottom: 0.75rem;
+    }
+}
+th, td {
+    text-align: center;
+    img.disabled-image {
+        filter: brightness(0%);
     }
 }
 .list {
