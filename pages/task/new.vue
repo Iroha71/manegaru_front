@@ -11,9 +11,9 @@
                 </ValidationProvider>
             </b-field>
             <b-field>
-                <b-radio-button type="is-danger" v-model="level" native-value="3">Lv.3</b-radio-button>
+                <b-radio-button type="is-danger" v-model="level" native-value="1">Lv.3</b-radio-button>
                 <b-radio-button type="is-success" v-model="level" native-value="2">Lv.2</b-radio-button>
-                <b-radio-button type="is-info" v-model="level" native-value="1">Lv.1</b-radio-button>
+                <b-radio-button type="is-info" v-model="level" native-value="3">Lv.1</b-radio-button>
             </b-field>
             <b-field label="通知日">
                 <b-datepicker :minDate="minDate" v-model="limitDate" />
