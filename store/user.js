@@ -38,7 +38,6 @@ export const actions = {
         await dispatch('api/request', {method: 'delete', endpoint: signOutPath, params: null}, {root: true})
         await commit('clear')
         await dispatch('auth/clearAuth', null, {root: true})
-        localStorage.removeItem('comcon')
     },
 
     async signUp({dispatch}, {email, password, name, nickname, pronoun}) {
