@@ -86,8 +86,11 @@ export default {
       this.fetchTopVisitedAt(now)
     }
     if(this.$route.query.status == 'finishedTask') {
-      this.serifus = await this.getSerifuSet({girlId: this.currentGirl.id, situations: 'greeting,touch,finishedTask'})
-      this.playSerifu('finishedTask', this.$store.getters['option/isPlayVoice'])
+      this.serifus = await this.getSerifuSet({girlId: this.currentGirl.id, situations: 'greeting,touch,finished_task'})
+      this.playSerifu('finished_task', this.$store.getters['option/isPlayVoice'])
+      setTimeout(() => {
+        this.resetSerifu()
+      }, 10000)
     }
   },
   data() {
@@ -113,7 +116,7 @@ export default {
       this.girlCurrentEmote = this.serifus[situation].emotion
       this.serifu = this.serifus[situation].text
       if(isOverVoice) {
-        this.voiceType = situation
+        setTimeout(() => { this.voiceType = situation }, 300)
       }
     },
     resetSerifu() {
