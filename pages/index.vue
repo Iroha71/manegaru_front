@@ -47,7 +47,7 @@
 import IconButton from '@/components/parts/IconButton.vue'
 import Character from '@/components/Character.vue'
 import MessageWindow from '@/components/MessageWindow.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   layout: 'fullScreenWithHeader',
@@ -66,19 +66,28 @@ export default {
     this.today = arrangedToday
   },
   async mounted() {
-    const girlId = this.$store.getters['girl/currentGirl'].id
-    if(this.$store.getters['application/greetingCount'] <= 1) {
-      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: girlId, situations: 'greeting,touch' })
-      this.girlCurrentEmote = this.serifus.greeting.emotion
-      this.serifu = this.serifus.greeting.text
+    const now = new Date()
+    if(this.greetingCount <= 1) {
+      this.serifus = await this.getSerifuSet({girlId: this.currentGirl.id, situations: 'greeting,touch'})
+      this.fetchTopVisitedAt(now)
       if(this.$store.getters['option/isPlayVoice']) {
         this.$buefy.dialog.confirm({
           message: '音声が出ます',
-          onConfirm: () => { this.voiceType = 'greeting' }
+          onConfirm: () => { this.playSerifu('greeting', this.$store.getters['option/isPlayVoice']) }
         })
-      }
+      } else { this.playSerifu('greeting', this.$store.getters['option/isPlayVoice']) }
     } else {
-      this.serifus = await this.$store.dispatch('girl/getSerifuSet', { girlId: girlId, situations: 'greeting,touch'})
+      this.serifus = await this.getSerifuSet({girlId: this.currentGirl.id, situations: 'greeting2,touch'})
+      const storeTime = new Date(this.$store.getters['application/topVisitedAt'])
+      const visitedElapsedHour = (now.getTime() - storeTime.getTime()) / (1000 * 60 * 60)
+      if(visitedElapsedHour >= 1) {
+        this.playSerifu('greeting2', this.$store.getters['option/isPlayVoice'])
+      }
+      this.fetchTopVisitedAt(now)
+    }
+    if(this.$route.query.status == 'finishedTask') {
+      this.serifus = await this.getSerifuSet({girlId: this.currentGirl.id, situations: 'greeting,touch,finishedTask'})
+      this.playSerifu('finishedTask', this.$store.getters['option/isPlayVoice'])
     }
   },
   data() {
@@ -92,21 +101,31 @@ export default {
     }
   },
   methods: {
+    ...mapActions('girl', ['getSerifuSet']),
+    ...mapActions('application', ['fetchTopVisitedAt']),
     changeEmote() {
-        this.serifu = this.serifus.touch.text
-        this.girlCurrentEmote = this.serifus.touch.emotion
-        if(this.$store.getters['option/isPlayVoice']) {
-          this.voiceType = 'touch'
-        }
-        setTimeout(() => {
-          this.serifu = ''
-          this.girlCurrentEmote = this.serifus.greeting.emotion
-        }, 5000)
+      this.playSerifu('touch', this.isPlayVoice)
+      setTimeout(() => {
+        this.resetSerifu()
+      }, 5000)
+    },
+    playSerifu(situation, isOverVoice) {
+      this.girlCurrentEmote = this.serifus[situation].emotion
+      this.serifu = this.serifus[situation].text
+      if(isOverVoice) {
+        this.voiceType = situation
+      }
+    },
+    resetSerifu() {
+      this.serifu = ''
+      this.girlCurrentEmote = 'normal'
     }
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('girl', ['currentGirl'])
+    ...mapGetters('girl', ['currentGirl']),
+    ...mapGetters('application', ['topVisitedAt', 'greetingCount']),
+    ...mapGetters('option', ['isPlayVoice'])
   }
 }
 </script>

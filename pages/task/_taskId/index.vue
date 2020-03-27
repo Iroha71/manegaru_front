@@ -149,7 +149,7 @@ export default {
                             message: `資金 ＋${reward.gold}<br>好感度 ＋${reward.like_rate}`,
                             duration: 3000
                         })
-                        this.$router.push('/?finishedTask=true')
+                        this.$router.push('/?status=finishedTask')
                     })
             } else {
                 this.updateStatus({taskId: this.task.id, status: this.statuses[this.statusIndex]})
