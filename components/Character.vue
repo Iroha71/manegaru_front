@@ -89,6 +89,10 @@ export default {
         }
     },
     beforeDestroy() {
+        if(src != null) {
+            src.stop()
+            src = null
+        }
         clearInterval(this.lipMoveInterVal)
     },
     watch: {

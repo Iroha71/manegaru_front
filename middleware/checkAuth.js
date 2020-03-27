@@ -3,14 +3,15 @@ export default({route, redirect, store}) => {
     if(isRequireAuthPage(route.path)) {
         try{
             const storeData = JSON.parse(localStorage.getItem('comcon'))
-            if(!storeData.auth.access_token) {
+            const optionStoreData = JSON.parse(localStorage.getItem('comcon_option'))
+            if(storeData.auth.access_token == '') {
                 throw new Error('no authorized')
             }
             store.dispatch('user/setUser', storeData.user.currentUser)
             store.dispatch('auth/setAuth', storeData.auth)
             store.dispatch('project/setCurrentGroupId', storeData.project.currentGroupId)
             store.dispatch('girl/setCurrentGirl', storeData.girl.currentGirl)
-            store.dispatch('option/setAppSettingFromStore', storeData.option)
+            store.dispatch('option/setAppSettingFromStore', optionStoreData.option)
             if(isEmptyCurrentGirl(storeData) && !isMatchPath(route.path, '/girl/select/') && !isMatchPath(route.path, '/user/cooped-line/')) {
                 redirect('/girl/select?isFirst=true')
             }
@@ -23,8 +24,7 @@ export default({route, redirect, store}) => {
             redirect('/login/?error=401' + openedLINEParam)
         }
     } else {
-        store.dispatch('auth/clearAuth')
-        store.dispatch('user/clearUser')
+        localStorage.removeItem('comcon')
     }
 }
 
