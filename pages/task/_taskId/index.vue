@@ -31,17 +31,15 @@
             </b-steps>
             <b-button type="is-success" v-if="isStatusUpdated" @click="changeStatus()">更新</b-button>
         </div>
-        <div class="column content">
+        <div class="column content info-area">
             <table>
                 <tr>
                     <td class="has-background-light has-text-centered">通知日</td>
                 </tr>
                 <tr>
                     <td class="limit-date has-text-centered" v-if="!isEdittingDate" @click="changeEditModeIs('limitDate')">
-                        <b-tooltip always position="is-left"　type="is-dark" label="タップして通知日変更">
-                            <span :class="{ 'disabled-line': task.is_notified }">{{ task.toast_at }}</span>
-                            <img v-if="task.toast_at!='なし'" :src="`/icons/${task.toast_timing}.png`" class="embedded-image">
-                        </b-tooltip>
+                        <span :class="{ 'disabled-line': task.is_notified }">{{ task.toast_at }}</span>
+                        <img v-if="task.toast_at!='なし'" :src="`/icons/${task.toast_timing}.png`" class="embedded-image">
                     </td>
                     <td v-else>
                         <b-datepicker :minDate="form.limitDate" v-model="form.limitDate" />
@@ -59,9 +57,24 @@
                 </tr>
                 <tr>
                     <td class="has-text-centered">
-                        <b-tag type="is-link" v-if="!task.is_notified">通知予定</b-tag>
-                        <b-tag type="is-danger" v-else>通知済み</b-tag>
+                        <b-tooltip always position="is-bottom"　type="is-dark" label="タップして編集">
+                            <b-tag type="is-link" v-if="!task.is_notified">通知予定</b-tag>
+                            <b-tag type="is-danger" v-else>通知済み</b-tag>
+                        </b-tooltip>
                     </td>
+                </tr>
+            </table>
+            <table class="table">
+                <tr>
+                    <th colspan="2" class="has-text-centered has-background-primary">報酬</th>
+                </tr>
+                <tr>
+                    <td><img class="embedded-image" src="/icons/coin_dark.png"></td>
+                    <td>＋{{ task.priority.point }}</td>
+                </tr>
+                <tr>
+                    <td><img class="embedded-image" src="/icons/heart.png"></td>
+                    <td>＋{{ task.priority.like_rate }}</td>
                 </tr>
             </table>
         </div>
@@ -114,7 +127,7 @@ export default {
         this.defautIndex = this.statusIndex
     },
     methods: {
-        ...mapActions({ 'updateStatus': 'task/updateStatus', 'update': 'task/update' }),
+        ...mapActions('task', ['updateStatus', 'update', 'destroy']),
         getStatusColor:function() {
             switch(this.task.status) {
                 case this.statuses[0]:
@@ -128,12 +141,24 @@ export default {
             }
         },
         changeStatus:function() {
-            this.updateStatus({taskId: this.task.id, status: this.statuses[this.statusIndex]})
-            .then(updatedStatus => {
-                this.task.status = updatedStatus
-                this.defautIndex = this.statuses.indexOf(updatedStatus)
-                this.statusIndex = this.defautIndex
-            })
+            if(this.statuses[this.statusIndex] == '完了') {
+                this.destroy(this.task.id)
+                    .then((reward) => {
+                        this.$buefy.toast.open({
+                            type: 'is-success',
+                            message: `資金 ＋${reward.gold}<br>好感度 ＋${reward.like_rate}`,
+                            duration: 3000
+                        })
+                        this.$router.push('/?status=finishedTask')
+                    })
+            } else {
+                this.updateStatus({taskId: this.task.id, status: this.statuses[this.statusIndex]})
+                    .then(updatedStatus => {
+                        this.task.status = updatedStatus
+                        this.defautIndex = this.statuses.indexOf(updatedStatus)
+                        this.statusIndex = this.defautIndex
+                    })
+            }
         },
         changeEditModeIs(formName) {
             if(formName === 'limitDate') {
@@ -213,19 +238,19 @@ h1 {
         border-color: #23d160;
     }
 }
-table {
-    width: auto;
-    margin-left: auto;
-    margin-right: auto;
-    border-collapse: separate;
-    th {
-        text-align: center;
-    }
-    td {
-        &.limit-date {
-            cursor: pointer;
-            display: flex;
-            align-content: center;
+.info-area {
+    display: flex;
+    justify-content: center;
+    table {
+        width: 30%;
+        border-collapse: separate;
+        margin-right: 0.75rem;
+        td {
+            &.limit-date {
+                cursor: pointer;
+                display: flex;
+                align-content: center;
+            }
         }
     }
 }

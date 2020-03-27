@@ -6,11 +6,11 @@ export default({store}) => {
             paths: [
                 'auth',
                 'girl',
-                'option',
                 'project',
                 'user'
             ]
         })(store)
+        createPersistedState({ key: 'comcon_option', paths: [ 'option' ] })(store)
         createPersistedState({
             key: 'comcon',
             paths: [ 'application' ],
