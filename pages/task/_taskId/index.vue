@@ -90,12 +90,17 @@
             <span v-else-if="!isEdittingMemo">メモは書かれていません</span>
             <Vinput v-else type="textarea" rules="max:150" :maxLength="150" label="" v-model="form.detail" />
         </div>
+        <IconButton class="delete-btn"
+            type="is-danger"
+            iconName="delete"
+            message="このタスクを削除する"
+            @click="applyDeleteDialog()" />
     </div>
 </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import IconButton from '@/components/parts/IconButton.vue'
 import Vinput from '@/components/parts/ValidateInput.vue'
 export default {
@@ -140,24 +145,36 @@ export default {
                     return ''
             }
         },
-        changeStatus:function() {
-            if(this.statuses[this.statusIndex] == '完了') {
-                this.destroy(this.task.id)
-                    .then((reward) => {
-                        this.$buefy.toast.open({
-                            type: 'is-success',
-                            message: `資金 ＋${reward.gold}<br>好感度 ＋${reward.like_rate}`,
-                            duration: 3000
-                        })
-                        this.$router.push('/?status=finishedTask')
-                    })
+        async changeStatus() {
+            const reward = await this.updateStatus({taskId: this.task.id, status: this.statuses[this.statusIndex]})
+            if(reward.status === '完了') {
+                this.$buefy.toast.open({
+                    type: 'is-success',
+                    message: `資金 ＋${reward.gold}<br>${reward.like_rate}`,
+                    duration: 4000
+                })
+                const nextPath = this.isMoveTopAfterTaskComplete ? '/?status=finishedTask' : '/task/?status=finishedTask'
+                this.$router.push(nextPath)
             } else {
-                this.updateStatus({taskId: this.task.id, status: this.statuses[this.statusIndex]})
-                    .then(updatedStatus => {
-                        this.task.status = updatedStatus
-                        this.defautIndex = this.statuses.indexOf(updatedStatus)
-                        this.statusIndex = this.defautIndex
-                    })
+                this.task.status = reward.status
+                this.defautIndex = this.statuses.indexOf(reward.status)
+                this.statusIndex = this.defautIndex
+            }
+        },
+        applyDeleteDialog() {
+            this.$buefy.dialog.confirm({
+                message: 'このタスクを削除しますか?',
+                confirmText: '削除する',
+                cancelText: 'やめる',
+                type: 'is-danger',
+                onConfirm: () => { this.deleteTask() }
+            })
+        },
+        async deleteTask() {
+            const deleted = await this.destroy(this.task.id)
+            if(deleted.result === 'success') {
+                this.$buefy.toast.open({ type: 'is-danger', message: 'タスクを削除しました' })
+                this.$router.push('/task/')
             }
         },
         changeEditModeIs(formName) {
@@ -212,6 +229,7 @@ export default {
         }
     },
     computed: {
+        ...mapGetters('option', ['isMoveTopAfterTaskComplete']),
         isStatusUpdated() {
             if(this.statusIndex != this.defautIndex) {
                 return true
@@ -258,5 +276,8 @@ h1 {
     padding: 0.75rem;
     white-space: pre-wrap;
     word-wrap: break-word;
+}
+.delete-btn {
+    margin-top: 0.5rem;
 }
 </style>

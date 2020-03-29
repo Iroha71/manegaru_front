@@ -38,13 +38,14 @@ export const actions = {
     async updateStatus({dispatch}, {taskId, status}) {
         const statusInfo = { status: status }
         const updatedStatus = await dispatch('api/request', {method: 'put', endpoint: `task/${taskId}/update_status`, params: statusInfo}, {root: true})
+        if(updatedStatus.data.status == '完了') {
+            dispatch('user/setUser', updatedStatus.data.user, {root: true})
+        }
         return updatedStatus.data
     },
 
     async destroy({dispatch}, taskId) {
-        const finishReward = await dispatch('api/request', {method: 'delete', endpoint: `/task/${taskId}`, params: null}, {root: true})
-        dispatch('user/setUser', finishReward.data.user, {root: true})
-        dispatch('girl/setCurrentGirl', finishReward.data.user.girl, {root: true})
-        return { gold: finishReward.data.gold, like_rate: finishReward.data.like_rate }
+        const deleted = await dispatch('api/request', {method: 'delete', endpoint: `task/${taskId}`, params: null}, {root: true})
+        return deleted.data
     }
 }
