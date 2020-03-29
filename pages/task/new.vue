@@ -68,19 +68,13 @@ export default {
     methods: {
         ...mapActions({ 'insertTask': 'task/insertTask' }),
         registTask:function() {
-            let timing = null
-            if(this.notifyTiming.length >= 2) {
-                timing = 'both'
-            } else if(this.notifyTiming.length > 0) {
-                timing = this.notifyTiming[0]
-            }
             const taskInfo = {
                 title: this.title,
                 toast_at: this.arrangeDate(this.limitDate),
                 priority_id: this.level,
                 detail: this.detail,
                 project_id: this.projectId,
-                toast_timing: timing
+                toast_timing: this.notifyTiming
             }
             this.insertTask(taskInfo).then(registedTask => {
                 this.$router.push(`/task/${registedTask.data.id}/`)
