@@ -56,6 +56,12 @@
                         <option v-for="season in choisableSeasons" :value="season.value">{{ season.name }}</option>
                     </b-select>
                 </b-field>
+                <b-field v-if="key=='isMoveTopAfterTaskComplete'">
+                    <b-select v-model="setting.value">
+                        <option :value="true">トップに戻る</option>
+                        <option :value="false">タスク一覧に戻る</option>
+                    </b-select>
+                </b-field>
             </b-field>
             <b-button type="is-success" :disabled="invalid" @click="saveAppSetting()">変更を反映する</b-button>
         </ValidationObserver>
@@ -110,7 +116,8 @@ export default {
                 isPlayVoice: { label: 'VOICEROIDの声', value: this.$store.getters['option/isPlayVoice'], trueMessage: '声を再生中', falseMessage: '声を停止中' },
                 isToastTask: { label: '通知', value: this.$store.getters['option/isToastTask'], trueMessage: '期限が近いタスクを通知する', false: '期限が近いタスクを通知しない' },
                 toastWay: { value: this.$store.getters['option/toastWay']},
-                topApplySeason: { label: 'トップ画面の季節', value: this.$store.getters['option/topApplySeason'] }
+                topApplySeason: { label: 'トップ画面の季節', value: this.$store.getters['option/topApplySeason'] },
+                isMoveTopAfterTaskComplete: { label: 'タスクを完了した後の遷移先', value: this.$store.getters['option/isMoveTopAfterTaskComplete'] }
             },
             isEditting: true
         }
@@ -148,7 +155,7 @@ export default {
             })
         },
         isSwitchableField(key) {
-            const noSwichableKey = ['toastWay', 'topApplySeason']
+            const noSwichableKey = ['toastWay', 'topApplySeason', 'isMoveTopAfterTaskComplete']
             return !noSwichableKey.includes(key)
         },
         async getCoopedLineInfo() {

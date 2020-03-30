@@ -4,7 +4,8 @@ export const state = () => ({
     isPlayVoice: false,
     isToastTask: true,
     toastWay: 'line',
-    topApplySeason: 'match'
+    topApplySeason: 'match',
+    isMoveTopAfterTaskComplete: true
 })
 
 export const mutations = {
@@ -17,6 +18,7 @@ export const mutations = {
         state.isToastTask = setting.isToastTask.value
         state.toastWay = setting.toastWay.value
         state.topApplySeason = setting.topApplySeason.value
+        state.isMoveTopAfterTaskComplete = setting.isMoveTopAfterTaskComplete.value
     },
     setAppSettingFromStore(state, setting) {
         Object.keys(setting).forEach((key) => {
@@ -51,5 +53,6 @@ export const getters = {
     isPlayVoice: (state) => state.isPlayVoice,
     isToastTask: (state) => state.isToastTask,
     toastWay: (state) => state.toastWay,
-    topApplySeason: (state) => state.topApplySeason
+    topApplySeason: (state) => state.topApplySeason,
+    isMoveTopAfterTaskComplete: (state) => state.isMoveTopAfterTaskComplete
 }
