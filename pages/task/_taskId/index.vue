@@ -157,7 +157,7 @@ export default {
                     .then((reward) => {
                         this.$buefy.toast.open({
                             type: 'is-success',
-                            message: `資金 ＋${reward.gold}<br>好感度 ＋${reward.like_rate}`,
+                            message: `資金 ＋${reward.gold}<br>${reward.like_rate}`,
                             duration: 3000
                         })
                         this.$router.push('/?status=finishedTask')
