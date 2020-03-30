@@ -32,49 +32,34 @@
             <b-button type="is-success" v-if="isStatusUpdated" @click="changeStatus()">更新</b-button>
         </div>
         <div class="column content info-area">
-            <table>
-                <tr>
-                    <td class="has-background-light has-text-centered">通知日</td>
-                </tr>
-                <tr>
-                    <td class="limit-date has-text-centered" v-if="!isEdittingDate" @click="changeEditModeIs('limitDate')">
-                        <span :class="{ 'disabled-line': task.is_notified }">{{ task.toast_at }}</span>
-                        <img v-if="task.toast_at!='なし'" :src="`/icons/${task.toast_timing}.png`" class="embedded-image">
-                    </td>
-                    <td v-else>
-                        <b-datepicker :minDate="form.limitDate" v-model="form.limitDate" />
-                        <b-field>
-                                <b-checkbox v-model="form.notifyTiming" native-value="morning" type="is-warning">
-                                <img src="/icons/morning.png" class="embedded-image">朝
-                            </b-checkbox>
-                            <b-checkbox v-model="form.notifyTiming" native-value="night" type="is-info">
-                                <img src="/icons/night.png" class="embedded-image">夜
-                            </b-checkbox>
-                        </b-field>
-                        <b-button type="is-success" @click="saveEditedInfo('limitDate')">保存する</b-button>
-                        <b-button type="is-danger" @click="closeEditModeIs('limitDate')">×</b-button>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="has-text-centered">
-                        <b-tooltip always position="is-bottom"　type="is-dark" label="タップして編集">
-                            <b-tag type="is-link" v-if="!task.is_notified">通知予定</b-tag>
-                            <b-tag type="is-danger" v-else>通知済み</b-tag>
+            <table class="table">
+                <tr @click="isEdittingDate=true">
+                    <th class="has-background-link has-text-centered" rowspan="2">
+                        通知日
+                        <br>
+                        <b-tag type="is-success" v-if="!task.is_notified">通知予定</b-tag>
+                        <b-tag type="is-danger" v-else>通知済み</b-tag>
+                    </th>
+                    <td>
+                        <b-tooltip always position="is-top"　type="is-dark" label="タップして編集">
+                            {{ task.toast_at }}
                         </b-tooltip>
                     </td>
                 </tr>
-            </table>
-            <table class="table">
                 <tr>
-                    <th colspan="2" class="has-text-centered has-background-primary">報酬</th>
+                    <td>
+                        <img v-if="task.toast_at!='なし'"
+                            :src="`/icons/${task.toast_timing}.png`"
+                            class="embedded-image"
+                            style="margin: auto;">
+                    </td>
                 </tr>
                 <tr>
-                    <td><img class="embedded-image" src="/icons/coin_dark.png"></td>
-                    <td>＋{{ task.priority.point }}</td>
+                    <th rowspan="2" class="has-background-primary">リワード</th>
+                    <td><img src="/icons/heart.png" class="embedded-image">+50</td>
                 </tr>
                 <tr>
-                    <td><img class="embedded-image" src="/icons/heart.png"></td>
-                    <td>＋{{ task.priority.like_rate }}</td>
+                    <td><img src="/icons/coin_dark.png" class="embedded-image">+100</td>
                 </tr>
             </table>
         </div>
@@ -91,6 +76,29 @@
             <Vinput v-else type="textarea" rules="max:150" :maxLength="150" label="" v-model="form.detail" />
         </div>
     </div>
+    <b-modal has-modal-card :active.sync="isEdittingDate">
+        <div class="modal-card">
+            <section class="modal-card-body">
+                <b-field label="通知を設定しなおす">
+                    <b-datepicker inline v-model="form.limitDate" />
+                </b-field>
+                <b-field>
+                    <b-checkbox-button v-model="form.notifyTiming" native-value="morning" type="is-warning" size="is-medium">
+                                <img src="/icons/morning.png" class="embedded-image">朝に通知
+                    </b-checkbox-button>
+                    <b-checkbox-button v-model="form.notifyTiming" native-value="night" type="is-info" size="is-medium">
+                        <img src="/icons/night.png" class="embedded-image">夜に通知
+                    </b-checkbox-button>
+                </b-field>
+            </section>
+            <div class="modal-card-body has-text-centered">
+                <b-button type="is-success" @click="saveEditedInfo('limitDate')">リマインダーを設定する</b-button>
+            </div>
+            <footer class="modal-card-foot">
+                <b-button type="is-danger" @click="clearLimitDate()">通知しない</b-button>
+            </footer>
+        </div>
+    </b-modal>
 </div>
 </template>
 
@@ -107,6 +115,9 @@ export default {
     components: {
         IconButton,
         Vinput
+    },
+    mounted() {
+        this.form.limitDate = this.task.toast_at !== 'なし' ? new Date(this.task.toast_at_en) : null
     },
     data() {
         return {
@@ -161,13 +172,16 @@ export default {
             }
         },
         changeEditModeIs(formName) {
-            if(formName === 'limitDate') {
-                this.form.limitDate = new Date()
-                this.isEdittingDate = true
-            } else if(formName === 'memo') {
+            if(formName === 'memo') {
                 this.form.detail = this.task.detail
                 this.isEdittingMemo = true
             }
+        },
+        clearLimitDate() {
+            this.form.limitDate=null
+            this.form.notifyTiming = []
+            this.isEdittingDate = false
+            this.saveEditedInfo('limitDate')
         },
         saveEditedInfo(formName) {
             let changeContent = {}
@@ -239,17 +253,17 @@ h1 {
     }
 }
 .info-area {
-    display: flex;
-    justify-content: center;
     table {
-        width: 30%;
-        border-collapse: separate;
-        margin-right: 0.75rem;
+        width: auto;
+        margin: auto;
+        th {
+            border-radius: 4px;
+        }
         td {
-            &.limit-date {
-                cursor: pointer;
-                display: flex;
-                align-content: center;
+            display: flex;
+            align-items: center;
+            img {
+                margin-right: 0.25rem;
             }
         }
     }
