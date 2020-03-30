@@ -44,8 +44,21 @@ export const actions = {
         return updatedStatus.data
     },
 
+    async updateStatusMulti({dispatch}, {taskIds, status}) {
+        const params = { ids: taskIds, status: status }
+        const updateResult = await dispatch('api/request', {method: 'put', endpoint: 'task/update_status_multi', params: params}, {root: true})
+        dispatch('user/setUser', updateResult.data.user, {root: true})
+        return updateResult.data
+    },
+
     async destroy({dispatch}, taskId) {
         const deleted = await dispatch('api/request', {method: 'delete', endpoint: `task/${taskId}`, params: null}, {root: true})
         return deleted.data
+    },
+
+    async destroyMulti({dispatch}, taskIds) {
+        const params = { ids: taskIds }
+        const tasks = await dispatch('api/request', {method: 'delete', endpoint: 'task/destroy_multi', params: params}, {root: true})
+        return tasks.data
     }
 }

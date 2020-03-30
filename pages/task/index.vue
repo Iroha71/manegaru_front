@@ -1,16 +1,42 @@
 <template lang="html">
 <div class="container">
-    <b-button v-if="$device.isMobile" type="is-primary" class="create-button mobile"  @click="$router.push('/task/new/')">＋</b-button>
+    <transition-group v-if="$device.isMobile" tag="div" name="list" class="mobile-btn-area" mode="out-in">
+        <b-button v-if="!isBundleMode" key="task_create" type="is-primary" class="create-button"  @click="$router.push('/task/new/')">＋</b-button>
+        <IconButton v-if="!isBundleMode"
+            key="bundle_mode"
+            type="is-info"
+            class="create-button"
+            iconName="bundle_task"
+            iconSize="2rem"
+            @click="isBundleMode=true" />
+        <IconButton v-else-if="isBundleMode"
+            key="save_bundle"
+            type="is-success"
+            class="create-button"
+            iconName="check"
+            iconSize="2rem"
+            @click="showBundleEditModal=true"
+            :disabled="selectedTasks.length<=0" />
+        <IconButton v-if="isBundleMode"
+            key="bundle_cancel"
+            type="is-danger"
+            class="create-button"
+            iconName="cancel"
+            iconSize="2rem"
+            @click="isBundleMode=false" />
+    </transition-group>
     <transition-group name="list" tag="div" class="columns is-multiline">
         <Card v-if="!$device.isMobile" key="create-task" title="タスクを作成" size="is-3" @click="$router.push('/task/new/')">
             <template v-slot:content>
                 <b-button type="is-primary" class="create-button">＋</b-button>
             </template>
-            <template v-slot:footer>
-                <b-tag size="is-medium" type="is-primary">現在： {{ tasks.length }}タスク</b-tag>
+        </Card>
+        <Card v-if="!$device.isMobile" key="bundle-controll" title="まとめて操作" size="is-3">
+            <template lang="html" v-slot:content>
+                <IconButton type="is-info" iconName="bundle_task" class="create-button" iconSize="2rem" />
             </template>
         </Card>
-        <Card v-for="task in tasks" :key="task.id" :title="task.title" size="is-3" @click="$router.push(`/task/${task.id}/`)">
+        <Card v-for="task in tasks" :key="task.id" :title="task.title" size="is-3" @click="selectTask(task.id, task.title)">
             <template lang="html" v-slot:content>
                 <table class="table">
                     <tr>
@@ -22,6 +48,7 @@
                             {{ task.toast_at_short }}
                             <img v-if="task.toast_at!='なし'" class="embedded-image" :class="{'disabled-image': task.is_notified}" :src="`/icons/${task.toast_timing}.png`">
                         </th>
+                        <td v-if="isBundleMode"><b-checkbox v-model="selectedTasks" type="is-primary" :native-value="task.id" disabled /></td>
                     </tr>
                 </table>
             </template>
@@ -30,15 +57,31 @@
             </template>
         </Card>
     </transition-group>
+    <b-modal :active.sync="showBundleEditModal" has-modal-card>
+        <div class="modal-card">
+            <header class="modal-card-head">選択したタスクをどうしますか?</header>
+            <section class="modal-card-body has-text-centered">
+                <b-button type="is-success" @click="updateTasks()">完了にする</b-button>
+                <b-button type="is-danger" @click="deleteTaskMulti()">削除する</b-button>
+            </section>
+            <section class="modal-card-body content">
+                <ul>
+                    <li v-for="selectedTaskTitle in selectedTasksTitle">{{ selectedTaskTitle }}</li>
+                </ul>
+            </section>
+        </div>
+    </b-modal>
 </div>
 </template>
 
 <script>
 import Card from '@/components/Card.vue'
 import { mapActions, mapGetters } from 'vuex'
+import IconButton from '@/components/parts/IconButton.vue'
 export default {
     components: {
-        Card
+        Card,
+        IconButton
     },
     async asyncData({store}) {
         let tasks = null
@@ -53,6 +96,9 @@ export default {
     mounted() {
         this.$nuxt.$on('changeTask', this.changeTask)
         this.$nuxt.$on('customTask', this.customTask)
+        if(this.$route.query.status === 'finishedTask') {
+            this.$buefy.toast.open({ type: 'is-success', message: 'タスクが完了になりました' })
+        }
     },
     beforeDestroy() {
         this.$nuxt.$off('changeTask')
@@ -64,11 +110,17 @@ export default {
             filterSign: '',
             filterValue: '',
             orderColumn: 'updated_at',
-            orderSign: 'DESC'
+            orderSign: 'DESC',
+            isBundleMode: false,
+            selectedTasks: [],
+            selectedTasksTitle: [],
+            showBundleEditModal: false
         }
     },
     methods: {
          ...mapActions({ 'index': 'task/index', 'custom': 'task/custom' }),
+         ...mapActions('task', ['updateStatusMulti', 'destroyMulti']),
+         ...mapActions('project', ['setCurrentGroupId']),
         getStatusColor(statusName) {
             switch(statusName) {
                 case '未着手':
@@ -104,6 +156,47 @@ export default {
             }
             this.tasks = await this.custom(customParam)
         },
+        selectTask(task_id, task_title) {
+            if(this.isBundleMode) {
+                const selectedTaskIndex = this.selectedTasks.indexOf(task_id)
+                if(selectedTaskIndex >= 0) {
+                    this.selectedTasks.splice(selectedTaskIndex, 1)
+                    this.selectedTasksTitle.splice(selectedTaskIndex, 1)
+                } else {
+                    this.selectedTasks.push(task_id)
+                    this.selectedTasksTitle.push(task_title)
+                }
+            } else {
+                this.$router.push(`/task/${task_id}/`)
+            }
+        },
+        async updateTasks() {
+            const result = await this.updateStatusMulti({taskIds: this.selectedTasks, status: '完了'})
+            this.$buefy.toast.open({
+                type: 'is-success',
+                message: `資金 ＋${result.gold}<br>${result.like_rate}`,
+                duration: 4000
+            })
+            this.resetBundleMode()
+            this.showBundleEditModal = false
+            this.tasks = result.tasks
+            this.setCurrentGroupId(0)
+        },
+        resetBundleMode() {
+            this.selectedTasks = []
+            this.selectedTasksTitle = []
+            this.isBundleMode = false
+        },
+        async deleteTaskMulti() {
+            const tasks = await this.destroyMulti(this.selectedTasks)
+            this.$buefy.toast.open({
+                type: 'is-danger',
+                message: 'タスクを削除しました'
+            })
+            this.tasks = tasks
+            this.showBundleEditModal = false
+            this.resetBundleMode()
+        }
     },
     computed: {
         ...mapGetters({ 'currentGroupId': 'project/currentGroupId' })
@@ -112,20 +205,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.mobile-btn-area {
+    position: fixed;
+    z-index: 2;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    button {
+        margin-bottom: 0.75rem;
+    }
+}
 .create-button {
     height: 4rem;
     width: 4rem;
     font-size: 2rem;
     padding: 0;
     border-radius: 50%;
-    &.mobile {
-        position: fixed;
-        z-index: 2;
-        bottom: 0;
-        right: 0;
-        margin-right: 0.75rem;
-        margin-bottom: 0.75rem;
-    }
 }
 th, td {
     text-align: center;
