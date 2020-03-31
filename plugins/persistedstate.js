@@ -2,7 +2,7 @@ import createPersistedState from 'vuex-persistedstate'
 export default({store}) => {
     onNuxtReady(() => {
         createPersistedState({
-            key: 'comcon',
+            key: 'manegaru',
             paths: [
                 'auth',
                 'girl',
@@ -10,9 +10,9 @@ export default({store}) => {
                 'user'
             ]
         })(store)
-        createPersistedState({ key: 'comcon_option', paths: [ 'option' ] })(store)
+        createPersistedState({ key: 'manegaru_option', paths: [ 'option' ] })(store)
         createPersistedState({
-            key: 'comcon',
+            key: 'manegaru',
             paths: [ 'application' ],
             storage: window.sessionStorage
         })(store)

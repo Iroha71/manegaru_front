@@ -2,8 +2,8 @@ export default({route, redirect, store}) => {
     redirectAccurateRoute(route, redirect)
     if(isRequireAuthPage(route.path)) {
         try{
-            const storeData = JSON.parse(localStorage.getItem('comcon'))
-            const optionStoreData = JSON.parse(localStorage.getItem('comcon_option'))
+            const storeData = JSON.parse(localStorage.getItem('manegaru'))
+            const optionStoreData = JSON.parse(localStorage.getItem('manegaru_option'))
             if(storeData.auth.access_token == '') {
                 throw new Error('no authorized')
             }
@@ -24,7 +24,7 @@ export default({route, redirect, store}) => {
             redirect('/login/?error=401' + openedLINEParam)
         }
     } else {
-        localStorage.removeItem('comcon')
+        localStorage.removeItem('manegaru')
     }
 }
 
