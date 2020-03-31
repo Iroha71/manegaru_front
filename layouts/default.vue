@@ -1,6 +1,6 @@
 <template>
   <div class="root">
-    <b-loading v-if="$route.path!='/task/'" is-full-page :active.sync="$store.getters['api/isLoading']">
+    <b-loading is-full-page :active.sync="$store.getters['api/isLoading']" :class="{ 'trans-background': $route.path=='/task/' }">
       <flower-spinner
         :animation-duration="1500"
         :size="70"

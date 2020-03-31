@@ -38,13 +38,27 @@ export const actions = {
     async updateStatus({dispatch}, {taskId, status}) {
         const statusInfo = { status: status }
         const updatedStatus = await dispatch('api/request', {method: 'put', endpoint: `task/${taskId}/update_status`, params: statusInfo}, {root: true})
+        if(updatedStatus.data.status == '完了') {
+            dispatch('user/setUser', updatedStatus.data.user, {root: true})
+        }
         return updatedStatus.data
     },
 
+    async updateStatusMulti({dispatch}, {taskIds, status}) {
+        const params = { ids: taskIds, status: status }
+        const updateResult = await dispatch('api/request', {method: 'put', endpoint: 'task/update_status_multi', params: params}, {root: true})
+        dispatch('user/setUser', updateResult.data.user, {root: true})
+        return updateResult.data
+    },
+
     async destroy({dispatch}, taskId) {
-        const finishReward = await dispatch('api/request', {method: 'delete', endpoint: `/task/${taskId}`, params: null}, {root: true})
-        dispatch('user/setUser', finishReward.data.user, {root: true})
-        dispatch('girl/setCurrentGirl', finishReward.data.user.girl, {root: true})
-        return { gold: finishReward.data.gold, like_rate: finishReward.data.like_rate }
+        const deleted = await dispatch('api/request', {method: 'delete', endpoint: `task/${taskId}`, params: null}, {root: true})
+        return deleted.data
+    },
+
+    async destroyMulti({dispatch}, taskIds) {
+        const params = { ids: taskIds }
+        const tasks = await dispatch('api/request', {method: 'delete', endpoint: 'task/destroy_multi', params: params}, {root: true})
+        return tasks.data
     }
 }

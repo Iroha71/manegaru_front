@@ -27,7 +27,7 @@ export const actions = {
             case 'put':
                 return this.$axios.put(requestUrl, params)
             case 'delete':
-                return this.$axios.delete(requestUrl, params)
+                return this.$axios.delete(requestUrl, { data: params })
         }
     }
 }

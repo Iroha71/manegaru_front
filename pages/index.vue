@@ -79,8 +79,8 @@ export default {
     } else {
       this.serifus = await this.getSerifuSet({girlId: this.currentGirl.id, situations: 'greeting2,touch'})
       const storeTime = new Date(this.$store.getters['application/topVisitedAt'])
-      const visitedElapsedHour = (now.getTime() - storeTime.getTime()) / (1000 * 60 * 60)
-      if(visitedElapsedHour >= 1) {
+      const visitedElapsedHour = (now.getTime() - storeTime.getTime()) / (1000 * 60)
+      if(visitedElapsedHour >= 10) {
         this.playSerifu('greeting2', this.$store.getters['option/isPlayVoice'])
       }
       this.fetchTopVisitedAt(now)

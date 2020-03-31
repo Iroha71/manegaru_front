@@ -1,7 +1,7 @@
 <template lang="html">
 <b-button class="root" :type="type" :size="size" @click="executeParentMethod()">
     <div>
-        <img :src="`/icons/${iconName}.png`" />
+        <img :src="`/icons/${iconName}.png`" :style="{ 'height': iconSize }" />
         <span v-if="message">{{ message }}</span>
     </div>
 </b-button>
@@ -23,6 +23,11 @@ export default {
             type: String,
             required: true
         },
+        iconSize: {
+            type: String,
+            required: false,
+            default: '1.2rem'
+        },
         message: {
             type: String,
             required: false
@@ -43,7 +48,6 @@ button {
         display: flex;
         align-items: center;
         img {
-            height: 1.2rem;
             width: auto;
         }
     }

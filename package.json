@@ -1,5 +1,5 @@
 {
-  "name": "comcon",
+  "name": "manegaru",
   "version": "1.0.0",
   "description": "ボイロたちと過ごすドタバタ日常系タスクアプリ!",
   "author": "Iroha71",
@@ -13,8 +13,8 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.9.5",
     "@nuxtjs/device": "^1.2.7",
+    "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/pwa": "^3.0.0-beta.20",
-    "dotenv": "^8.2.0",
     "epic-spinners": "^1.1.0",
     "howler": "^2.1.3",
     "node-sass": "^4.13.1",

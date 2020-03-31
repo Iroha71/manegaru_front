@@ -58,7 +58,8 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    '@nuxtjs/device'
+    '@nuxtjs/device',
+    ['@nuxtjs/dotenv', { filename: process.env.NODE_ENV !== 'production' ? "./.env" : "./.env.prod" }]
   ],
   manifest: {
     "name":				"こんこん♪",

@@ -1,4 +1,4 @@
-# comcon_front
+# manegaru_front
 
 > My great Nuxt.js project
 
