@@ -144,6 +144,7 @@ export default {
     },
     methods: {
         ...mapActions('task', ['updateStatus', 'update', 'destroy']),
+        ...mapActions('application', ['setIsFinishedTask']),
         getStatusColor:function() {
             switch(this.task.status) {
                 case this.statuses[0]:
@@ -164,6 +165,7 @@ export default {
                     message: `資金 ＋${reward.gold}<br>${reward.like_rate}`,
                     duration: 4000
                 })
+                this.setIsFinishedTask(true)
                 const nextPath = this.isMoveTopAfterTaskComplete ? '/?status=finishedTask' : '/task/?status=finishedTask'
                 this.$router.push(nextPath)
             } else {

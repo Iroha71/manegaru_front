@@ -47,12 +47,12 @@
                 <IconButton type="is-info" iconName="bundle_task" class="create-button" iconSize="2rem" @click="isBundleMode=true" />
             </template>
         </Card>
-        <Card v-if="!$device.isMobile && isBundleMode" key="bundle-controll" title="選択したタスクを編集する" size="is-3">
+        <Card v-if="!$device.isMobile && isBundleMode" key="bundle-edit" title="選択したタスクを編集する" size="is-3">
             <template lang="html" v-slot:content>
                 <IconButton type="is-success" iconName="check" class="create-button" iconSize="2rem" @click="showBundleEditModal=true" />
             </template>
         </Card>
-        <Card v-if="!$device.isMobile && isBundleMode" key="bundle-controll" title="キャンセル" size="is-3">
+        <Card v-if="!$device.isMobile && isBundleMode" key="bundle-cancel" title="キャンセル" size="is-3">
             <template lang="html" v-slot:content>
                 <IconButton type="is-danger" iconName="cancel" class="create-button" iconSize="2rem" @click="isBundleMode=false" />
             </template>
@@ -193,6 +193,7 @@ export default {
         },
         async updateTasks() {
             const result = await this.updateStatusMulti({taskIds: this.selectedTasks, status: '完了'})
+            this.$store.dispatch('application/setIsFinishedTask', true)
             this.$buefy.toast.open({
                 type: 'is-success',
                 message: `資金 ＋${result.gold}<br>${result.like_rate}`,
