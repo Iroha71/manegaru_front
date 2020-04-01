@@ -77,7 +77,7 @@ export default {
                 toast_timing: this.notifyTiming
             }
             this.insertTask(taskInfo).then(registedTask => {
-                this.$router.push(`/task/${registedTask.data.id}/`)
+                this.$router.push(`/task/`)
             })
         },
         
