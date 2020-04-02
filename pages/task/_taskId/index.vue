@@ -42,14 +42,14 @@
                     </th>
                     <td>
                         <b-tooltip always position="is-top"　type="is-dark" label="タップして編集">
-                            {{ task.toast_at }}
+                            {{ task.notify_at }}
                         </b-tooltip>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <img v-if="task.toast_at!='なし'"
-                            :src="`/icons/${task.toast_timing}.png`"
+                        <img v-if="task.notify_at!='なし'"
+                            :src="`/icons/${task.notify_timing}.png`"
                             class="embedded-image"
                             style="margin: auto;">
                     </td>
@@ -122,7 +122,7 @@ export default {
         Vinput
     },
     mounted() {
-        this.form.limitDate = this.task.toast_at !== 'なし' ? new Date(this.task.toast_at_en) : null
+        this.form.limitDate = this.task.notify_at !== 'なし' ? new Date(this.task.notify_at_en) : null
     },
     data() {
         return {
@@ -206,7 +206,7 @@ export default {
             let changeContent = {}
             if(formName === 'limitDate') {
                 this.closeEditModeIs('limitDate')
-                changeContent = { toast_at: this.arrangeDate(this.form.limitDate), toast_timing: this.form.notifyTiming }
+                changeContent = { notify_at: this.arrangeDate(this.form.limitDate), notify_timing: this.form.notifyTiming }
             } else {
                 this.closeEditModeIs('memo')
                 changeContent = { detail: this.form.detail }

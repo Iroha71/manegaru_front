@@ -70,11 +70,11 @@ export default {
         registTask:function() {
             const taskInfo = {
                 title: this.title,
-                toast_at: this.arrangeDate(this.limitDate),
+                notify_at: this.arrangeDate(this.limitDate),
                 priority_id: this.level,
                 detail: this.detail,
                 project_id: this.projectId,
-                toast_timing: this.notifyTiming
+                notify_timing: this.notifyTiming
             }
             this.insertTask(taskInfo).then(registedTask => {
                 this.$router.push(`/task/`)

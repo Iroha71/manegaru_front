@@ -66,8 +66,8 @@
                             <b-tag v-else type="is-danger">通知済み</b-tag>
                         </td>
                         <th :class="{ 'disabled-line': task.is_notified }">
-                            {{ task.toast_at_short }}
-                            <img v-if="task.toast_at!='なし'" class="embedded-image" :class="{'disabled-image': task.is_notified}" :src="`/icons/${task.toast_timing}.png`">
+                            {{ task.notify_at_short }}
+                            <img v-if="task.notify_at!='なし'" class="embedded-image" :class="{'disabled-image': task.is_notified}" :src="`/icons/${task.notify_timing}.png`">
                         </th>
                         <td v-if="isBundleMode"><b-checkbox v-model="selectedTasks" type="is-primary" :native-value="task.id" disabled /></td>
                     </tr>
