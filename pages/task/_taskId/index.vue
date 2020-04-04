@@ -32,18 +32,19 @@
             <b-button type="is-success" v-if="isStatusUpdated" @click="changeStatus()">更新</b-button>
         </div>
         <div class="column content info-area">
-            <table class="table">
-                <tr @click="isEdittingDate=true">
-                    <th class="has-background-link has-text-centered" rowspan="2">
-                        通知日
+            <table class="table" @click="isEdittingDate=true">
+                <tr v-if="task.notify_interval">
+                    <th class="has-background-info">繰り返し間隔</th>
+                    <th>{{ task.notify_interval }}</th>
+                </tr>
+                <tr>
+                    <th class="has-background-link" rowspan="2">
+                        <span v-if="task.notify_interval">次回の</span>通知日
                         <br>
-                        <b-tag type="is-success" v-if="!task.is_notified">通知予定</b-tag>
-                        <b-tag type="is-danger" v-else>通知済み</b-tag>
+                        <b-tag type="is-danger" v-if="task.is_notified">通知済み</b-tag>
                     </th>
                     <td>
-                        <b-tooltip always position="is-top"　type="is-dark" label="タップして編集">
-                            {{ task.notify_at }}
-                        </b-tooltip>
+                        {{ task.notify_at }}
                     </td>
                 </tr>
                 <tr>
@@ -95,6 +96,14 @@
                         <img src="/icons/night.png" class="embedded-image">夜に通知
                     </b-checkbox-button>
                 </b-field>
+                <b-field>
+                    <b-select v-model="form.notifyInterval">
+                        <option :value="null">1回のみ</option>
+                        <option value="day">毎日</option>
+                        <option value="week">毎週</option>
+                        <option value="month">毎月</option>
+                    </b-select>
+                </b-field>
             </section>
             <div class="modal-card-body has-text-centered">
                 <b-button type="is-success" @click="saveEditedInfo('limitDate')">リマインダーを設定する</b-button>
@@ -134,7 +143,8 @@ export default {
             form: {
                 detail: '',
                 limitDate: null,
-                notifyTiming: []
+                notifyTiming: [],
+                notifyInterval: null
             }
         }
     },
@@ -206,15 +216,20 @@ export default {
             let changeContent = {}
             if(formName === 'limitDate') {
                 this.closeEditModeIs('limitDate')
-                changeContent = { notify_at: this.arrangeDate(this.form.limitDate), notify_timing: this.form.notifyTiming }
+                changeContent = { notify_at: this.arrangeDate(this.form.limitDate),
+                    notify_timing: this.form.notifyTiming,
+                    notify_interval: this.form.notifyInterval
+                }
             } else {
                 this.closeEditModeIs('memo')
                 changeContent = { detail: this.form.detail }
             }
             this.update({taskId: this.task.id, changeContent: changeContent})
-            .then(task => {
-                this.task = task.data
-            })
+                .then(task => {
+                    this.task = task.data
+                    this.defautIndex = this.statuses.indexOf(task.data.status)
+                    this.statusIndex = this.defautIndex
+                })
         },
         closeEditModeIs(formName) {
             if(formName === 'limitDate') {
@@ -278,6 +293,7 @@ h1 {
         margin: auto;
         th {
             border-radius: 4px;
+            text-align: center;
         }
         td {
             display: flex;

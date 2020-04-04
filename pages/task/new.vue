@@ -3,7 +3,7 @@
     <ValidationObserver v-slot="{ invalid }">
         <form>
             <Vinput label="タイトル" type="text" rules="required|max:50" v-model="title" />
-            <b-field label="プロジェクト">
+            <b-field label="グループ">
                 <ValidationProvider rules="min:1" v-slot="{ error }">
                     <b-select v-model="projectId">
                         <option v-for="project in projects" :value="project.id">{{ project.name }}</option>
@@ -25,8 +25,17 @@
                 <b-checkbox v-model="notifyTiming" native-value="night" type="is-info" size="is-medium">
                     <img src="/icons/night.png">夜
                 </b-checkbox>
+                <b-field label-position="on-border" label="繰り返し設定" class="remind-setting">
+                    <b-select v-model="notifyInterval">
+                        <option :value="null">一回のみ</option>
+                        <option value="day">毎日</option>
+                        <option value="week">毎週</option>
+                        <option value="month">毎月</option>
+                    </b-select>
+                </b-field>
             </b-field>
-            <Vinput label="詳細" type="textarea" rules="max:150" v-model="detail" />
+            
+            <Vinput label="メモ" type="textarea" rules="max:150" v-model="detail" />
             <b-field class="has-text-centered">
                 <b-button type="is-success" size="is-medium" :disabled="invalid" @click="registTask()">作成</b-button>
             </b-field>
@@ -62,7 +71,8 @@ export default {
             level: "2",
             detail: '',
             projectId: 0,
-            notifyTiming: []
+            notifyTiming: [],
+            notifyInterval: null
         }
     },
     methods: {
@@ -74,7 +84,8 @@ export default {
                 priority_id: this.level,
                 detail: this.detail,
                 project_id: this.projectId,
-                notify_timing: this.notifyTiming
+                notify_timing: this.notifyTiming,
+                notify_interval: this.notifyInterval
             }
             this.insertTask(taskInfo).then(registedTask => {
                 this.$router.push(`/task/`)
@@ -107,6 +118,9 @@ export default {
                 margin-right: 0.25rem;
             }
         }
+    }
+    .remind-setting {
+        margin-left: 0.75rem;
     }
 }
 </style>

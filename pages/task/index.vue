@@ -62,14 +62,18 @@
                 <table class="table">
                     <tr>
                         <td>
-                            <b-tag v-if="!task.is_notified" type="is-link">通知日</b-tag>
-                            <b-tag v-else type="is-danger">通知済み</b-tag>
+                            <img src="/icons/clock.png" class="symbol-image">
+                            <!-- <img src="/icons/clock.png" class="symbol-image"> -->
                         </td>
                         <th :class="{ 'disabled-line': task.is_notified }">
                             {{ task.notify_at_short }}
                             <img v-if="task.notify_at!='なし'" class="embedded-image" :class="{'disabled-image': task.is_notified}" :src="`/icons/${task.notify_timing}.png`">
                         </th>
                         <td v-if="isBundleMode"><b-checkbox v-model="selectedTasks" type="is-primary" :native-value="task.id" disabled /></td>
+                    </tr>
+                    <tr v-if="task.notify_interval">
+                        <td><img src="/icons/reload.png" class="symbol-image" /></td>
+                        <td>{{ task.notify_interval }}</td>
                     </tr>
                 </table>
             </template>
@@ -247,8 +251,12 @@ export default {
 }
 th, td {
     text-align: center;
+    vertical-align: middle !important;
     img.disabled-image {
         filter: brightness(0%);
+    }
+    img.symbol-image {
+        filter: brightness(30%);
     }
 }
 .list {
