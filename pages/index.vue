@@ -5,7 +5,7 @@
         :emote="girlCurrentEmote"
         :voice="voiceType"
         @click="changeEmote()"
-        @voiceEnded="voiceType=''" />
+        @voiceEnded="resetSerifu()" />
       <MessageWindow :name="currentGirl.name"
         :text="serifu" width="is-6"
         :isCenter="false"
@@ -108,9 +108,6 @@ export default {
     ...mapActions('application', ['fetchTopVisitedAt']),
     changeEmote() {
       this.playSerifu('touch', this.isPlayVoice)
-      setTimeout(() => {
-        this.resetSerifu()
-      }, 5000)
     },
     playSerifu(situation, isOverVoice) {
       this.girlCurrentEmote = this.serifus[situation].emotion
@@ -120,8 +117,11 @@ export default {
       }
     },
     resetSerifu() {
-      this.serifu = ''
-      this.girlCurrentEmote = 'normal'
+      this.voiceType = ''
+      setTimeout(() => {
+        this.serifu = ''
+        this.girlCurrentEmote = 'normal'
+      }, 500)
     }
   },
   computed: {
