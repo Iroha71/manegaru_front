@@ -11,7 +11,7 @@
         :isCenter="false"
         :borderColor="currentGirl.color"/>
     </div>
-    <div v-if="!$device.isMobile" class="column is-6">
+    <div v-if="!$device.isMobile" class="column is-6 right-content-area">
       <b-carousel :interval="8000">
         <b-carousel-item class="has-text-centered">
           <section class="hero is-success">
@@ -34,12 +34,26 @@
           </section>
         </b-carousel-item>
       </b-carousel>
-      <section class="section menu-area has-text-centered">
-        <IconButton class="menu-button" type="is-primary" iconName="checkbox" message="タスク" size="is-large" @click="$router.push('/task')" />
-        <IconButton class="menu-button" type="is-primary" iconName="checkbox" message="秘書" size="is-large" @click="$router.push('/girl/select/')" />
-        <IconButton class="menu-button" type="is-primary" iconName="checkbox" message="箱庭" size="is-large" />
+      <section v-if="!$device.isMobile" class="section">
+        <b-button type="is-primary task" @click="$router.push('/task')">
+          <img src="/icons/bundle_task.png" />
+          <p>タスク</p>
+        </b-button>
+        <b-button type="is-info" class="girl sub-content" @click="$router.push('/girl/select')">
+          <img :src="`/characters/${currentGirl.code}/icon.png`" />
+          <p>秘書</p>
+        </b-button>
+        <b-button type="is-success" class="room sub-content">
+          <img src="/icons/garden.png" />
+          <p>部屋</p>
+        </b-button>
       </section>
     </div>
+    <b-field v-if="$device.isMobile" class="menu-area-mobile">
+      <b-button type="is-primary" size="is-large" @click="$router.push('/task')">タスク</b-button>
+      <b-button type="is-info" size="is-large" @click="$router.push('/girl/select')">秘書</b-button>
+      <b-button type="is-success" size="is-large">部屋</b-button>
+    </b-field>
   </div>
 </template>
 
@@ -139,7 +153,8 @@ export default {
   background-size: cover;
   background-position: center center;
   .chara-area {
-    text-align: center;
+    display: flex;
+    justify-content: center;
     padding: 0;
     height: 100%;
     overflow-x: hidden;
@@ -148,10 +163,40 @@ export default {
   .content-area {
     margin: auto;
   }
-  .menu-area {
-    .menu-button {
-      margin-bottom: 0.75rem;
-      width: 80%;
+  .menu-area-mobile {
+    position: absolute;
+    z-index: 2;
+    bottom: 0;
+  }
+  .right-content-area {
+    position: relative;
+    button {
+      position: absolute;
+      border-radius: 50%;
+      height: 10rem;
+      width: 10rem;
+      margin: auto;
+      &.sub-content {
+        height: 8rem;
+        width: 8rem;
+      }
+      img {
+        height: 5rem;
+        width: auto;
+      }
+      &.task {
+        top: 50%;
+        left: 30%;
+      }
+      &.girl {
+        top: 50%;
+        left: 55%;
+        
+      }
+      &.room {
+        top: 70%;
+        left: 50%;
+      }
     }
   }
 }

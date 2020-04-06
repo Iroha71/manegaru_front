@@ -49,6 +49,7 @@ button {
         align-items: center;
         img {
             width: auto;
+            margin-right: 0.375rem;
         }
     }
 }
