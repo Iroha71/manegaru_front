@@ -1,6 +1,6 @@
 <template lang="html">
 <div class="container">
-    <transition-group v-if="$device.isMobile" tag="div" name="list" class="mobile-btn-area" mode="out-in">
+    <transition-group tag="div" name="list" class="mobile-btn-area" mode="out-in">
         <b-button v-if="!isBundleMode"
             key="task_create"
             type="is-primary"
@@ -30,50 +30,31 @@
             @click="isBundleMode=false" />
     </transition-group>
     <transition-group name="list" tag="div" class="columns is-multiline">
-        <Card v-if="!$device.isMobile && !isBundleMode"
-            key="create-task"
-            title="タスクを作成"
-            size="is-3"
-            @click="$router.push('/task/new/')">
-            <template v-slot:content>
-                <b-button type="is-primary" class="create-button">＋</b-button>
-            </template>
-        </Card>
-        <Card v-if="!$device.isMobile && !isBundleMode"
-            key="bundle-controll"
-            title="まとめて操作"
-            size="is-3">
-            <template lang="html" v-slot:content>
-                <IconButton type="is-info" iconName="bundle_task" class="create-button" iconSize="2rem" @click="isBundleMode=true" />
-            </template>
-        </Card>
-        <Card v-if="!$device.isMobile && isBundleMode" key="bundle-edit" title="選択したタスクを編集する" size="is-3">
-            <template lang="html" v-slot:content>
-                <IconButton type="is-success" iconName="check" class="create-button" iconSize="2rem" @click="showBundleEditModal=true" />
-            </template>
-        </Card>
-        <Card v-if="!$device.isMobile && isBundleMode" key="bundle-cancel" title="キャンセル" size="is-3">
-            <template lang="html" v-slot:content>
-                <IconButton type="is-danger" iconName="cancel" class="create-button" iconSize="2rem" @click="isBundleMode=false" />
-            </template>
-        </Card>
         <Card v-for="task in tasks" :key="task.id" :title="task.title" size="is-3" @click="selectTask(task.id, task.title)">
             <template lang="html" v-slot:content>
                 <table class="table">
                     <tr>
                         <td>
                             <img src="/icons/clock.png" class="symbol-image">
-                            <!-- <img src="/icons/clock.png" class="symbol-image"> -->
                         </td>
                         <th :class="{ 'disabled-line': task.is_notified }">
-                            {{ task.notify_at_short }}
-                            <img v-if="task.notify_at!='なし'" class="embedded-image" :class="{'disabled-image': task.is_notified}" :src="`/icons/${task.notify_timing}.png`">
+                            <div class="with-image-area">
+                                {{ task.notify_at_short }}
+                                <img v-if="task.notify_at!='なし'" class="embedded-image" :class="{'disabled-image': task.is_notified}" :src="`/icons/${task.notify_timing}.png`">
+                            </div>
                         </th>
                         <td v-if="isBundleMode"><b-checkbox v-model="selectedTasks" type="is-primary" :native-value="task.id" disabled /></td>
                     </tr>
                     <tr v-if="task.notify_interval">
                         <td><img src="/icons/reload.png" class="symbol-image" /></td>
                         <td>{{ task.notify_interval }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="with-image-area has-centered">
+                                <img :src="`/characters/${task.girl.code}/icon.png`" class="symbol-image girl-image" />が管理中
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </template>
@@ -255,8 +236,19 @@ th, td {
     img.disabled-image {
         filter: brightness(0%);
     }
-    img.symbol-image {
-        filter: brightness(30%);
+    .with-image-area {
+        display: flex;
+        align-items: center;
+        &.has-centered {
+            justify-content: center;
+        }
+        img {
+            margin: 0 0.25rem;
+            &.girl-image {
+                border: solid 2px #1AAAD4;
+                border-radius: 50%;
+            }
+        }
     }
 }
 .list {
