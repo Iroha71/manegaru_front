@@ -56,7 +56,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <th rowspan="2" class="has-background-primary">リワード</th>
+                    <th rowspan="2" class="has-background-primary">
+                        リワード
+                        <br>
+                        <img :src="`/characters/${task.girl.code}/icon.png`" class="symbol-image" />
+                        <img v-if="currentGirl.id!=task.girl.id" :src="`/characters/${currentGirl.code}/icon.png`" class="symbol-image" />
+                    </th>
                     <td><img src="/icons/heart.png" class="embedded-image">+50</td>
                 </tr>
                 <tr>
@@ -261,6 +266,7 @@ export default {
     },
     computed: {
         ...mapGetters('option', ['isMoveTopAfterTaskComplete']),
+        ...mapGetters('girl', ['currentGirl']),
         isStatusUpdated() {
             if(this.statusIndex != this.defautIndex) {
                 return true
@@ -311,5 +317,8 @@ h1 {
 }
 .delete-btn {
     margin-top: 0.5rem;
+}
+.girl-image {
+    margin: 0 0.25rem;
 }
 </style>
