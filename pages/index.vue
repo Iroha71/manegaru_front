@@ -81,7 +81,7 @@ export default {
   },
   async mounted() {
     const now = new Date()
-    if(this.greetingCount <= 1) {
+    if(this.greetingCount <= 1 && !this.$route.query.status) {
       this.serifus = await this.getSerifuSet({girlId: this.currentGirl.id, situations: 'greeting,touch'})
       this.fetchTopVisitedAt(now)
       if(this.$store.getters['option/isPlayVoice']) {
