@@ -66,7 +66,7 @@ export default {
         },
         isOverSyncBorder(spectrums) {
             let openJudgeLine = 2000
-            if(this.code === 'itako') {
+            if(this.code === 'itako' || this.code === 'hiyori') {
                 openJudgeLine = 1500
             }
             const totalSpectrum = spectrums.reduce(function(a, x) { return a + x })
