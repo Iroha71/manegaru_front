@@ -16,6 +16,12 @@ export default({route, redirect, store}) => {
                 redirect('/girl/select?isFirst=true')
             }
             if(route.path === '/') {
+                if(store.getters['application/isFinishedTask'] === true) {
+                    store.dispatch('application/setIsFinishedTask', false)
+                    if(!route.path.query) {
+                        redirect('/?status=finishedTask')
+                    }
+                }
                 store.dispatch('application/incrementGreetingCount')
             }
         }catch(error){

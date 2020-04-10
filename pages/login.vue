@@ -1,7 +1,7 @@
 <template lang="html">
-<div class="columns" :style="{ backgroundImage: `url(${'/images/bg-title.jpg'})` }">
+<div class="columns" :style="{ backgroundImage: getLoginBackground() }">
     <div class="form-area column is-3">
-        <form class="section">
+        <form class="section content">
             <h1 v-if="lineId">「こんこん」とLINEを連携します</h1>
             <h1 v-else>サインイン</h1>
             <p v-if="isAuthError==401" class="has-text-danger">メールアドレスまたはパスワードが間違っています</p>
@@ -88,6 +88,13 @@ export default {
                         })
                 }
             })
+        },
+        getLoginBackground() {
+            let backgroundImageName = 'bg-login'
+            if(this.$device.isMobile) {
+                backgroundImageName += '-mobile'
+            }
+            return `url('/images/${backgroundImageName}.webp')`
         }
     },
     computed: {
@@ -99,16 +106,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.columns {
+    background-size: cover;
+    background-position: center 80%;
+    display: flex;
+}
 .form-area {
     margin: auto;
-    display: flex;
-    align-items: center;
     background-color: rgba(255, 255, 255, 0.8);
     form {
-        h1 {
-            font-size: 1.5rem;
-        }
-        width: 100%;
         &.section {
             padding: 1.5rem;
         }

@@ -1,8 +1,12 @@
 <template lang="html">
 <div>
     <b-navbar type="is-primary">
-        <template slot="start" v-if="access_token">
-            <b-navbar-item tag="router-link" to="/">トップ</b-navbar-item>
+        <template slot="brand" lang="html" v-if="access_token">
+            <b-navbar-item tag="router-link" to="/">
+                <img src="/icons/home.png" />
+            </b-navbar-item>
+        </template>
+        <template slot="start" v-if="access_token" lang="html">
             <b-navbar-dropdown label="タスク">
                 <b-navbar-item tag="router-link" to="/task/">
                     一覧
@@ -22,13 +26,17 @@
         </template>
         <template lang="html" slot="end" v-if="access_token">
             <b-navbar-item @click="showUserModal=true" >
-                <img class="user-icon" :src="`/characters/${currentGirl.code}/icon.png`" />
-                <span class="user-name">{{ currentUser.name }}</span>
+                <div class="item-area">
+                    <img class="user-icon" :src="`/characters/${currentGirl.code}/icon.png`" />
+                    <span class="user-name">{{ currentUser.name }}</span>
+                </div>
             </b-navbar-item>
             <b-navbar-item>
-                <img class="is-hidden-touch" src="/icons/coin.png" />
-                <img class="is-hidden-desktop" src="/icons/coin_dark.png" />
-                <span>{{ currentUser.gold }}</span>
+                <div class="item-area">
+                    <img class="is-hidden-touch coin-icon" src="/icons/coin.png" />
+                    <img class="is-hidden-desktop coin-icon" src="/icons/coin_dark.png" />
+                    <span>{{ currentUser.gold }}</span>
+                </div>
             </b-navbar-item>
             <b-navbar-item>
                 <IconButton type="is-danger" @click="signOutUser()" iconName="sign_out" />
@@ -56,7 +64,7 @@
                 </table>
             </section>
             <footer class="modal-card-foot has-text-centered">
-                <IconButton type="is-info" iconName="setting" message="ユーザ情報編集" @click="goOption()" />
+                <IconButton type="is-info" iconName="setting" message="設定" @click="goOption()" />
             </footer>
         </div>
     </b-modal>
@@ -100,6 +108,13 @@ export default {
 <style lang="scss" scoped>
 div {
     font-family: 'LightNovel';
+    .item-area {
+        display: flex;
+        align-items: center;
+    }
+    .user-icon, .coin-icon {
+        margin-right: 0.5rem;
+    }
     .user-name {
         font-family: 'Gulim';
         font-weight: bold;

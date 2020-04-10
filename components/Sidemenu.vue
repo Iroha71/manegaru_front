@@ -27,7 +27,7 @@
             <b-select v-model="applingFilter" @change.native="filterTasks()">
                 <option :value="{ column: 'user_id', sign: 'IS NOT', value: 'NULL' }">すべて</option>
                 <option :value="{ column: 'status', sign: '<>', value: '\'完了\'' }">完了以外</option>
-                <option :value="{ column: 'toast_at', sign: 'IS NOT', value: 'NULL' }">通知設定済み</option>
+                <option :value="{ column: 'notify_at', sign: 'IS NOT', value: 'NULL' }">通知設定済み</option>
             </b-select>
         </li>
     </MenuList>
