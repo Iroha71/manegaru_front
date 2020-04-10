@@ -1,6 +1,6 @@
 <template>
 <div class="root">
-    <div class="section">
+    <div class="section" :class="{ 'section-mobile': $device.isMobile }">
         <div class="column is-2-desktop-only content" :class="{ 'controller-top': $device.isMobile }">
             <p>秘書をタッチして選択してください</p>
             <section>
@@ -137,6 +137,9 @@ export default {
     padding-bottom: 0;
     display: flex;
     perspective: 150px;
+    &-mobile {
+        perspective: 300px;
+    }
     .content {
         background: #fff;
         border-radius: 15px 200px 15px 185px / 240px 15px 100px 15px;
