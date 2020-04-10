@@ -1,5 +1,5 @@
 <template>
-    <span>
+    <span class="has-text-centered">
         <img :style="{ backgroundImage: `url(/characters/${code}/body.png)` }" 
             :src="`/characters/${code}/${getCurrentEmote()}.png`"
             @click="touchEvent()" />
