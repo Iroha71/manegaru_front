@@ -1,6 +1,6 @@
 <template>
     <span class="has-text-centered">
-        <img :style="{ backgroundImage: `url(/characters/${code}/body.png)` }" 
+        <img :style="{ backgroundImage: `url(/characters/${code}/body.webp)` }" 
             :src="`/characters/${code}/${getCurrentEmote()}.png`"
             @click="touchEvent()" />
     </span>
@@ -74,7 +74,7 @@ export default {
         },
         loadVoice(context) {
             return new Promise((resolv) => {
-                const url = `/voices/${this.code}/${this.code + '_' + this.voice}.wav`
+                const url = `/voices/${this.code}/${this.code + '_' + this.voice}.mp3`
                 fetch(url).then((response) => {
                     return response.arrayBuffer()
                 }).then((arrayBuf) => {
