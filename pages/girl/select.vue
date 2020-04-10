@@ -15,7 +15,7 @@
             <transition name="fade" mode="out-in">
                 <img v-if="!isHidden(index).image"
                     :class="{ 'mobile': $device.isMobile }"
-                    :src="`/characters/${girl.code}/all.png`"
+                    :src="`/characters/${girl.code}/all.webp`"
                     :style="getImageEffect(index)"
                     @click="choiceGirl(girl.id)" />
             </transition>
@@ -130,7 +130,7 @@ export default {
 
 <style lang="scss" scoped>
 .root {
-    background-image: url('/images/bg-ichimatsu.jpg');
+    background-image: url('/images/bg-ichimatsu.webp');
 }
 .section {
     height: 100vh;
