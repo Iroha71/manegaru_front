@@ -15,16 +15,16 @@
                 <b-radio-button type="is-success" v-model="level" native-value="2">Lv.2</b-radio-button>
                 <b-radio-button type="is-info" v-model="level" native-value="3">Lv.1</b-radio-button>
             </b-field>
-            <b-field label="通知日">
-                <b-datepicker :minDate="minDate" v-model="limitDate" />
+            <b-field label="通知日" label-position="on-border">
+                <b-datepicker :minDate="minDate" v-model="notifyAt" :month-names="$store.getters['master/monthNames']" />
+                <b-clockpicker v-if="notifyAt"
+                    v-model="notifyAt"
+                    hour-format="24"
+                    :auto-switch="false">
+                    <p>※時間は1時間ごとに通知します</p>
+                </b-clockpicker>
             </b-field>
-            <b-field v-if="limitDate">
-                <b-checkbox v-model="notifyTiming" native-value="morning" type="is-warning" size="is-medium">
-                    <img src="/icons/morning.png">朝
-                </b-checkbox>
-                <b-checkbox v-model="notifyTiming" native-value="night" type="is-info" size="is-medium">
-                    <img src="/icons/night.png">夜
-                </b-checkbox>
+            <b-field v-if="notifyAt" label-position="on-border" label="通知時間">
                 <b-field label-position="on-border" label="繰り返し設定" class="remind-setting">
                     <b-select v-model="notifyInterval">
                         <option :value="null">一回のみ</option>
@@ -67,12 +67,12 @@ export default {
         return {
             title: '',
             minDate: null,
-            limitDate: null,
+            notifyAt: null,
             level: "2",
             detail: '',
             projectId: 0,
-            notifyTiming: [],
-            notifyInterval: null
+            notifyInterval: null,
+            notify_time: new Date()
         }
     },
     methods: {
@@ -80,27 +80,15 @@ export default {
         registTask:function() {
             const taskInfo = {
                 title: this.title,
-                notify_at: this.arrangeDate(this.limitDate),
+                notify_at: this.notifyAt,
                 priority_id: this.level,
                 detail: this.detail,
                 project_id: this.projectId,
-                notify_timing: this.notifyTiming,
                 notify_interval: this.notifyInterval
             }
             this.insertTask(taskInfo).then(registedTask => {
                 this.$router.push(`/task/`)
             })
-        },
-        
-        arrangeDate:function(date) {
-            if(date !== null) {
-                const year = date.getFullYear()
-                const month = date.getMonth()
-                const day = date.getDate()
-                return `${year}/${month + 1}/${day}`
-            } else {
-                return null
-            }
         }
     },
 }

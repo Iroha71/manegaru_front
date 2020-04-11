@@ -40,7 +40,6 @@
                         <th :class="{ 'disabled-line': task.is_notified }">
                             <div class="with-image-area">
                                 {{ task.notify_at_short }}
-                                <img v-if="task.notify_at!='なし'" class="embedded-image" :class="{'disabled-image': task.is_notified}" :src="`/icons/${task.notify_timing}.png`">
                             </div>
                         </th>
                         <td v-if="isBundleMode"><b-checkbox v-model="selectedTasks" type="is-primary" :native-value="task.id" disabled /></td>

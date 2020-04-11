@@ -7,18 +7,7 @@
     </div>
     <div class="columns">
         <div class="column is-4 has-text-centered">
-            <b-steps class="has-text-centered is-hidden-touch" v-model="statusIndex" size="is-medium" type="is-danger" :has-navigation="false">
-                <b-step-item clickable type="is-danger">
-                    <h2 class="title has-text-centered has-text-danger">未着手</h2>
-                </b-step-item>
-                <b-step-item clickable type="is-info">
-                    <h2 class="title has-text-centered has-text-info">作業中</h2>
-                </b-step-item>
-                <b-step-item clickable type="is-success">
-                    <h2 class="title has-text-centered has-text-success">完了</h2>
-                </b-step-item>
-            </b-steps>
-            <b-steps class="has-text-centered is-hidden-desktop" v-model="statusIndex" size="is-medium" type="is-danger">
+            <b-steps class="has-text-centered" v-model="statusIndex" size="is-medium" type="is-danger" :has-navigation="$device.isMobile">
                 <b-step-item clickable type="is-danger">
                     <h2 class="title has-text-centered has-text-danger">未着手</h2>
                 </b-step-item>
@@ -38,21 +27,13 @@
                     <th>{{ task.notify_interval }}</th>
                 </tr>
                 <tr>
-                    <th class="has-background-link" rowspan="2">
+                    <th class="has-background-link">
                         <span v-if="task.notify_interval">次回の</span>通知日
                         <br>
                         <b-tag type="is-danger" v-if="task.is_notified">通知済み</b-tag>
                     </th>
                     <td>
                         {{ task.notify_at }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <img v-if="task.notify_at!='なし'"
-                            :src="`/icons/${task.notify_timing}.png`"
-                            class="embedded-image"
-                            style="margin: auto;">
                     </td>
                 </tr>
                 <tr>
@@ -91,15 +72,15 @@
         <div class="modal-card">
             <section class="modal-card-body">
                 <b-field label="通知を設定しなおす">
-                    <b-datepicker inline v-model="form.limitDate" />
+                    <b-datepicker inline v-model="form.limitDate" :month-names="$store.getters['master/monthNames']" />
                 </b-field>
                 <b-field>
-                    <b-checkbox-button v-model="form.notifyTiming" native-value="morning" type="is-warning" size="is-medium">
-                                <img src="/icons/morning.png" class="embedded-image">朝に通知
-                    </b-checkbox-button>
-                    <b-checkbox-button v-model="form.notifyTiming" native-value="night" type="is-info" size="is-medium">
-                        <img src="/icons/night.png" class="embedded-image">夜に通知
-                    </b-checkbox-button>
+                    <b-clockpicker inline hour-format="24"
+                        :auto-switch="false"
+                        size="is-small"
+                        v-model="form.limitDate">
+                        <p>※通知は1時間単位で設定できます</p>
+                    </b-clockpicker>
                 </b-field>
                 <b-field>
                     <b-select v-model="form.notifyInterval">
@@ -221,7 +202,7 @@ export default {
             let changeContent = {}
             if(formName === 'limitDate') {
                 this.closeEditModeIs('limitDate')
-                changeContent = { notify_at: this.arrangeDate(this.form.limitDate),
+                changeContent = { notify_at: this.form.limitDate,
                     notify_timing: this.form.notifyTiming,
                     notify_interval: this.form.notifyInterval
                 }
@@ -251,16 +232,6 @@ export default {
                     return 'is-info'
                 case 3:
                     return 'is-primary'
-            }
-        },
-        arrangeDate:function(date) {
-            if(date !== null) {
-                const year = date.getFullYear()
-                const month = date.getMonth()
-                const day = date.getDate()
-                return `${year}/${month + 1}/${day}`
-            } else {
-                return null
             }
         }
     },
