@@ -244,6 +244,7 @@ th, td {
         img {
             margin: 0 0.25rem;
             &.girl-image {
+                width: 2rem;
                 border: solid 2px #1AAAD4;
                 border-radius: 50%;
             }
