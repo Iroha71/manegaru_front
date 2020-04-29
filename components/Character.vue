@@ -53,24 +53,22 @@ export default {
             src.start()
             this.lipMoveInterVal = setInterval(() => {
                 analyser.getByteFrequencyData(spectrums)
-                const isLipOpen = this.isOverSyncBorder(spectrums)
-                this.syncLip(isLipOpen)
+                this.syncLip(spectrums)
             }, 0.25)
             src.onended = () => {
                 this.currentVoice = ''
                 this.voiceEnded()
             }
         },
-        syncLip(isOpen) {
-            this.currentEmote = isOpen ? this.emote + '_open' : this.emote
-        },
-        isOverSyncBorder(spectrums) {
-            let openJudgeLine = 2000
-            if(this.code === 'itako' || this.code === 'hiyori') {
-                openJudgeLine = 1500
-            }
+        syncLip(spectrums) {
+            const lipOpenBorder = { akane: 1900, aoi: 2000, yukari: 2000, itako: 1500, hiyori: 1500 }
+            let openJudgeLine = lipOpenBorder[this.code]
             const totalSpectrum = spectrums.reduce(function(a, x) { return a + x })
-            return totalSpectrum >= openJudgeLine
+            if(totalSpectrum >= openJudgeLine) {
+                this.currentEmote = this.emote + '_open'
+            } else {
+                this.currentEmote = this.emote
+            }
         },
         loadVoice(context) {
             return new Promise((resolv) => {

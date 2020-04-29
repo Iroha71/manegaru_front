@@ -71,41 +71,25 @@ export default {
     MessageWindow
   },
   created() {
-    this.$store.dispatch('api/startLoad')
     this.currentGirlCode = this.$store.getters['girl/currentGirl'].code
     const now = new Date()
     const weekOfDays = ['日', '月', '火', '水', '木', '金', '土']
     const weekOfDay = weekOfDays[now.getDay()]
     const arrangedToday = `${now.getMonth() + 1}月${now.getDate()}日(${weekOfDay})`
     this.today = arrangedToday
+    if(!this.$store.getters['application/isAllowedSound'] && this.$store.getters['option/isPlayVoice']) {
+      this.$buefy.dialog.confirm({
+        message: '音声が出ます',
+        onConfirm: () => { 
+          this.$store.dispatch('application/setIsAllowedSound', true)
+          this.loadSerifu()
+        }
+      })
+    }
   },
   async mounted() {
-    const now = new Date()
-    if(this.greetingCount <= 1 && !this.$route.query.status) {
-      this.serifus = await this.getSerifuSet({girlId: this.currentGirl.id, situations: 'greeting,touch'})
-      this.fetchTopVisitedAt(now)
-      if(this.$store.getters['option/isPlayVoice']) {
-        this.$buefy.dialog.confirm({
-          message: '音声が出ます',
-          onConfirm: () => { this.playSerifu('greeting', this.$store.getters['option/isPlayVoice']) }
-        })
-      } else { this.playSerifu('greeting', this.$store.getters['option/isPlayVoice']) }
-    } else {
-      this.serifus = await this.getSerifuSet({girlId: this.currentGirl.id, situations: 'greeting2,touch'})
-      const storeTime = new Date(this.$store.getters['application/topVisitedAt'])
-      const visitedElapsedHour = (now.getTime() - storeTime.getTime()) / (1000 * 60)
-      if(visitedElapsedHour >= 10) {
-        this.playSerifu('greeting2', this.$store.getters['option/isPlayVoice'])
-      }
-      this.fetchTopVisitedAt(now)
-    }
-    if(this.$route.query.status == 'finishedTask') {
-      this.serifus = await this.getSerifuSet({girlId: this.currentGirl.id, situations: 'greeting,touch,finished_task'})
-      this.playSerifu('finished_task', this.$store.getters['option/isPlayVoice'])
-      setTimeout(() => {
-        this.resetSerifu()
-      }, 10000)
-    }
+    if(this.$store.getters['application/isAllowedSound'])
+      this.loadSerifu()
   },
   data() {
     return {
@@ -120,15 +104,29 @@ export default {
   methods: {
     ...mapActions('girl', ['getSerifuSet']),
     ...mapActions('application', ['fetchTopVisitedAt']),
+    ...mapActions({'getUser': 'user/get', 'setUser': 'user/setUser'}),
     changeEmote() {
-      this.playSerifu('touch', this.isPlayVoice)
+      this.playSerifu('touch')
     },
-    playSerifu(situation, isOverVoice) {
-      this.girlCurrentEmote = this.serifus[situation].emotion
-      this.serifu = this.serifus[situation].text
-      if(isOverVoice) {
-        setTimeout(() => { this.voiceType = situation }, 300)
+    playSerifu(situation) {
+      if(situation === "") {
+        return false
       }
+      this.serifu = this.serifus[situation].text
+      this.girlCurrentEmote = this.serifus[situation].emotion
+      if(this.isAllowedSound && this.isPlayVoice) {
+        setTimeout(() => { this.voiceType = situation }, 500)
+      }
+    },
+    async loadSerifu() {
+      const situation = this.getSerifuSituation()
+      let [ serifus, userInfo ] = await Promise.all([
+        this.getSerifuSet({girlId: this.currentGirl.id, situations: situation.set}),
+        this.getUser(this.currentUser.id)
+      ])
+      this.serifus = serifus
+      this.setUser(userInfo)
+      this.playSerifu(situation.justPlay)
     },
     resetSerifu() {
       this.voiceType = ''
@@ -136,12 +134,41 @@ export default {
         this.serifu = ''
         this.girlCurrentEmote = 'normal'
       }, 500)
+    },
+    getSerifuSituation() {
+      let requestSituation = ''
+      let playSituation = ''
+      if(this.$route.query.status === 'finishedTask') {
+        requestSituation = 'greeting,finished_task,touch'
+        playSituation = 'finished_task'
+      } else if(this.greetingCount <= 1) {
+        requestSituation = 'greeting,touch'
+        playSituation = 'greeting'
+      } else {
+        if(this.isRevisitSite()) {
+          requestSituation = 'greeting2,touch'
+          playSituation = 'greeting2'
+        }
+      }
+      return { set: requestSituation, justPlay: playSituation }
+    },
+    isRevisitSite() {
+      const REVISIT_MINUTE = 10
+      const now = new Date()
+      const beforeVisitedAt = new Date(this.topVisitedAt)
+      const elapseMinute = (now.getTime() - beforeVisitedAt.getTime()) / (1000 * 60)
+      if(elapseMinute >= REVISIT_MINUTE) {
+        this.fetchTopVisitedAt(now)
+        return true
+      } else {
+        return false
+      }
     }
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('girl', ['currentGirl']),
-    ...mapGetters('application', ['topVisitedAt', 'greetingCount']),
+    ...mapGetters('application', ['topVisitedAt', 'greetingCount', 'isAllowedSound']),
     ...mapGetters('option', ['isPlayVoice'])
   }
 }
@@ -170,32 +197,34 @@ export default {
   }
   .right-content-area {
     position: relative;
-    button {
-      position: absolute;
-      border-radius: 50%;
-      height: 10rem;
-      width: 10rem;
-      margin: auto;
-      &.sub-content {
-        height: 8rem;
-        width: 8rem;
-      }
-      img {
-        height: 5rem;
-        width: auto;
-      }
-      &.task {
-        top: 50%;
-        left: 30%;
-      }
-      &.girl {
-        top: 50%;
-        left: 55%;
-        
-      }
-      &.room {
-        top: 70%;
-        left: 50%;
+    .section {
+      button {
+        position: absolute;
+        border-radius: 50%;
+        height: 10rem;
+        width: 10rem;
+        margin: auto;
+        &.sub-content {
+          height: 8rem;
+          width: 8rem;
+        }
+        img {
+          height: 5rem;
+          width: auto;
+        }
+        &.task {
+          top: 50%;
+          left: 30%;
+        }
+        &.girl {
+          top: 50%;
+          left: 55%;
+          
+        }
+        &.room {
+          top: 70%;
+          left: 50%;
+        }
       }
     }
   }
