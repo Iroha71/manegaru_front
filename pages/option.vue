@@ -101,6 +101,11 @@ export default {
             this.$store.dispatch('option/setOptionTab', this.$route.query.currentTab)
         }
     },
+    async mounted() {
+        const user = await this.$store.dispatch('user/get', this.$store.getters['user/currentUser'].id)
+        console.log(user)
+        this.$store.dispatch('user/updateUser', user)
+    },
     data() {
         return {
             isEdittingPassword: false,
@@ -123,7 +128,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions('user', ['updateUser', 'updatePassword', 'getToastInfo']),
+        ...mapActions('user', ['updateUser', 'updatePassword', 'getToastInfo', 'get']),
         ...mapActions('option', ['setAppSetting']),
         async changeUserInfo() {
             if(this.userForm.password.value !== '') {
