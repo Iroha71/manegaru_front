@@ -46,6 +46,12 @@ export const actions = {
         return user.data.data.email
     },
 
+    async get({dispatch, commit}, userId) {
+        const user = await dispatch('api/request', {method: 'get', endpoint: `user/${userId}`, params: null}, {root: true})
+        commit('set', user.data)
+        return user.data
+    },
+
     async registLineId({dispatch}, lineId) {
         const lineParam = { line_id: lineId }
         const lineInfo = await dispatch('api/request', {method: 'put', endpoint: 'user/1', params: lineParam}, {root: true})
@@ -54,9 +60,9 @@ export const actions = {
 
     async updateUser({dispatch, commit}, user) {
         const userInfo = { email: user.email, name: user.name, nickname: user.nickname, personal_pronoun: user.personalPronoun, notify_method: user.notify_method }
-        const result = await dispatch('api/request', {method: 'put', endpoint: 'auth', params: userInfo}, {root: true})
+        const result = await dispatch('api/request', {method: 'put', endpoint: 'user/1', params: userInfo}, {root: true})
         dispatch('auth/setAuth', result.headers, {root: true})
-        commit('set', result.data.data)
+        commit('set', result.data)
     },
 
     async resetPassword({dispatch}, email) {

@@ -43,10 +43,10 @@
                         <img :src="`/characters/${task.girl.code}/icon.png`" class="symbol-image" />
                         <img v-if="currentGirl.id!=task.girl.id" :src="`/characters/${currentGirl.code}/icon.png`" class="symbol-image" />
                     </th>
-                    <td><img src="/icons/heart.png" class="embedded-image">+50</td>
+                    <td><img src="/icons/heart.png" class="embedded-image">{{ task.priority.like_rate }}</td>
                 </tr>
                 <tr>
-                    <td><img src="/icons/coin_dark.png" class="embedded-image">+100</td>
+                    <td><img src="/icons/coin_dark.png" class="embedded-image">{{ task.priority.point }}</td>
                 </tr>
             </table>
         </div>
