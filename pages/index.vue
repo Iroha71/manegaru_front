@@ -145,8 +145,9 @@ export default {
         requestSituation = 'greeting,touch'
         playSituation = 'greeting'
       } else {
+        requestSituation = 'touch'
         if(this.isRevisitSite()) {
-          requestSituation = 'greeting2,touch'
+          requestSituation += ',greeting2'
           playSituation = 'greeting2'
         }
       }
