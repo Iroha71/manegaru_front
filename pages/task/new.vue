@@ -3,12 +3,13 @@
     <ValidationObserver v-slot="{ invalid }">
         <form>
             <Vinput label="タイトル" type="text" rules="required|max:50" v-model="title" />
-            <b-field label="グループ">
-                <ValidationProvider rules="min:1" v-slot="{ error }">
-                    <b-select v-model="projectId">
-                        <option v-for="project in projects" :value="project.id">{{ project.name }}</option>
-                    </b-select>
-                </ValidationProvider>
+            <b-field label="カテゴリ" label-position="on-border">
+                <b-select v-model="projectId">
+                    <option v-for="project in projects" :value="project.id">{{ project.name }}</option>
+                </b-select>
+                <p class="control">
+                    <button type="button is-success" class="button" @click="isCreatingProject=true">＋</button>
+                </p>
             </b-field>
             <b-field>
                 <b-radio-button type="is-danger" v-model="level" native-value="1">Lv.3</b-radio-button>
@@ -41,13 +42,26 @@
             </b-field>
         </form>
     </ValidationObserver>
+    <b-modal has-modal-card :active.sync="isCreatingProject">
+        <div class="modal-card" style="width:auto">
+            <ValidationObserver v-slot="{ invalid }">
+                <header class="modal-card-head">新しいカテゴリの作成</header>
+                <section class="modal-card-body">
+                    <Vinput v-model="newProjectName" label="カテゴリ名" type="text" rules="required" />
+                </section>
+                <footer class="modal-card-foot">
+                    <b-button type="is-success" style="margin: auto" @click="registProject()" :disabled="invalid">作成する</b-button>
+                </footer>
+            </ValidationObserver>
+        </div>
+    </b-modal>
 </div>
 </template>
 
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import Vinput from '~/components/parts/ValidateInput.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
     components: {
         ValidationObserver,
@@ -55,8 +69,8 @@ export default {
         ValidationProvider
     },
     async asyncData({store}) {
-      const projects = await store.dispatch('project/getAll')
-      return { projects: projects } 
+        const projects = await store.dispatch('project/getAll')
+        return { projects: projects }
     },
     mounted() {
         const today = new Date()
@@ -72,11 +86,14 @@ export default {
             detail: '',
             projectId: 0,
             notifyInterval: null,
-            notify_time: new Date()
+            notify_time: new Date(),
+            newProjectName: '',
+            isCreatingProject: false
         }
     },
     methods: {
         ...mapActions({ 'insertTask': 'task/insertTask' }),
+        ...mapActions({ 'projectCreate': 'project/create' }),
         registTask:function() {
             const taskInfo = {
                 title: this.title,
@@ -89,8 +106,22 @@ export default {
             this.insertTask(taskInfo).then(registedTask => {
                 this.$router.push(`/task/`)
             })
+        },
+        async registProject() {
+            const newProject = await this.projectCreate(this.newProjectName)
+            this.projects = this.groups
+            this.isCreatingProject = false
+            this.$buefy.dialog.alert({
+                message: `カテゴリ: ${newProject.name}を作成しました`
+            })
         }
     },
+    computed: {
+        ...mapGetters({ 'groups': 'project/groups' }),
+        isValidationError() {
+            return this.$route.query.error
+        }
+    }
 }
 </script>
 

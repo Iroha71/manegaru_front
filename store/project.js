@@ -9,6 +9,9 @@ export const mutations = {
     },
     set(state, groupId) {
         state.currentGroupId = groupId
+    },
+    add(state, newGroup) {
+        state.groups.push(newGroup)
     }
 }
 
@@ -22,7 +25,14 @@ export const actions = {
 
     setCurrentGroupId(context, groupId) {
         context.commit('set', groupId)
-    }
+    },
+
+    async create({dispatch, commit}, name) {
+        const nameParam = { name: name }
+        const newProject = await dispatch('api/request', {method: 'post', endpoint: getAllPath, params: nameParam}, {root: true})
+        commit('add', newProject.data)
+        return newProject.data
+    } 
 }
 
 export const getters = {
