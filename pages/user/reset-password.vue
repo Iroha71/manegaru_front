@@ -1,6 +1,9 @@
 <template>
     <div class="columns content section">
-        <div class="has-text-centered"><p>新しいパスワードを入力してください</p></div>
+        <div class="has-text-centered">
+            <p>新しいパスワードを入力してください</p>
+            <p v-for="error in errors" :key="error" class="has-text-danger">{{ error }}</p>
+        </div>
         <ValidationObserver v-slot="{ invalid }">
             <form class="column is-3">
                 <Vinput label="パスワード"
@@ -39,15 +42,20 @@ export default {
     data() {
         return {
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            errors: []
         }
     },
     methods: {
-        ...mapActions({ 'updatePassword': 'user/updatePassword', 'setAuth': 'auth/setAuth' }),
+        ...mapActions('auth', ['setAuth']),
         async changePassword() {
             this.setAuth(this.$route.query)
-            const result = await this.updatePassword({newPassword: this.password, confirmPassword: this.confirmPassword})
-            this.$router.push('/')
+            try {
+                await this.$api.exAuth.updatePassword(this.password, this.confirmPassword)
+                this.$router.push('/login/?resetPassword=true')
+            } catch(e) {
+                this.errors = e.response.data.errors.full_messages
+            }
         }
     }
 }

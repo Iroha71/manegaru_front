@@ -1,15 +1,15 @@
 <template lang="html">
   <div class="columns" :style="{ backgroundImage: `url(${backgroundUrl})` }">
     <div class="column is-6 chara-area">
-      <Character :code="currentGirl.code"
+      <Character :code="currentUser.girl.code"
         :emote="girlCurrentEmote"
         :voice="voiceType"
         @click="changeEmote()"
         @voiceEnded="resetSerifu()" />
-      <MessageWindow :name="currentGirl.name"
+      <MessageWindow :name="currentUser.girl.name"
         :text="serifu" width="is-6"
         :isCenter="false"
-        :borderColor="currentGirl.color"/>
+        :borderColor="currentUser.girl.color"/>
     </div>
     <div v-if="!$device.isMobile" class="column is-6 right-content-area">
       <b-carousel :interval="8000">
@@ -40,12 +40,16 @@
           <p>タスク</p>
         </b-button>
         <b-button type="is-info" class="girl sub-content" @click="$router.push('/girl/select')">
-          <img :src="`/characters/${currentGirl.code}/icon.png`" />
+          <img :src="`/characters/${currentUser.girl.code}/icon.png`" />
           <p>秘書</p>
         </b-button>
         <b-button type="is-success" class="room sub-content">
           <img src="/icons/garden.png" />
           <p>部屋</p>
+        </b-button>
+        <b-button type="is-danger" class="option sub-content" @click="$router.push('/option/')">
+          <img src="/icons/setting.png" />
+          <p>設定</p>
         </b-button>
       </section>
     </div>
@@ -53,6 +57,7 @@
       <b-button type="is-primary" size="is-large" @click="$router.push('/task')">タスク</b-button>
       <b-button type="is-info" size="is-large" @click="$router.push('/girl/select')">秘書</b-button>
       <b-button type="is-success" size="is-large">部屋</b-button>
+      <b-button type="is-danger" size="is-large" @click="$router.push('/option/')">設定</b-button>
     </b-field>
   </div>
 </template>
@@ -71,7 +76,6 @@ export default {
     MessageWindow
   },
   created() {
-    this.currentGirlCode = this.$store.getters['girl/currentGirl'].code
     const now = new Date()
     const weekOfDays = ['日', '月', '火', '水', '木', '金', '土']
     const weekOfDay = weekOfDays[now.getDay()]
@@ -102,9 +106,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('girl', ['getSerifuSet']),
     ...mapActions('application', ['fetchTopVisitedAt']),
-    ...mapActions({'getUser': 'user/get', 'setUser': 'user/setUser'}),
+    ...mapActions('user', ['setLoggedUser']),
     changeEmote() {
       this.playSerifu('touch')
     },
@@ -121,11 +124,11 @@ export default {
     async loadSerifu() {
       const situation = this.getSerifuSituation()
       let [ serifus, userInfo ] = await Promise.all([
-        this.getSerifuSet({girlId: this.currentGirl.id, situations: situation.set}),
-        this.getUser(this.currentUser.id)
+        this.$api.serifu.index({ girl_id: this.currentUser.girl.id, situation: situation.set }),
+        this.$api.user.show(this.currentUser.id)
       ])
-      this.serifus = serifus
-      this.setUser(userInfo)
+      this.serifus = serifus.data
+      this.setLoggedUser(userInfo.data)
       this.playSerifu(situation.justPlay)
     },
     resetSerifu() {
@@ -225,6 +228,10 @@ export default {
         &.room {
           top: 70%;
           left: 50%;
+        }
+        &.option {
+          top: 75%;
+          left: 30%;
         }
       }
     }

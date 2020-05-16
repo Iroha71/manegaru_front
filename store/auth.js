@@ -5,24 +5,23 @@ export const state = () => ({
 })
 
 export const mutations = {
-    setAuth(state, {access_token, client, uid}){
-        state.access_token = access_token
-        state.client = client
-        state.uid = uid
+    set(state, authInfo){
+        if(authInfo['access-token']) {
+            state.access_token = authInfo['access-token']
+        } else {
+            state.access_token = authInfo.access_token
+        }
+        state.client = authInfo.client
+        state.uid = authInfo.uid
     }
 }
 
 export const actions = {
     setAuth(context, authHeaders){
-        authHeaders.access_token = authHeaders['access-token'] ? authHeaders['access-token'] : authHeaders.access_token
-        context.commit('setAuth', {
-            access_token: authHeaders.access_token,
-            client: authHeaders.client,
-            uid: authHeaders.uid
-        })
+        context.commit('set', authHeaders)
     },
     clearAuth(context){
-        context.commit('setAuth', {
+        context.commit('set', {
             access_token: '',
             client: '',
             uid: ''

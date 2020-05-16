@@ -7,10 +7,9 @@ export default({route, redirect, store}) => {
             if(storeData.auth.access_token == '') {
                 throw new Error('no authorized')
             }
-            store.dispatch('user/setUser', storeData.user.currentUser)
+            store.dispatch('user/setLoggedUser', storeData.user.currentUser)
             store.dispatch('auth/setAuth', storeData.auth)
-            store.dispatch('project/setCurrentGroupId', storeData.project.currentGroupId)
-            store.dispatch('girl/setCurrentGirl', storeData.girl.currentGirl)
+            store.dispatch('user/setSelectingGroupId', storeData.user.selectingGroupId)
             store.dispatch('option/setAppSettingFromStore', optionStoreData.option)
             if(isEmptyCurrentGirl(storeData) && !isMatchPath(route.path, '/girl/select/') && !isMatchPath(route.path, '/user/cooped-line/')) {
                 redirect('/girl/select?isFirst=true')
@@ -51,5 +50,5 @@ const isMatchPath = (pagePath, targetPath) => {
 }
 
 const isEmptyCurrentGirl = (store) => {
-    return store.girl.currentGirl == null || store.girl.currentGirl == ''
+    return store.user.currentUser.girl == null || store.user.currentUser.girl == ''
 }

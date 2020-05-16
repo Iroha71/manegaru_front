@@ -68,6 +68,7 @@
             <section class="modal-card-body has-text-centered">
                 <b-button type="is-success" @click="updateTasks()">完了にする</b-button>
                 <b-button type="is-danger" @click="deleteTaskMulti()">削除する</b-button>
+                <b-button type="is-info" @click="">カテゴリを変更</b-button>
             </section>
             <section class="modal-card-body content">
                 <ul>
@@ -83,20 +84,22 @@
 import Card from '@/components/Card.vue'
 import { mapActions, mapGetters } from 'vuex'
 import IconButton from '@/components/parts/IconButton.vue'
+
+const GROUP_NOT_SELECTED = 0
 export default {
     components: {
         Card,
         IconButton
     },
-    async asyncData({store}) {
+    async asyncData({app, store}) {
         let tasks = null
-        if(store.getters['project/currentGroupId'] === 0) {
-            tasks = await store.dispatch('task/indexAll')
+        if(store.getters['user/selectingGroupId'] === GROUP_NOT_SELECTED) {
+            tasks = await app.$api.task.index(null)
         } else {
-            const paramsGroupId = { group_id: store.getters['project/currentGroupId'] }
-            tasks = await store.dispatch('task/index', paramsGroupId)
+            const paramsGroupId = { group_id: store.getters['user/selectingGroupId'] }
+            tasks = await app.$api.task.index(paramsGroupId)
         }
-        return { tasks: tasks }
+        return { tasks: tasks.data }
     },
     mounted() {
         this.$nuxt.$on('changeTask', this.changeTask)
@@ -123,24 +126,19 @@ export default {
         }
     },
     methods: {
-         ...mapActions({ 'index': 'task/index', 'custom': 'task/custom' }),
-         ...mapActions('task', ['updateStatusMulti', 'destroyMulti']),
-         ...mapActions('project', ['setCurrentGroupId']),
         getStatusColor(statusName) {
             switch(statusName) {
-                case '未着手':
+                case this.STATUS_LABEL.YET:
                     return 'is-danger'
-                case '作業中':
+                case this.STATUS_LABEL.WORKING:
                     return 'is-info'
-                case '完了':
+                case this.STATUS_LABEL.FINISHED:
                     return 'is-success'
             }
         },
-        changeTask(groupId) {
-            const paramGroupId = { group_id: groupId }
-            this.index(paramGroupId).then(tasks => {
-                this.tasks = tasks
-            })
+        async changeTask(groupId) {
+            const tasks = await this.$api.task.index({ group_id: groupId })
+            this.tasks = tasks.data
         },
         async customTask({type, groupId, columnName, sign, value}) {
             if(type === 'filter') {
@@ -151,15 +149,10 @@ export default {
                 this.orderColumn = columnName
                 this.orderSign = sign
             }
-            const customParam = {
-                groupId: groupId,
-                column: this.filterColumn,
-                sign: this.filterSign,
-                value: this.filterValue,
-                orderColumn: this.orderColumn,
-                orderSign: this.orderSign
-            }
-            this.tasks = await this.custom(customParam)
+            const filteredTasks = 
+               await this.$api.exTask.custom(groupId, this.filterColumn, this.filterSign, 
+                    this.filterValue, this.orderColumn, this.orderSign)
+            this.tasks = filteredTasks.data
         },
         selectTask(task_id, task_title) {
             if(this.isBundleMode) {
@@ -176,17 +169,16 @@ export default {
             }
         },
         async updateTasks() {
-            const result = await this.updateStatusMulti({taskIds: this.selectedTasks, status: '完了'})
+            const updatedTasks = await this.$api.exTask.updateStatusMulti(this.selectedTasks, this.STATUS_LABEL.FINISHED, this.selectingGroupId)
             this.$store.dispatch('application/setIsFinishedTask', true)
             this.$buefy.toast.open({
                 type: 'is-success',
-                message: `資金 ＋${result.gold}<br>${result.like_rate}`,
+                message: `資金 ＋${updatedTasks.data.gold}<br>${updatedTasks.data.like_rate}`,
                 duration: 4000
             })
             this.resetBundleMode()
             this.showBundleEditModal = false
-            this.tasks = result.tasks
-            this.setCurrentGroupId(0)
+            this.tasks = updatedTasks.data.tasks
         },
         resetBundleMode() {
             this.selectedTasks = []
@@ -194,18 +186,19 @@ export default {
             this.isBundleMode = false
         },
         async deleteTaskMulti() {
-            const tasks = await this.destroyMulti(this.selectedTasks)
+            const tasks = await this.$api.exTask.deleteTaskMulti(this.selectedTasks, this.selectingGroupId)
             this.$buefy.toast.open({
                 type: 'is-danger',
                 message: 'タスクを削除しました'
             })
-            this.tasks = tasks
+            this.tasks = tasks.data
             this.showBundleEditModal = false
             this.resetBundleMode()
         }
     },
     computed: {
-        ...mapGetters({ 'currentGroupId': 'project/currentGroupId' })
+        ...mapGetters('master', ['STATUS_LABEL']),
+        ...mapGetters('user', ['selectingGroupId'])
     }
 }
 </script>
