@@ -3,12 +3,7 @@ export default({store}) => {
     onNuxtReady(() => {
         createPersistedState({
             key: 'manegaru',
-            paths: [
-                'auth',
-                'girl',
-                'project',
-                'user'
-            ]
+            paths: [ 'auth', 'user' ]
         })(store)
         createPersistedState({ key: 'manegaru_option', paths: [ 'option' ] })(store)
         createPersistedState({

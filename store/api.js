@@ -15,20 +15,6 @@ export const actions = {
 
     startLoad(context) {
         context.commit('setIsLoading', true)
-    },
-    
-    request(context, {method, endpoint, params}){
-        const requestUrl = process.env.BASE_URL + endpoint
-        switch(method){
-            case 'get':
-                return this.$axios.get(requestUrl, { params: params })
-            case 'post':
-                return this.$axios.post(requestUrl, params)
-            case 'put':
-                return this.$axios.put(requestUrl, params)
-            case 'delete':
-                return this.$axios.delete(requestUrl, { data: params })
-        }
     }
 }
 

@@ -79,3 +79,8 @@ html {
 .symbol-image {
     height: 2rem;
 }
+
+.over-message {
+    white-space: nowrap;
+    overflow-x: visible;
+}

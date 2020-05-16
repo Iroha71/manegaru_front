@@ -14,8 +14,8 @@
                 <b-input type="password" v-model="password" password-reveal></b-input>
             </b-field>
             <b-field class="has-text-centered">
-                <b-button v-if="!lineId" type="is-info" size="is-medium" @click="signInUser()" :loading="$store.getters['api/isLoading']">サインイン</b-button>
-                <b-button v-else type="is-success" size="is-medium" :isloading="$store.getters['api/isLoading']" @click="signInUser()">LINEを登録する</b-button>
+                <b-button v-if="!lineId" type="is-info" size="is-medium" @click="signIn()" :loading="$store.getters['api/isLoading']">サインイン</b-button>
+                <b-button v-else type="is-success" size="is-medium" :isloading="$store.getters['api/isLoading']" @click="signIn()">LINEを登録する</b-button>
             </b-field>
             <hr>
             <div class="password-reset-area">
@@ -51,29 +51,31 @@ export default {
                 if(liff.isInClient()) {
                     this.lineId = liff.getContext().userId
                 }
+                if(this.lineId === '' && this.$route.query.opened === 'line') {
+                    this.$router.replace('/login/?error=405')
+                }
             })
         } catch(error) { }
+        if(this.$route.query.resetPassword == 'true') {
+            this.$buefy.toast.open({
+                type: 'is-success',
+                message: 'パスワードを変更しました'
+            })
+        }
     },
     methods: {
-        ...mapActions({ 'signIn': 'user/signIn', 'registLineId': 'user/registLineId', 'resetPassword': 'user/resetPassword' }),
-        signInUser() {
-            this.signIn({email: this.email, password: this.password})
-                .then(res => {
-                    if(this.lineId === '') {
-                        let destination = this.$route.query.opened === 'line' ? '/task/' : '/'
-                        this.$router.push(destination)
-                    } else {
-                        this.updateLineId()
-                        this.$router.push('/user/cooped-line/')
-                    }
-                })
-        },
-        updateLineId() {
-            if(this.lineId !== null) {
-                const lineId = this.registLineId(this.lineId)
-            } else {
-                this.$route.query.error = 405
+        ...mapActions('user', ['setLoggedUser']),
+        ...mapActions('auth', ['setAuth']),
+        async signIn() {
+            let loggedUser = await this.$api.exAuth.signIn(this.email, this.password)
+            let nextPath = '/'
+            this.setAuth(loggedUser.headers)
+            if(this.lineId !== '') {
+                this.$api.user.update(loggedUser.data.data.id, { user: { line_id: this.lineId } })
+                nextPath = '/user/cooped-line/'
             }
+            this.setLoggedUser(loggedUser.data)
+            this.$router.push(nextPath)
         },
         applyInputEmailDialog() {
             this.$buefy.dialog.prompt({
@@ -82,9 +84,9 @@ export default {
                 confirmText: 'パスワードリセット',
                 cancelText: 'やめる',
                 onConfirm: (value) => {
-                    this.resetPassword(value)
+                    this.$api.exAuth.sendResetPasswordMail(value)
                         .then(() => {
-                            this.$buefy.dialog.alert(value + 'へパスワードリセット用のメールを送信しました')
+                            this.$buefydialog.alert(value + 'へパスワードリセットメールを送信しました')
                         })
                 }
             })
@@ -100,6 +102,9 @@ export default {
     computed: {
         isAuthError(){
             return this.$route.query.error
+        },
+        isResetPassword() {
+            return this.$route.query.isResetPassword
         }
     },
 }

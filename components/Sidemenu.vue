@@ -33,19 +33,19 @@
     </MenuList>
     <hr v-if="!$device.isMobile || isOpenedMenu">
     <MenuList v-if="!$device.isMobile || isOpenedMenu" label="グループ" :activable="true">
-        <li v-for="group in groups"
+        <li v-for="group in currentUser.projects"
             :key="group.id"
             @click="changeGroup(group.id)"
-            :class="{ 'selected': group.id==currentGroupId }">
+            :class="{ 'selected': group.id==selectingGroupId }">
             {{ group.name }}
         </li>
     </MenuList>
 </aside>
 <aside class="menu" v-else-if="$route.path=='/option/'">
     <MenuList label="オプション" :activable="true">
-        <li :class="{ 'selected': optionTab=='userInfo' }" @click="setOptionTab('userInfo')">ユーザ情報</li>
-        <li :class="{ 'selected': optionTab=='appSetting' }" @click="setOptionTab('appSetting')">アプリ設定</li>
-        <li :class="{ 'selected': optionTab=='lineCoop' }" @click="setOptionTab('lineCoop')">LINEと連携</li>
+        <li :class="{ 'selected': currentTab==TAB.USER }" @click="setOptionTab(TAB.USER)">ユーザ情報</li>
+        <li :class="{ 'selected': currentTab==TAB.APP }" @click="setOptionTab(TAB.APP)">アプリ設定</li>
+        <li :class="{ 'selected': currentTab==TAB.LINE }" @click="setOptionTab(TAB.LINE)">LINEと連携</li>
     </MenuList>
 </aside>
 </template>
@@ -56,13 +56,6 @@ import MenuList from '@/components/parts/SideMenuList.vue'
 export default {
     components: {
         MenuList
-    },
-    async created() {
-        if(this.$route.path === "/task/") {
-            if(Object.keys(this.groups).length === 0) {
-                this.getGroups()   
-            }
-        }
     },
     data() {
         return {
@@ -79,20 +72,21 @@ export default {
         }
     },
     methods: {
-        ...mapActions({ 'getGroups': 'project/getAll', 'setCurrentGroupId': 'project/setCurrentGroupId', 'setOptionTab': 'option/setOptionTab' }),
+        ...mapActions('user', ['setSelectingGroupId']),
+        ...mapActions('option', ['setOptionTab']),
         changeGroup(groupId) {
             this.$nuxt.$emit('changeTask', groupId)
-            this.setCurrentGroupId(groupId)
+            this.setSelectingGroupId(groupId)
             this.clearFilterAndSort()
         },
         filterTasks() {
-            const groupId = this.currentGroupId > 0 ? this.currentGroupId : null
+            const groupId = this.selectingGroupId > 0 ? this.selectingGroupId : null
             this.$nuxt.$emit('customTask',
                 { type: 'filter', groupId: groupId, columnName: this.applingFilter.column, sign: this.applingFilter.sign, value: this.applingFilter.value }
             )
         },
         orderTasks() {
-            const groupId = this.currentGroupId > 0 ? this.currentGroupId : null
+            const groupId = this.selectingGroupId > 0 ? this.selectingGroupId : null
             this.$nuxt.$emit('customTask',
                 { type: 'order', groupId: groupId, columnName: this.applingSort.column, sign: this.applingSort.sign, value: null }
             )
@@ -107,13 +101,12 @@ export default {
                 column: 'updated_at',
                 sign: 'DESC'
             }
-        },
-        toggleMenu() {
-            
         }
     },
     computed: {
-        ...mapGetters({ 'groups': 'project/groups', 'currentGroupId': 'project/currentGroupId', 'optionTab': 'option/currentTab' })
+        ...mapGetters('user', ['currentUser', 'selectingGroupId']),
+        ...mapGetters('master', ['TAB']),
+        ...mapGetters('option', ['currentTab'])
     }
 }
 </script>

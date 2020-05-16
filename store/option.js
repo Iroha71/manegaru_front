@@ -12,13 +12,8 @@ export const mutations = {
     setTab(state, tabName) {
         state.currentTab = tabName
     },
-    setAppSetting(state, setting) {
-        state.isPlayBgm = setting.isPlayBgm.value
-        state.isPlayVoice = setting.isPlayVoice.value
-        state.isToastTask = setting.isToastTask.value
-        state.toastWay = setting.toastWay.value
-        state.topApplySeason = setting.topApplySeason.value
-        state.isMoveTopAfterTaskComplete = setting.isMoveTopAfterTaskComplete.value
+    set(state, { key, value }) {
+        state[key] = value
     },
     setAppSettingFromStore(state, setting) {
         Object.keys(setting).forEach((key) => {
@@ -31,8 +26,8 @@ export const actions = {
     setOptionTab(context, tabName) {
         context.commit('setTab', tabName)
     },
-    setAppSetting(context, setting) {
-        context.commit('setAppSetting', setting)
+    setAppSetting(context, { key, value }) {
+        context.commit('set', { key, value })
     },
     setAppSettingFromStore(context, setting) {
         context.commit('setAppSettingFromStore', setting)

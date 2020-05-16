@@ -18,10 +18,7 @@ export default ({store, redirect, $axios, route}) => {
         if(error.response.status == 401 || error.response.status == 403) {
             redirect(301, `/login/?error=${error.response.status}`)
             return
-        } else if(error.response.status == 422) {
-            redirect(`${route.path}?invalidError=${error.response.data.message}`)
-            return
-        } else {
+        } else if(error.response.status != 422) {
             $nuxt.error({
                 statusCode: error.response.status,
                 message: 'サーバでエラーが発生しました'

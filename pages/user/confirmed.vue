@@ -32,13 +32,14 @@ export default {
         }
     },
     methods: {
-        ...mapActions({ 'signIn': 'user/signIn' }),
-        goToGirlPage() {
+        ...mapActions('auth', ['setAuth']),
+        ...mapActions('user', ['setLoggedUser']),
+        async goToGirlPage() {
             const sendEmail = this.inputedEmail === '' ? this.email : this.inputedEmail
-            this.signIn({ email: sendEmail, password: this.password })
-            .then(res => {
-                this.$router.push('/girl/select/?isFirst=true')
-            })
+            const loggedUser = await this.$api.exAuth.signIn(sendEmail, this.password)
+            this.setLoggedUser(loggedUser.data)
+            this.setAuth(loggedUser.headers)
+            this.$router.push('/girl/select/?isFirst=true')
         }
     },
     computed: {
