@@ -15,6 +15,14 @@ export const mutations = {
     },
     addGroup(state, newGroup) {
         state.currentUser.projects.push(newGroup)
+    },
+    updateGroup(state, updatedGroup) {
+        const targetIndex = state.currentUser.projects.findIndex((p) => p.id == updatedGroup.id)
+        state.currentUser.projects.splice(targetIndex, 1, updatedGroup)
+    },
+    fetchGroup(state, groups) {
+        state.currentUser.projects = []
+        state.currentUser.projects = groups
     }
 }
 
@@ -34,6 +42,14 @@ export const actions = {
 
     addGroup(context, newGroup) {
         context.commit('addGroup', newGroup)
+    },
+
+    updateGroup(context, updatedGroup) {
+        context.commit('updateGroup', updatedGroup)
+    },
+
+    fetchGroup(context, groups) {
+        context.commit('fetchGroup', groups)
     }
 }
 

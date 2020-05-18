@@ -14,6 +14,9 @@
                 <b-navbar-item tag="router-link" to="/task/new/">
                     作成
                 </b-navbar-item>
+                <b-navbar-item tag="router-link" :to="getSelectingCategory(selectingGroupId).route">
+                    {{ getSelectingCategory(selectingGroupId).name }}
+                </b-navbar-item>
             </b-navbar-dropdown>
             <b-navbar-dropdown label="秘書">
                 <b-navbar-item tag="router-link" to="/girl/select/">
@@ -25,7 +28,7 @@
             </b-navbar-dropdown>
         </template>
         <template lang="html" slot="end" v-if="access_token && currentUser.name">
-            <b-navbar-item @click="goOption()">
+            <b-navbar-item @click="$router.push('/option/')">
                 <div class="item-area">
                     <img class="user-icon" :src="`/characters/${currentUser.girl.code}/icon.png`" />
                     <span class="user-name">{{ currentUser.name }}</span>
@@ -50,6 +53,8 @@
 <script>
 import IconButton from './parts/IconButton.vue'
 import { mapActions, mapGetters } from 'vuex'
+
+const CATEGORY_NOT_SELECTED = 0
 export default {
     components: {
         IconButton
@@ -63,12 +68,17 @@ export default {
             this.clearAuth()
             this.$router.push('/login/')
         },
-        goOption() {
-            this.$router.push('/option/')
+        getSelectingCategory(projectId) {
+            if(projectId == CATEGORY_NOT_SELECTED) {
+                return { name: 'カテゴリ', route: '/category/' }
+            } else {
+                const currentProject = this.currentUser.projects.find((project) => project.id === projectId)
+                return { name: 'カテゴリ -' + currentProject.name, route: `/category/edit/?projectId=${projectId}` }
+            }
         }
     },
     computed: {
-        ...mapGetters('user', ['currentUser']),
+        ...mapGetters('user', ['currentUser', 'selectingGroupId']),
         ...mapGetters('auth', ['access_token'])
     }
 }
