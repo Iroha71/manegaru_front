@@ -4,7 +4,7 @@
             <flower-spinner
                 :animation-duration="1500"
                 :size="70"
-                color="#FED983" />
+                color="#EA5B52" />
         </b-loading>
         <div class="hero is-fullheight">
             <nuxt />

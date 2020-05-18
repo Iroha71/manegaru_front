@@ -23,5 +23,8 @@ export default $axios => ({
         projectId = projectId == GROUP_NOT_SELECTED ? '' : projectId
         const params = { ids: taskIds, project_id: projectId }
         return $axios.delete(process.env.BASE_URL + 'task/destroy_multi', { data: params })
+    },
+    bulkUpdate(params) {
+        return $axios.put(process.env.BASE_URL + 'task', params)
     }
 })

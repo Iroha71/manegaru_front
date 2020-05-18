@@ -171,7 +171,6 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('girl', ['currentGirl']),
     ...mapGetters('application', ['topVisitedAt', 'greetingCount', 'isAllowedSound']),
     ...mapGetters('option', ['isPlayVoice'])
   }

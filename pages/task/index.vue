@@ -68,7 +68,6 @@
             <section class="modal-card-body has-text-centered">
                 <b-button type="is-success" @click="updateTasks()">完了にする</b-button>
                 <b-button type="is-danger" @click="deleteTaskMulti()">削除する</b-button>
-                <b-button type="is-info" @click="">カテゴリを変更</b-button>
             </section>
             <section class="modal-card-body content">
                 <ul>
@@ -242,24 +241,6 @@ th, td {
                 border-radius: 50%;
             }
         }
-    }
-}
-.list {
-    &-enter-active, &-leave-active, &-move {
-        transition: 500ms cubic-bezier(0.59, 0.12, 0.34, 0.95);
-        transition-property: opacity, transform;
-    }
-    &-enter {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    &-enter-to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    &-leave-to {
-        opacity: 0;
-        transform: translateY(50px);
     }
 }
 </style>

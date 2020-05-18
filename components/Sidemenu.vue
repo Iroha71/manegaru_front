@@ -1,5 +1,6 @@
 <template lang="html">
-<aside class="menu" v-if="$route.path=='/task/'">
+<aside class="menu" v-if="$route.path=='/task/' || $route.path=='/category/' || $route.path=='/category/edit/'">
+    
     <a v-if="$device.isMobile" 
         role="button" 
         aria-label="menu" 
@@ -10,7 +11,7 @@
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
     </a>
-    <MenuList v-if="!$device.isMobile || isOpenedMenu">
+    <MenuList v-if="(!$device.isMobile || isOpenedMenu) && $route.path=='/task/'">
         <li class="title-text">
             ソート
         </li>
@@ -31,7 +32,7 @@
             </b-select>
         </li>
     </MenuList>
-    <hr v-if="!$device.isMobile || isOpenedMenu">
+    <hr v-if="(!$device.isMobile || isOpenedMenu) && $route.path=='/task/' || $route.path=='/category/edit/'">
     <MenuList v-if="!$device.isMobile || isOpenedMenu" label="グループ" :activable="true">
         <li v-for="group in currentUser.projects"
             :key="group.id"
@@ -75,9 +76,12 @@ export default {
         ...mapActions('user', ['setSelectingGroupId']),
         ...mapActions('option', ['setOptionTab']),
         changeGroup(groupId) {
-            this.$nuxt.$emit('changeTask', groupId)
+            if(this.$route.path == '/task/') {
+                this.$nuxt.$emit('changeTask', groupId)
+                this.clearFilterAndSort()
+            }
+            this.$route.query.projectId = groupId
             this.setSelectingGroupId(groupId)
-            this.clearFilterAndSort()
         },
         filterTasks() {
             const groupId = this.selectingGroupId > 0 ? this.selectingGroupId : null
