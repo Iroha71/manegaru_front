@@ -23,6 +23,7 @@ export default {
 
 <style lang="scss" scoped>
 .hero {
+    overflow: hidden;
     max-height: 100vh;
 }
 </style>

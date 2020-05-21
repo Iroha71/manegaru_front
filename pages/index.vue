@@ -97,7 +97,7 @@ export default {
   },
   data() {
     return {
-      backgroundUrl: '/images/bg-bloom.webp',
+      backgroundUrl: '/images/bg-top.webp',
       today: null,
       girlCurrentEmote: 'normal',
       serifus: [],
