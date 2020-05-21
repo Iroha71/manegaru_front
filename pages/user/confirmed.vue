@@ -11,7 +11,7 @@
     </div>
     <div class="section content has-text-centered" v-else>
         <h3>このメールアドレスは既に認証されています</h3>
-        <b-button type="is-success" size="is-large" @click="$router.push('/login/')">サインインする</b-button>
+        <b-button type="is-success" size="is-large" @click="$router.push($url.login)">サインインする</b-button>
     </div>
 </template>
 
@@ -39,7 +39,7 @@ export default {
             const loggedUser = await this.$api.exAuth.signIn(sendEmail, this.password)
             this.setLoggedUser(loggedUser.data)
             this.setAuth(loggedUser.headers)
-            this.$router.push('/girl/select/?isFirst=true')
+            this.$router.push(`${$url.girlSelect}?isFirst=true`)
         }
     },
     computed: {

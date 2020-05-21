@@ -100,7 +100,7 @@ export default {
                         .then(response => {
                             this.fetchGroup(response.data)
                             this.setSelectingGroupId(CATEGORY_NOT_SELECTED)
-                            this.$router.push('/category/')
+                            this.$router.push(this.$url.category)
                         })
                 }
             })

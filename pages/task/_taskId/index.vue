@@ -158,7 +158,7 @@ export default {
                     duration: 4000
                 })
                 this.setIsFinishedTask(true)
-                const nextPath = this.isMoveTopAfterTaskComplete ? '/?status=finishedTask' : '/task/?status=finishedTask'
+                const nextPath = this.isMoveTopAfterTaskComplete ? '/?status=finishedTask' : `${this.$url.task}?status=finishedTask`
                 this.$router.push(nextPath)
             } else {
                 this.task.status = reward.data.status
@@ -178,7 +178,7 @@ export default {
         async deleteTask() {
             const deletedResult = await this.$api.task.delete(this.task.id)
             this.$buefy.toast.open({ type: 'is-danger', message: 'タスクを削除しました' })
-            this.$router.push('/task/')
+            this.$router.push(this.$url.task)
         },
         changeEditModeIs(formName) {
             if(formName === 'memo') {

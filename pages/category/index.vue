@@ -5,7 +5,7 @@
                 :title="category.name"
                 :key="category.id" 
                 size="is-4"
-                @click="$router.push(`/category/edit/?projectId=${category.id}`)">
+                @click="$router.push(`${$url.editCategory}?projectId=${category.id}`)">
                 <template lang="html" v-slot:content>
                     <p>{{ category }}</p>
                 </template>

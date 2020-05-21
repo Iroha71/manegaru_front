@@ -26,7 +26,7 @@
             </div>
             <div>
                 <p>未登録の場合</p>
-                <b-button type="is-success" :loading="$store.getters['api/isLoading']" @click="$router.push('/user/new/')">新規登録</b-button>
+                <b-button type="is-success" :loading="$store.getters['api/isLoading']" @click="$router.push($url.newUser)">新規登録</b-button>
             </div>
         </form>
     </div>
@@ -52,7 +52,7 @@ export default {
                     this.lineId = liff.getContext().userId
                 }
                 if(this.lineId === '' && this.$route.query.opened === 'line') {
-                    this.$router.replace('/login/?error=405')
+                    this.$router.replace(`${this.$url.login}?error=405`)
                 }
             })
         } catch(error) { }
@@ -68,11 +68,11 @@ export default {
         ...mapActions('auth', ['setAuth']),
         async signIn() {
             let loggedUser = await this.$api.exAuth.signIn(this.email, this.password)
-            let nextPath = '/'
+            let nextPath = this.$url.root
             this.setAuth(loggedUser.headers)
             if(this.lineId !== '') {
                 this.$api.user.update(loggedUser.data.data.id, { user: { line_id: this.lineId } })
-                nextPath = '/user/cooped-line/'
+                nextPath = this.$url.coopedLine
             }
             this.setLoggedUser(loggedUser.data)
             this.$router.push(nextPath)
