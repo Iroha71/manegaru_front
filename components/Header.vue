@@ -8,10 +8,10 @@
         </template>
         <template slot="start" v-if="access_token && currentUser.name" lang="html">
             <b-navbar-dropdown label="タスク">
-                <b-navbar-item tag="router-link" to="$url.task">
+                <b-navbar-item tag="router-link" :to="$url.task">
                     一覧
                 </b-navbar-item>
-                <b-navbar-item tag="router-link" to="$url.newTask">
+                <b-navbar-item tag="router-link" :to="$url.newTask">
                     作成
                 </b-navbar-item>
                 <b-navbar-item tag="router-link" :to="getSelectingCategory(selectingGroupId).route">
@@ -19,7 +19,7 @@
                 </b-navbar-item>
             </b-navbar-dropdown>
             <b-navbar-dropdown label="秘書">
-                <b-navbar-item tag="router-link" to="$url.girlSelect">
+                <b-navbar-item tag="router-link" :to="$url.girlSelect">
                     交代
                 </b-navbar-item>
                 <b-navbar-item @click="$router.push($url.room)">
