@@ -129,7 +129,7 @@ export default {
             }
             const loggedUser = await this.$api.user.update(this.currentUser.id, userParams)
             this.setLoggedUser(loggedUser)
-            this.$router.push('/')
+            this.$router.push(this.$url.root)
         }
     },
     computed: {

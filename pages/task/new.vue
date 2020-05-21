@@ -99,7 +99,7 @@ export default {
         ...mapActions('user', ['addGroup']),
         async createTask() {
             await this.$api.task.create(this.form)
-            this.$router.push('/task/')
+            this.$router.push(this.$url.task)
         },
         async createProject() {
             try {

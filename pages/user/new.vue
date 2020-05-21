@@ -50,7 +50,7 @@ export default {
         async registUser() {
             try {
                 const createdUser = await this.$api.auth.create({ registration: this.form })
-                this.$router.push(`/user/finished-temp-regist/?confirmingEmail=${createdUser.data.data.email}`)
+                this.$router.push(`${this.$url.tempRegist}?confirmingEmail=${createdUser.data.data.email}`)
             } catch(e) {
                 this.errors = e.response.data.errors.full_messages
             }

@@ -1,5 +1,5 @@
 <template lang="html">
-<aside class="menu" v-if="$route.path=='/task/' || $route.path=='/category/' || $route.path=='/category/edit/'">
+<aside class="menu" v-if="$route.path==$url.task || $route.path==$url.category || $route.path==$url.editCategory">
     
     <a v-if="$device.isMobile" 
         role="button" 
@@ -11,7 +11,7 @@
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
     </a>
-    <MenuList v-if="(!$device.isMobile || isOpenedMenu) && $route.path=='/task/'">
+    <MenuList v-if="(!$device.isMobile || isOpenedMenu) && $route.path==$url.task">
         <li class="title-text">
             ソート
         </li>
@@ -32,7 +32,7 @@
             </b-select>
         </li>
     </MenuList>
-    <hr v-if="(!$device.isMobile || isOpenedMenu) && $route.path=='/task/' || $route.path=='/category/edit/'">
+    <hr v-if="(!$device.isMobile || isOpenedMenu) && $route.path==$url.task || $route.path==$url.editCategory">
     <MenuList v-if="!$device.isMobile || isOpenedMenu" label="グループ" :activable="true">
         <li v-for="group in currentUser.projects"
             :key="group.id"
@@ -42,7 +42,7 @@
         </li>
     </MenuList>
 </aside>
-<aside class="menu" v-else-if="$route.path=='/option/'">
+<aside class="menu" v-else-if="$route.path==$url.option">
     <MenuList label="オプション" :activable="true">
         <li :class="{ 'selected': currentTab==TAB.USER }" @click="setOptionTab(TAB.USER)">ユーザ情報</li>
         <li :class="{ 'selected': currentTab==TAB.APP }" @click="setOptionTab(TAB.APP)">アプリ設定</li>
@@ -76,7 +76,7 @@ export default {
         ...mapActions('user', ['setSelectingGroupId']),
         ...mapActions('option', ['setOptionTab']),
         changeGroup(groupId) {
-            if(this.$route.path == '/task/') {
+            if(this.$route.path == $url.task) {
                 this.$nuxt.$emit('changeTask', groupId)
                 this.clearFilterAndSort()
             }

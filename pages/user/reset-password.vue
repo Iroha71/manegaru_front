@@ -36,7 +36,7 @@ export default {
     },
     created() {
         if(!this.$route.query['access-token']) {
-            this.$router.replace('/login/')
+            this.$router.replace(this.$url.login)
         }
     },
     data() {
@@ -52,7 +52,7 @@ export default {
             this.setAuth(this.$route.query)
             try {
                 await this.$api.exAuth.updatePassword(this.password, this.confirmPassword)
-                this.$router.push('/login/?resetPassword=true')
+                this.$router.push(`${this.$url.login}?resetPassword=true`)
             } catch(e) {
                 this.errors = e.response.data.errors.full_messages
             }

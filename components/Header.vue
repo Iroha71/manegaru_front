@@ -8,10 +8,10 @@
         </template>
         <template slot="start" v-if="access_token && currentUser.name" lang="html">
             <b-navbar-dropdown label="タスク">
-                <b-navbar-item tag="router-link" to="/task/">
+                <b-navbar-item tag="router-link" to="$url.task">
                     一覧
                 </b-navbar-item>
-                <b-navbar-item tag="router-link" to="/task/new/">
+                <b-navbar-item tag="router-link" to="$url.newTask">
                     作成
                 </b-navbar-item>
                 <b-navbar-item tag="router-link" :to="getSelectingCategory(selectingGroupId).route">
@@ -19,16 +19,16 @@
                 </b-navbar-item>
             </b-navbar-dropdown>
             <b-navbar-dropdown label="秘書">
-                <b-navbar-item tag="router-link" to="/girl/select/">
+                <b-navbar-item tag="router-link" to="$url.girlSelect">
                     交代
                 </b-navbar-item>
-                <b-navbar-item>
+                <b-navbar-item @click="$router.push($url.room)">
                     部屋
                 </b-navbar-item>
             </b-navbar-dropdown>
         </template>
         <template lang="html" slot="end" v-if="access_token && currentUser.name">
-            <b-navbar-item @click="$router.push('/option/')">
+            <b-navbar-item @click="$router.push($url.option)">
                 <div class="item-area">
                     <img class="user-icon" :src="`/characters/${currentUser.girl.code}/icon.png`" />
                     <span class="user-name">{{ currentUser.name }}</span>
@@ -66,14 +66,14 @@ export default {
             await this.$api.exAuth.signOut()
             this.clearLoggedUser()
             this.clearAuth()
-            this.$router.push('/login/')
+            this.$router.push(this.$url.login)
         },
         getSelectingCategory(projectId) {
             if(projectId == CATEGORY_NOT_SELECTED) {
-                return { name: 'カテゴリ', route: '/category/' }
+                return { name: 'カテゴリ', route: this.$url.category }
             } else {
                 const currentProject = this.currentUser.projects.find((project) => project.id === projectId)
-                return { name: 'カテゴリ -' + currentProject.name, route: `/category/edit/?projectId=${projectId}` }
+                return { name: 'カテゴリ -' + currentProject.name, route: `${this.$url.editCategory}?projectId=${projectId}` }
             }
         }
     },

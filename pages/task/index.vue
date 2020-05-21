@@ -5,7 +5,7 @@
             key="task_create"
             type="is-primary"
             class="create-button"
-            @click="$router.push('/task/new/')">＋</b-button>
+            @click="$router.push($url.newTask)">＋</b-button>
         <IconButton v-if="!isBundleMode"
             key="bundle_mode"
             type="is-info"
@@ -164,7 +164,7 @@ export default {
                     this.selectedTasksTitle.push(task_title)
                 }
             } else {
-                this.$router.push(`/task/${task_id}/`)
+                this.$router.push(this.$url.taskChild.build(task_id))
             }
         },
         async updateTasks() {

@@ -28,7 +28,7 @@
             <div class="hero-body">
               <section class="content-area">
                 <p>LINE BOTでタスクをお知らせできます！</p>
-                <b-button type="is-info" @click="$router.push('/option/?currentTab=lineCoop')">オプション画面で設定</b-button>
+                <b-button type="is-info" @click="$router.push(`${$url.option}?currentTab=lineCoop`)">オプション画面で設定</b-button>
               </section>
             </div>
           </section>
@@ -43,21 +43,21 @@
           <img :src="`/characters/${currentUser.girl.code}/icon.png`" />
           <p>秘書</p>
         </b-button>
-        <b-button type="is-success" class="room sub-content">
+        <b-button type="is-success" class="room sub-content" @click="$router.push($url.room)">
           <img src="/icons/garden.png" />
           <p>部屋</p>
         </b-button>
-        <b-button type="is-danger" class="option sub-content" @click="$router.push('/option/')">
+        <b-button type="is-danger" class="option sub-content" @click="$router.push($url.option)">
           <img src="/icons/setting.png" />
           <p>設定</p>
         </b-button>
       </section>
     </div>
     <b-field v-if="$device.isMobile" class="menu-area-mobile">
-      <b-button type="is-primary" size="is-large" @click="$router.push('/task')">タスク</b-button>
-      <b-button type="is-info" size="is-large" @click="$router.push('/girl/select')">秘書</b-button>
-      <b-button type="is-success" size="is-large">部屋</b-button>
-      <b-button type="is-danger" size="is-large" @click="$router.push('/option/')">設定</b-button>
+      <b-button type="is-primary" size="is-large" @click="$router.push($url.task)">タスク</b-button>
+      <b-button type="is-info" size="is-large" @click="$router.push($url.girlSelect)">秘書</b-button>
+      <b-button type="is-success" size="is-large" @click="$router.push($url.room)">部屋</b-button>
+      <b-button type="is-danger" size="is-large" @click="$router.push($url.option)">設定</b-button>
     </b-field>
   </div>
 </template>
@@ -92,12 +92,13 @@ export default {
     }
   },
   async mounted() {
+    console.log(this.$url.root)
     if(this.$store.getters['application/isAllowedSound'])
       this.loadSerifu()
   },
   data() {
     return {
-      backgroundUrl: '/images/bg-bloom.webp',
+      backgroundUrl: '/images/bg-top.webp',
       today: null,
       girlCurrentEmote: 'normal',
       serifus: [],
