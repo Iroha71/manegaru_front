@@ -41,7 +41,7 @@ const redirectAccurateRoute = (app, route, redirect) => {
 }
 
 const isRequireAuthPage = (app, pagePath) => {
-    const noAuthPagePath = [app.$url.root, app.$url.newUser, app.$url.tempRegist, app.$url.userConfimed, app.$url.coopedLine, app.$url.resetPassword]
+    const noAuthPagePath = [app.$url.login, app.$url.newUser, app.$url.tempRegist, app.$url.userConfimed, app.$url.coopedLine, app.$url.resetPassword]
     return !noAuthPagePath.includes(pagePath)
 }
 

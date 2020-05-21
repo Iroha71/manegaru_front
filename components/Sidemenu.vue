@@ -76,7 +76,7 @@ export default {
         ...mapActions('user', ['setSelectingGroupId']),
         ...mapActions('option', ['setOptionTab']),
         changeGroup(groupId) {
-            if(this.$route.path == $url.task) {
+            if(this.$route.path == this.$url.task) {
                 this.$nuxt.$emit('changeTask', groupId)
                 this.clearFilterAndSort()
             }
