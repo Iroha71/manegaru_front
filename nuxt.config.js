@@ -37,7 +37,10 @@ export default {
   plugins: [
     '~/plugins/axios.js',
     '~/plugins/persistedstate.js',
-    '~/plugins/vee-validate.js'
+    '~/plugins/vee-validate.js',
+    '~/plugins/api.js',
+    '~/plugins/url.js',
+    '~/plugins/property.js'
   ],
 
   router: {

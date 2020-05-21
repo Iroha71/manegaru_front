@@ -1,10 +1,10 @@
 @import '~bulma/sass/utilities/_all';
-$primary: #1AAAD4;
+$primary: #0078dd;
 $info: #366BCE;
 $warning: #f37024;
 $danger: #F15E60;
 $success: #2EA58D;
-$loading-background: #005885;
+$loading-background: linear-gradient(180deg, rgba(0, 120, 221,1) 0.4665725024292584%,rgba(86, 152, 227,1) 79.66998579152786%);
 
 $colors: (
     "primary": ($primary, $primary-invert),
@@ -22,7 +22,7 @@ $colors: (
 }
 
 html {
-    overflow-y: hidden;
+    overflow-y: auto;
 }
 
 .page {
@@ -34,9 +34,29 @@ html {
     }
 }
 
+.list {
+    &-enter-active, &-leave-active, &-move {
+        transition: 500ms cubic-bezier(0.59, 0.12, 0.34, 0.95);
+        transition-property: opacity, transform;
+    }
+    &-enter {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    &-enter-to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    &-leave-to {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+}
+
 .trans-background {
     .loading-background {
-        background: rgba(0, 88, 133, 0.5) !important;
+        background: 
+        linear-gradient(180deg, rgba(0, 120, 221,0.5) 0.4665725024292584%,rgba(86, 152, 227,0.5) 79.66998579152786%) !important;
     }
 }
 
@@ -78,4 +98,9 @@ html {
 
 .symbol-image {
     height: 2rem;
+}
+
+.over-message {
+    white-space: nowrap;
+    overflow-x: visible;
 }

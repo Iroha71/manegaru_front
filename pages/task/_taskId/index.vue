@@ -41,7 +41,7 @@
                         リワード
                         <br>
                         <img :src="`/characters/${task.girl.code}/icon.png`" class="symbol-image" />
-                        <img v-if="currentGirl.id!=task.girl.id" :src="`/characters/${currentGirl.code}/icon.png`" class="symbol-image" />
+                        <img v-if="currentUser.girl.id!=task.girl.id" :src="`/characters/${currentUser.girl.code}/icon.png`" class="symbol-image" />
                     </th>
                     <td><img src="/icons/heart.png" class="embedded-image">{{ task.priority.like_rate }}</td>
                 </tr>
@@ -72,22 +72,20 @@
         <div class="modal-card">
             <section class="modal-card-body">
                 <b-field label="通知を設定しなおす">
-                    <b-datepicker inline v-model="form.limitDate" :month-names="$store.getters['master/monthNames']" />
+                    <b-datepicker inline v-model="form.notify_at" :month-names="$store.getters['master/monthNames']" />
                 </b-field>
                 <b-field>
                     <b-clockpicker inline hour-format="24"
                         :auto-switch="false"
                         size="is-small"
-                        v-model="form.limitDate">
+                        v-model="form.notify_at">
                         <p>※通知は1時間単位で設定できます</p>
                     </b-clockpicker>
                 </b-field>
                 <b-field>
-                    <b-select v-model="form.notifyInterval">
+                    <b-select v-model="form.notify_interval">
                         <option :value="null">1回のみ</option>
-                        <option value="day">毎日</option>
-                        <option value="week">毎週</option>
-                        <option value="month">毎月</option>
+                        <option v-for="INTERVAL in NOTIFY_INTERVAL" :value="INTERVAL.VALUE">{{ INTERVAL.LABEL }}</option>
                     </b-select>
                 </b-field>
             </section>
@@ -107,39 +105,37 @@ import { mapActions, mapGetters } from 'vuex'
 import IconButton from '@/components/parts/IconButton.vue'
 import Vinput from '@/components/parts/ValidateInput.vue'
 export default {
-    async asyncData({store, route}) {
+    async asyncData({app, store, route}) {
         const taskId = route.params.taskId
-        const task = await store.dispatch('task/show', taskId)
+        const task = await app.$api.task.show(taskId)
         return { task: task.data }
     },
     components: {
         IconButton,
         Vinput
     },
-    mounted() {
-        this.form.limitDate = this.task.notify_at !== 'なし' ? new Date(this.task.notify_at_en) : null
-    },
     data() {
         return {
             statusIndex: 0,
             defautIndex: 0,
-            statuses: ['未着手', '作業中', '完了'],
+            statuses: this.$store.getters['master/STATUS_LABELS'],
             isEdittingMemo: false,
             isEdittingDate: false,
             form: {
                 detail: '',
-                limitDate: null,
-                notifyTiming: [],
-                notifyInterval: null
+                notify_at: null,
+                notify_interval: null
             }
         }
     },
-    created() {
+    mounted() {
         this.statusIndex = this.statuses.indexOf(this.task.status)
         this.defautIndex = this.statusIndex
+        this.form.detail = this.task.detail
+        this.notify_interval = this.task.notify_interval
+        this.form.notify_at = this.task.notify_at !== 'なし' ? new Date(this.task.notify_at_en) : null
     },
     methods: {
-        ...mapActions('task', ['updateStatus', 'update', 'destroy']),
         ...mapActions('application', ['setIsFinishedTask']),
         getStatusColor:function() {
             switch(this.task.status) {
@@ -154,19 +150,19 @@ export default {
             }
         },
         async changeStatus() {
-            const reward = await this.updateStatus({taskId: this.task.id, status: this.statuses[this.statusIndex]})
-            if(reward.status === '完了') {
+            const reward = await this.$api.exTask.updateStatus(this.task.id, this.statuses[this.statusIndex])
+            if(reward.data.status === '完了') {
                 this.$buefy.toast.open({
                     type: 'is-success',
-                    message: `資金 ＋${reward.gold}<br>${reward.like_rate}`,
+                    message: `資金 ＋${reward.data.gold}<br>${reward.data.like_rate}`,
                     duration: 4000
                 })
                 this.setIsFinishedTask(true)
-                const nextPath = this.isMoveTopAfterTaskComplete ? '/?status=finishedTask' : '/task/?status=finishedTask'
+                const nextPath = this.isMoveTopAfterTaskComplete ? '/?status=finishedTask' : `${this.$url.task}?status=finishedTask`
                 this.$router.push(nextPath)
             } else {
-                this.task.status = reward.status
-                this.defautIndex = this.statuses.indexOf(reward.status)
+                this.task.status = reward.data.status
+                this.defautIndex = this.statuses.indexOf(reward.data.status)
                 this.statusIndex = this.defautIndex
             }
         },
@@ -180,11 +176,9 @@ export default {
             })
         },
         async deleteTask() {
-            const deleted = await this.destroy(this.task.id)
-            if(deleted.result === 'success') {
-                this.$buefy.toast.open({ type: 'is-danger', message: 'タスクを削除しました' })
-                this.$router.push('/task/')
-            }
+            const deletedResult = await this.$api.task.delete(this.task.id)
+            this.$buefy.toast.open({ type: 'is-danger', message: 'タスクを削除しました' })
+            this.$router.push(this.$url.task)
         },
         changeEditModeIs(formName) {
             if(formName === 'memo') {
@@ -193,29 +187,17 @@ export default {
             }
         },
         clearLimitDate() {
-            this.form.limitDate=null
-            this.form.notifyTiming = []
+            this.form.notify = null
             this.isEdittingDate = false
             this.saveEditedInfo('limitDate')
         },
-        saveEditedInfo(formName) {
-            let changeContent = {}
-            if(formName === 'limitDate') {
-                this.closeEditModeIs('limitDate')
-                changeContent = { notify_at: this.form.limitDate,
-                    notify_timing: this.form.notifyTiming,
-                    notify_interval: this.form.notifyInterval
-                }
-            } else {
-                this.closeEditModeIs('memo')
-                changeContent = { detail: this.form.detail }
-            }
-            this.update({taskId: this.task.id, changeContent: changeContent})
-                .then(task => {
-                    this.task = task.data
-                    this.defautIndex = this.statuses.indexOf(task.data.status)
-                    this.statusIndex = this.defautIndex
-                })
+        async saveEditedInfo(formName) {
+            this.closeEditModeIs(formName)
+
+            const updatedTask = await this.$api.task.update(this.task.id, this.form)
+            this.task = updatedTask.data
+            this.defaultIndex = this.statuses.indexOf(updatedTask.data.status)
+            this.statusIndex = this.defautIndex
         },
         closeEditModeIs(formName) {
             if(formName === 'limitDate') {
@@ -224,7 +206,7 @@ export default {
                 this.isEdittingMemo = false
             }
         },
-        getPriorityColor:function() {
+        getPriorityColor() {
             switch(this.task.priority.level) {
                 case 1:
                     return 'is-success'
@@ -237,7 +219,8 @@ export default {
     },
     computed: {
         ...mapGetters('option', ['isMoveTopAfterTaskComplete']),
-        ...mapGetters('girl', ['currentGirl']),
+        ...mapGetters('user', ['currentUser']),
+        ...mapGetters('master', ['NOTIFY_INTERVAL']),
         isStatusUpdated() {
             if(this.statusIndex != this.defautIndex) {
                 return true

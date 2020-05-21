@@ -42,7 +42,7 @@ export default {
             if(src != null) {
                 src.stop()
             }
-            if(this.voice == '') return
+            if(this.voice == '' || !this.$store.getters['option/isPlayVoice']) return
             const audioContext = new AudioContext()
             const soundBuffer = await this.loadVoice(audioContext)
             const analyser = new AnalyserNode(audioContext)

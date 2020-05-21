@@ -1,33 +1,36 @@
 <template lang="html">
 <div>
     <b-navbar type="is-primary">
-        <template slot="brand" lang="html" v-if="access_token">
+        <template slot="brand" lang="html" v-if="access_token && currentUser.name">
             <b-navbar-item tag="router-link" to="/">
                 <img src="/icons/home.png" />
             </b-navbar-item>
         </template>
-        <template slot="start" v-if="access_token" lang="html">
+        <template slot="start" v-if="access_token && currentUser.name" lang="html">
             <b-navbar-dropdown label="タスク">
-                <b-navbar-item tag="router-link" to="/task/">
+                <b-navbar-item tag="router-link" to="$url.task">
                     一覧
                 </b-navbar-item>
-                <b-navbar-item tag="router-link" to="/task/new/">
+                <b-navbar-item tag="router-link" to="$url.newTask">
                     作成
+                </b-navbar-item>
+                <b-navbar-item tag="router-link" :to="getSelectingCategory(selectingGroupId).route">
+                    {{ getSelectingCategory(selectingGroupId).name }}
                 </b-navbar-item>
             </b-navbar-dropdown>
             <b-navbar-dropdown label="秘書">
-                <b-navbar-item tag="router-link" to="/girl/select/">
+                <b-navbar-item tag="router-link" to="$url.girlSelect">
                     交代
                 </b-navbar-item>
-                <b-navbar-item>
+                <b-navbar-item @click="$router.push($url.room)">
                     部屋
                 </b-navbar-item>
             </b-navbar-dropdown>
         </template>
-        <template lang="html" slot="end" v-if="access_token">
-            <b-navbar-item @click="showUserModal=true" >
+        <template lang="html" slot="end" v-if="access_token && currentUser.name">
+            <b-navbar-item @click="$router.push($url.option)">
                 <div class="item-area">
-                    <img class="user-icon" :src="`/characters/${currentGirl.code}/icon.png`" />
+                    <img class="user-icon" :src="`/characters/${currentUser.girl.code}/icon.png`" />
                     <span class="user-name">{{ currentUser.name }}</span>
                 </div>
             </b-navbar-item>
@@ -39,35 +42,10 @@
                 </div>
             </b-navbar-item>
             <b-navbar-item>
-                <IconButton type="is-danger" @click="signOutUser()" iconName="sign_out" />
+                <IconButton type="is-danger" @click="signOut()" iconName="sign_out" />
             </b-navbar-item>
         </template>
     </b-navbar>
-
-    <b-modal v-if="access_token&&currentGirl.id" :active.sync="showUserModal" has-modal-card>
-        <div class="modal-card" style="width: auto;">
-            <header class="modal-card-head">{{ currentUser.name }}</header>
-            <section class="modal-card-body">
-                <table class="table">
-                    <tr>
-                        <th>秘書</th>
-                        <td>{{ currentGirl.name }}</td>
-                    </tr>
-                    <tr>
-                        <th>一人称</th>
-                        <td>{{ currentUser.personal_pronoun }}</td>
-                    </tr>
-                    <tr>
-                        <th>呼び名</th>
-                        <td>{{ currentUser.nickname }}</td>
-                    </tr>
-                </table>
-            </section>
-            <footer class="modal-card-foot has-text-centered">
-                <IconButton type="is-info" iconName="setting" message="設定" @click="goOption()" />
-            </footer>
-        </div>
-    </b-modal>
     <audio></audio>
 </div>
 </template>
@@ -75,31 +53,32 @@
 <script>
 import IconButton from './parts/IconButton.vue'
 import { mapActions, mapGetters } from 'vuex'
+
+const CATEGORY_NOT_SELECTED = 0
 export default {
     components: {
         IconButton
     },
-    data() {
-        return {
-            showUserModal: false
-        }
-    },
     methods: {
-        ...mapActions({ 'signOut': 'user/signOut' }),
-        signOutUser() {
-            this.signOut().then(res => {
-                this.showUserModal = false
-                this.$router.push('/login/')
-            })
+        ...mapActions('user', ['clearLoggedUser']),
+        ...mapActions('auth', ['clearAuth']),
+        async signOut() {
+            await this.$api.exAuth.signOut()
+            this.clearLoggedUser()
+            this.clearAuth()
+            this.$router.push(this.$url.login)
         },
-        goOption() {
-            this.showUserModal = false
-            this.$router.push('/option/')
+        getSelectingCategory(projectId) {
+            if(projectId == CATEGORY_NOT_SELECTED) {
+                return { name: 'カテゴリ', route: this.$url.category }
+            } else {
+                const currentProject = this.currentUser.projects.find((project) => project.id === projectId)
+                return { name: 'カテゴリ -' + currentProject.name, route: `${this.$url.editCategory}?projectId=${projectId}` }
+            }
         }
     },
     computed: {
-        ...mapGetters('girl', ['currentGirl']),
-        ...mapGetters('user', ['currentUser']),
+        ...mapGetters('user', ['currentUser', 'selectingGroupId']),
         ...mapGetters('auth', ['access_token'])
     }
 }

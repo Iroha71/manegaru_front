@@ -1,15 +1,15 @@
 <template lang="html">
   <div class="columns" :style="{ backgroundImage: `url(${backgroundUrl})` }">
     <div class="column is-6 chara-area">
-      <Character :code="currentGirl.code"
+      <Character :code="currentUser.girl.code"
         :emote="girlCurrentEmote"
         :voice="voiceType"
         @click="changeEmote()"
         @voiceEnded="resetSerifu()" />
-      <MessageWindow :name="currentGirl.name"
+      <MessageWindow :name="currentUser.girl.name"
         :text="serifu" width="is-6"
         :isCenter="false"
-        :borderColor="currentGirl.color"/>
+        :borderColor="currentUser.girl.color"/>
     </div>
     <div v-if="!$device.isMobile" class="column is-6 right-content-area">
       <b-carousel :interval="8000">
@@ -28,7 +28,7 @@
             <div class="hero-body">
               <section class="content-area">
                 <p>LINE BOTでタスクをお知らせできます！</p>
-                <b-button type="is-info" @click="$router.push('/option/?currentTab=lineCoop')">オプション画面で設定</b-button>
+                <b-button type="is-info" @click="$router.push(`${$url.option}?currentTab=lineCoop`)">オプション画面で設定</b-button>
               </section>
             </div>
           </section>
@@ -40,19 +40,24 @@
           <p>タスク</p>
         </b-button>
         <b-button type="is-info" class="girl sub-content" @click="$router.push('/girl/select')">
-          <img :src="`/characters/${currentGirl.code}/icon.png`" />
+          <img :src="`/characters/${currentUser.girl.code}/icon.png`" />
           <p>秘書</p>
         </b-button>
-        <b-button type="is-success" class="room sub-content">
+        <b-button type="is-success" class="room sub-content" @click="$router.push($url.room)">
           <img src="/icons/garden.png" />
           <p>部屋</p>
+        </b-button>
+        <b-button type="is-danger" class="option sub-content" @click="$router.push($url.option)">
+          <img src="/icons/setting.png" />
+          <p>設定</p>
         </b-button>
       </section>
     </div>
     <b-field v-if="$device.isMobile" class="menu-area-mobile">
-      <b-button type="is-primary" size="is-large" @click="$router.push('/task')">タスク</b-button>
-      <b-button type="is-info" size="is-large" @click="$router.push('/girl/select')">秘書</b-button>
-      <b-button type="is-success" size="is-large">部屋</b-button>
+      <b-button type="is-primary" size="is-large" @click="$router.push($url.task)">タスク</b-button>
+      <b-button type="is-info" size="is-large" @click="$router.push($url.girlSelect)">秘書</b-button>
+      <b-button type="is-success" size="is-large" @click="$router.push($url.room)">部屋</b-button>
+      <b-button type="is-danger" size="is-large" @click="$router.push($url.option)">設定</b-button>
     </b-field>
   </div>
 </template>
@@ -71,7 +76,6 @@ export default {
     MessageWindow
   },
   created() {
-    this.currentGirlCode = this.$store.getters['girl/currentGirl'].code
     const now = new Date()
     const weekOfDays = ['日', '月', '火', '水', '木', '金', '土']
     const weekOfDay = weekOfDays[now.getDay()]
@@ -88,12 +92,13 @@ export default {
     }
   },
   async mounted() {
+    console.log(this.$url.root)
     if(this.$store.getters['application/isAllowedSound'])
       this.loadSerifu()
   },
   data() {
     return {
-      backgroundUrl: '/images/bg-bloom.webp',
+      backgroundUrl: '/images/bg-top.webp',
       today: null,
       girlCurrentEmote: 'normal',
       serifus: [],
@@ -102,9 +107,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('girl', ['getSerifuSet']),
     ...mapActions('application', ['fetchTopVisitedAt']),
-    ...mapActions({'getUser': 'user/get', 'setUser': 'user/setUser'}),
+    ...mapActions('user', ['setLoggedUser']),
     changeEmote() {
       this.playSerifu('touch')
     },
@@ -121,11 +125,11 @@ export default {
     async loadSerifu() {
       const situation = this.getSerifuSituation()
       let [ serifus, userInfo ] = await Promise.all([
-        this.getSerifuSet({girlId: this.currentGirl.id, situations: situation.set}),
-        this.getUser(this.currentUser.id)
+        this.$api.serifu.index({ girl_id: this.currentUser.girl.id, situation: situation.set }),
+        this.$api.user.show(this.currentUser.id)
       ])
-      this.serifus = serifus
-      this.setUser(userInfo)
+      this.serifus = serifus.data
+      this.setLoggedUser(userInfo.data)
       this.playSerifu(situation.justPlay)
     },
     resetSerifu() {
@@ -145,8 +149,9 @@ export default {
         requestSituation = 'greeting,touch'
         playSituation = 'greeting'
       } else {
+        requestSituation = 'touch'
         if(this.isRevisitSite()) {
-          requestSituation = 'greeting2,touch'
+          requestSituation += ',greeting2'
           playSituation = 'greeting2'
         }
       }
@@ -167,7 +172,6 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('girl', ['currentGirl']),
     ...mapGetters('application', ['topVisitedAt', 'greetingCount', 'isAllowedSound']),
     ...mapGetters('option', ['isPlayVoice'])
   }
@@ -224,6 +228,10 @@ export default {
         &.room {
           top: 70%;
           left: 50%;
+        }
+        &.option {
+          top: 75%;
+          left: 30%;
         }
       }
     }

@@ -1,10 +1,10 @@
 <template>
   <div class="root">
-    <b-loading is-full-page :active.sync="$store.getters['api/isLoading']" :class="{ 'trans-background': $route.path=='/task/' }">
+    <b-loading is-full-page :active.sync="$store.getters['api/isLoading']" :class="{ 'trans-background': $route.path==$url.task }">
       <flower-spinner
         :animation-duration="1500"
         :size="70"
-        color="#FED983" />
+        color="#EA5B52" />
     </b-loading>
     <Header />
     <div class="hero is-fullheight-with-navbar">

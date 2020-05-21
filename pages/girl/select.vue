@@ -35,9 +35,9 @@ export default {
     components: {
         MessageWindow
     },
-    async asyncData({store, route}) {
-        const girls = await store.dispatch('girl/index', route.query.isFirst)
-        return { girls: girls }
+    async asyncData({app, store, route}) {
+        const girls = await app.$api.girl.index({ is_first_select: route.query.isFirst })
+        return { girls: girls.data }
     },
     data() {
         return {
@@ -51,7 +51,7 @@ export default {
         this.currentDistance = this.$device.isMobile ? 0 : 100
     },
     methods: {
-        ...mapActions({ 'updateGirl': 'girl/updateCurrentGirl', 'unlockGirl': 'girl/unlock', 'fetchGold': 'user/fetchGold' }),
+        ...mapActions('user', ['setLoggedUser']),
         getLayer(index) {
             return this.centeredIndex - index
         },
@@ -92,7 +92,8 @@ export default {
                 let dialogMessage = this.selectedGirl.name + ' を秘書にしますか?'
                 let confirmMessage = '秘書にする'
                 if(this.selectedGirl.is_lock) {
-                    await this.fetchGold()
+                    const user = await this.$api.user.show(this.currentUser.id)
+                    this.setLoggedUser(user.data)
                     dialogMessage = this.selectedGirl.name + ` に来てもらいますか?<br>【資金】${this.currentUser.gold} >> ${this.currentUser.gold - 100}`
                     confirmMessage = '迎える'
                 }
@@ -100,23 +101,35 @@ export default {
                     message: dialogMessage,
                     confirmText: confirmMessage,
                     cancelText: 'やめる',
-                    onConfirm: () => this.requestSelectedGirl()
+                    onConfirm: () => {
+                        if(this.selectedGirl.is_lock) {
+                            this.unlockGirl()
+                        } else {
+                            this.updateCurrentGirl()
+                        }
+                    }
                 })
             }
         },
-        async requestSelectedGirl() {
-            if(this.selectedGirl.is_lock){
-                this.unlockGirl(this.selectedGirl.id)
-                    .then(girls => {
-                        this.girls = girls
-                        this.choiceGirl(this.selectedGirl.id)
-                    }).catch(error => {
-                        this.$buefy.dialog.alert('資金が足りません')
-                    })
-            } else {
-                await this.updateGirl(this.selectedGirl.id)
-                this.$router.push('/')
+        async unlockGirl() {
+            try {
+                const girls = await this.$api.userGirl.create({ girl_id: this.selectedGirl.id })
+                this.girls = girls.data
+                this.choiceGirl(this.selectedGirl.id)
+            } catch(e) {
+                this.$buefy.dialog.alert(e.response.data.message)
             }
+        },
+        async updateCurrentGirl() {
+            const userParams = { 
+                user: {
+                    girl_id: this.selectedGirl.id,
+                    is_first_select: this.$route.query.isFirst
+                }
+            }
+            const loggedUser = await this.$api.user.update(this.currentUser.id, userParams)
+            this.setLoggedUser(loggedUser)
+            this.$router.push(this.$url.root)
         }
     },
     computed: {
