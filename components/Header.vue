@@ -22,7 +22,7 @@
                 <b-navbar-item tag="router-link" to="/girl/select/">
                     交代
                 </b-navbar-item>
-                <b-navbar-item>
+                <b-navbar-item @click="$router.push('/girl/room/')">
                     部屋
                 </b-navbar-item>
             </b-navbar-dropdown>

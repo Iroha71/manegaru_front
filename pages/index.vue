@@ -43,7 +43,7 @@
           <img :src="`/characters/${currentUser.girl.code}/icon.png`" />
           <p>秘書</p>
         </b-button>
-        <b-button type="is-success" class="room sub-content">
+        <b-button type="is-success" class="room sub-content" @click="$router.push('/girl/room/')">
           <img src="/icons/garden.png" />
           <p>部屋</p>
         </b-button>
@@ -56,7 +56,7 @@
     <b-field v-if="$device.isMobile" class="menu-area-mobile">
       <b-button type="is-primary" size="is-large" @click="$router.push('/task')">タスク</b-button>
       <b-button type="is-info" size="is-large" @click="$router.push('/girl/select')">秘書</b-button>
-      <b-button type="is-success" size="is-large">部屋</b-button>
+      <b-button type="is-success" size="is-large" @click="$router.push($url.room)">部屋</b-button>
       <b-button type="is-danger" size="is-large" @click="$router.push('/option/')">設定</b-button>
     </b-field>
   </div>
@@ -92,6 +92,7 @@ export default {
     }
   },
   async mounted() {
+    console.log(this.$url.root)
     if(this.$store.getters['application/isAllowedSound'])
       this.loadSerifu()
   },
