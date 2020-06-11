@@ -92,7 +92,6 @@ export default {
     }
   },
   async mounted() {
-    console.log(this.$url.root)
     if(this.$store.getters['application/isAllowedSound'])
       this.loadSerifu()
   },

@@ -39,7 +39,7 @@ export default {
             const loggedUser = await this.$api.exAuth.signIn(sendEmail, this.password)
             this.setLoggedUser(loggedUser.data)
             this.setAuth(loggedUser.headers)
-            this.$router.push(`${$url.girlSelect}?isFirst=true`)
+            this.$router.push(`${this.$url.girlSelect}?isFirst=true`)
         }
     },
     computed: {

@@ -27,7 +27,7 @@
                 </b-navbar-item>
             </b-navbar-dropdown>
         </template>
-        <template lang="html" slot="end" v-if="access_token && currentUser.name">
+        <template lang="html" slot="end" v-if="access_token && currentUser.name && currentUser.girl != null">
             <b-navbar-item @click="$router.push($url.option)">
                 <div class="item-area">
                     <img class="user-icon" :src="`/characters/${currentUser.girl.code}/icon.png`" />
@@ -62,10 +62,12 @@ export default {
     methods: {
         ...mapActions('user', ['clearLoggedUser']),
         ...mapActions('auth', ['clearAuth']),
+        ...mapActions('application', ['clearSession']),
         async signOut() {
             await this.$api.exAuth.signOut()
             this.clearLoggedUser()
             this.clearAuth()
+            this.clearSession()
             this.$router.push(this.$url.login)
         },
         getSelectingCategory(projectId) {

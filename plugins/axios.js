@@ -16,8 +16,11 @@ export default ({app, store, redirect, $axios, route}) => {
         store.dispatch('api/stopLoad')
         console.log(error.response)
         if(error.response.status == 401 || error.response.status == 403) {
+            if(app.context.route.path == app.$url.login && app.context.route.query.error == 401) {
+                redirect(301, `${app.$url.login}`)
+                return
+            }
             redirect(301, `${app.$url.login}?error=${error.response.status}`)
-            return
         } else if(error.response.status != 422) {
             $nuxt.error({
                 statusCode: error.response.status,

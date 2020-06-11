@@ -17,6 +17,11 @@ export const mutations = {
     },
     setIsAllowedSound(state, isAllowedSound) {
         state.isAllowedSound = isAllowedSound
+    },
+    clear(state) {
+        state.greetingCount = 0
+        state.topVisitedAt = 0
+        state.isFinishedTask = false
     }
 }
 
@@ -32,6 +37,9 @@ export const actions = {
     },
     setIsAllowedSound(context, isAllowedSound) {
         context.commit('setIsAllowedSound', isAllowedSound)
+    },
+    clearSession(context) {
+        context.commit('clear')
     }
 }
 
