@@ -60,7 +60,7 @@ export default {
 
 <style lang="scss" scoped>
 .columns {
-	background-image: url('/images/bg-room.webp');
+	background-image: url('/images/bg-room.png');
 	background-size: cover;
 	text-align: center;
 	position: relative;

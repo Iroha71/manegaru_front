@@ -96,7 +96,7 @@ export default {
             if(this.$device.isMobile) {
                 backgroundImageName += '-mobile'
             }
-            return `url('/images/${backgroundImageName}.webp')`
+            return `url('/images/${backgroundImageName}.png')`
         }
     },
     computed: {

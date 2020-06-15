@@ -6,7 +6,10 @@
                 :key="result.id" class="column is-3"
                 :class="{ 'mobile': $device.isMobile }"
                 @click="$router.push($url.roomChild.build(result.id))">
-                <img :src="`/characters/${result.girl.code}/all.webp`" />
+                <picture>
+                    <source :srcset="`/characters/${result.girl.code}/all.webp`" type="image/webp" />
+                    <img :src="`/characters/${result.girl.code}/all.png`" />
+                </picture>
             </div>
         </div>
     </div>
