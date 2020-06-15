@@ -13,11 +13,19 @@
             class="column is-4 is-12-mobile"
             :class="{ 'is-hidden': isHidden(index).layer }">
             <transition name="fade" mode="out-in">
-                <img v-if="!isHidden(index).image"
-                    :class="{ 'mobile': $device.isMobile }"
-                    :src="`/characters/${girl.code}/all.webp`"
-                    :style="getImageEffect(index)"
-                    @click="choiceGirl(girl.id)" />
+                <picture>
+                    <source v-if="!isHidden(index).image"
+                        :class="{ 'mobile': $device.isMobile }"
+                        :srcset="`/characters/${girl.code}/all.webp`"
+                        type="image/webp"
+                        :style="getImageEffect(index)"
+                        @click="choiceGirl(girl.id)" />
+                    <img v-if="!isHidden(index).image"
+                        :class="{ 'mobile': $device.isMobile }"
+                        :src="`/characters/${girl.code}/all.png`"
+                        :style="getImageEffect(index)"
+                        @click="choiceGirl(girl.id)" />
+                </picture>
             </transition>
         </div>
         <MessageWindow :name="selectedGirl.name"
@@ -143,7 +151,7 @@ export default {
 
 <style lang="scss" scoped>
 .root {
-    background-image: url('/images/bg-ichimatsu.webp');
+    background-image: url('/images/bg-ichimatsu.png');
 }
 .section {
     height: 100vh;
@@ -172,7 +180,7 @@ export default {
         overflow: visible;
         transition: .5s;
         padding-bottom: 0;
-        img {
+        img, source {
             position: absolute;
             bottom: 0;
             height: 90vh;

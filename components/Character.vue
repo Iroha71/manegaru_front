@@ -1,8 +1,17 @@
 <template>
     <span class="has-text-centered">
-        <img :style="{ backgroundImage: `url(/characters/${code}/body.webp)` }" 
-            :src="`/characters/${code}/${getCurrentEmote()}.png`"
-            @click="touchEvent()" />
+        <picture>
+            <source :style="{ backgroundImage: `url(/characters/${code}/body.webp)` }"
+                :srcset="`/characters/${code}/${getCurrentEmote()}.png`"
+                type="image/webp" />
+            <img :style="{ backgroundImage: `url(/characters/${code}/body.png)` }" 
+                :src="`/characters/${code}/${getCurrentEmote()}.png`"
+                @click="touchEvent()" />    
+        </picture>
+        <!-- <picture>
+            <source srcset="/characters/akane/all.webp" type="image/webp" />
+            
+        </picture> -->
     </span>
 </template>
 
@@ -116,7 +125,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-img {
+img, source {
     background-position: center center;
     background-size: contain;
     height: 100%;
